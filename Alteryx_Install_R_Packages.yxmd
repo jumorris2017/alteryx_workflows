@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="54" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript><![CDATA[
+#-----------------------
+# Install a New Package
+#-----------------------
+
+package_name <- "zoo"
+
+# grab the alteryx repo
+altx.repo <- getOption("repos")
+altx.repo["CRAN"] <- "http://cran.rstudio.com"  # set your primary repo if you haven't already
+options(repos = altx.repo)
+
+#check to see if the package we want is already installed
+# if it is, we will just load it, otherwise we will install it
+if(package_name %in% rownames(installed.packages())==FALSE){
+	install.packages(package_name)
+}
+require(package_name, character.only=TRUE)
+
+]]></RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+  </Nodes>
+  <Connections />
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Alteryx_Install_R_Packages</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
