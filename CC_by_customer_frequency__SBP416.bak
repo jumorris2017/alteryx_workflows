@@ -457,7 +457,7 @@ print(p1)
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>CE_by_customer_frequency__SBP416</Name>
+      <Name>CC_by_customer_frequency__SBP416</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="78" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 & FY17Q4)
+--9 months (FY18Q1 & FY17Q4 & FY17Q3)
+--12 months (FY18Q1 & FY17Q4 & FY17Q3 & FY17Q2)
+--24 months (FY18Q1 & FY17 & FY16Q4 & FY16Q3 & FY16Q2)
+
+WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') < 7 THEN 1 -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 11 THEN 2 -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 14 THEN 3 -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 17 THEN 4 -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=17 THEN 5 -- late pm
+        ELSE 0 
+        END) AS DAY_PART
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID <> '9'
+  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 4)) --6 months
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 3)) --9 months
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 2)) --1 year
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM >= 2)) --2 years
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+)
+SELECT sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE
+FROM sq
+GROUP BY sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+ORDER BY sq.STORE_NUM
+,sq.DAY_PART
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=--6 months (FY18Q1 & FY17Q4)
+--9 months (FY18Q1 & FY17Q4 & FY17Q3)
+--12 months (FY18Q1 & FY17Q4 & FY17Q3 & FY17Q2)
+--24 months (FY18Q1 & FY17 & FY16Q4 & FY16Q3 & FY16Q2)
+
+WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') < 7 THEN 1 -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 11 THEN 2 -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 14 THEN 3 -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 17 THEN 4 -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=17 THEN 5 -- late pm
+        ELSE 0 
+        END) AS DAY_PART
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID <> '9'
+  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 4)) --6 months
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 3)) --9 months
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM >= 2)) --1 year
+  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM >= 2)) --2 years
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+)
+SELECT sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE
+FROM sq
+GROUP BY sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+ORDER BY sq.STORE_NUM
+,sq.DAY_PART
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="WString" />
+            <Field name="QSTN_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="V_WString" />
+            <Field name="DAY_PART" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="Double" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="Double" />
+            <Field name="CC_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--6 months (FY18Q1 &amp; FY17Q4)&#xA;--9 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3)&#xA;--12 months (FY18Q1 &amp; FY17Q4 &amp; FY17Q3 &amp; FY17Q2)&#xA;--24 months (FY18Q1 &amp; FY17 &amp; FY16Q4 &amp; FY16Q3 &amp; FY16Q2)&#xA;&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 1 -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 2 -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 3 -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 4 -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 5 -- late pm&#xA;        ELSE 0 &#xA;        END) AS DAY_PART&#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 4)) --6 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 3)) --9 months&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --1 year&#xA;  --AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) OR (ca.FSCL_YR_NUM = 2017) OR (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_QTR_IN_YR_NUM &gt;= 2)) --2 years&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  ,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;)&#xA;SELECT sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE&#xA;FROM sq&#xA;GROUP BY sq.STORE_NUM&#xA;,sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;ORDER BY sq.STORE_NUM&#xA;,sq.DAY_PART&#xA;" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="78" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC and Survey Counts</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="138" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Identifying minimum timeframe for reporting daypart CC scores at the store level.
+
+6 months, 9 months, 12 months?</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="234" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_6720_d6a10635685842cdad87cf02f83ca383_\Engine_1452_8c56f074beb546aeb83b76290f67288c_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="414" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>##CC by daypart and store
+##identifying minimum timeframe
+##ideal cell minimum = 70 CE responses
+
+#load libraries
+library(data.table)
+library(dplyr)
+
+#load data
+cs2q &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC_daypart_bystore_2quarters.csv") #2 quarters
+cs3q &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC_daypart_bystore_3quarters.csv") #3 quarters
+cs4q &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC_daypart_bystore_4quarters.csv") #4 quarters
+cs8q &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC_daypart_bystore_8quarters.csv") #8 quarters
+
+#calculate percent of stores with survey counts over 70, by daypart
+cs2q[TOTAL_RSPNS&gt;=70, resp_over70 := 1]; cs2q[TOTAL_RSPNS&lt;70, resp_over70 := 0]
+cs3q[TOTAL_RSPNS&gt;=70, resp_over70 := 1]; cs3q[TOTAL_RSPNS&lt;70, resp_over70 := 0]
+cs4q[TOTAL_RSPNS&gt;=70, resp_over70 := 1]; cs4q[TOTAL_RSPNS&lt;70, resp_over70 := 0]
+cs8q[TOTAL_RSPNS&gt;=70, resp_over70 := 1]; cs8q[TOTAL_RSPNS&lt;70, resp_over70 := 0]
+
+#percent of stores
+#two quarters
+temp2 &lt;- cs2q %&gt;%
+  group_by(DAY_PART,resp_over70) %&gt;%
+  summarise (storeN = n()) %&gt;%
+  mutate(pct = round(storeN / sum(storeN),3)*100)
+setDT(temp2)
+setorder(temp2,resp_over70,DAY_PART)
+#three quarters
+temp3 &lt;- cs3q %&gt;%
+  group_by(DAY_PART,resp_over70) %&gt;%
+  summarise (storeN = n()) %&gt;%
+  mutate(pct = round(storeN / sum(storeN),3)*100)
+setDT(temp3)
+setorder(temp3,resp_over70,DAY_PART)
+#4 quarters
+temp4 &lt;- cs4q %&gt;%
+  group_by(DAY_PART,resp_over70) %&gt;%
+  summarise (storeN = n()) %&gt;%
+  mutate(pct = round(storeN / sum(storeN),3)*100)
+setDT(temp4)
+setorder(temp4,resp_over70,DAY_PART)
+#8 quarters
+temp8 &lt;- cs8q %&gt;%
+  group_by(DAY_PART,resp_over70) %&gt;%
+  summarise (storeN = n()) %&gt;%
+  mutate(pct = round(storeN / sum(storeN),3)*100)
+setDT(temp8)
+setorder(temp8,resp_over70,DAY_PART)</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="390" y="90" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>R Code for Counts</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-01-25_CC_daypart_bystore__SBP416</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

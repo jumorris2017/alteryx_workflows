@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="90" y="150" />
+        <Position x="66" y="126" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -20,9 +20,13 @@
       ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT
       ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT
 from appdwh.AFT_GLS_PRTNR_TMCARD
-where bus_dt between '04-Sep-2017' and '10-Sep-2017' 
-     AND job_id = 50000362 -- baristas only
+--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life
+--where bus_dt between '04-Dec-2017' and '17-Dec-2017' 
+where bus_dt between '08-Jan-2018' and '21-Jan-2018' 
+     --AND job_id = 50000362 -- baristas only
+     AND job_id IN (50000362,50000358) -- baristas and shifts
 ) select d.PRTNR_NUM
+      ,d.job_id
      ,count(d.BUS_DT) AS SHIFTS_WORKED
      ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS
      ,sum(d.AM_SHIFT) AS AM_SHIFTS
@@ -30,7 +34,8 @@ where bus_dt between '04-Sep-2017' and '10-Sep-2017'
      ,sum(d.PM_SHIFT) AS PM_SHIFTS
      ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS
 from d
-     GROUP BY d.PRTNR_NUM</File>
+     GROUP BY d.PRTNR_NUM
+      ,d.job_id</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -56,9 +61,13 @@ Table=with d as
       ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT
       ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT
 from appdwh.AFT_GLS_PRTNR_TMCARD
-where bus_dt between '04-Sep-2017' and '10-Sep-2017' 
-     AND job_id = 50000362 -- baristas only
+--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life
+--where bus_dt between '04-Dec-2017' and '17-Dec-2017' 
+where bus_dt between '08-Jan-2018' and '21-Jan-2018' 
+     --AND job_id = 50000362 -- baristas only
+     AND job_id IN (50000362,50000358) -- baristas and shifts
 ) select d.PRTNR_NUM
+      ,d.job_id
      ,count(d.BUS_DT) AS SHIFTS_WORKED
      ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS
      ,sum(d.AM_SHIFT) AS AM_SHIFTS
@@ -66,18 +75,20 @@ where bus_dt between '04-Sep-2017' and '10-Sep-2017'
      ,sum(d.PM_SHIFT) AS PM_SHIFTS
      ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS
 from d
-     GROUP BY d.PRTNR_NUM</DefaultAnnotationText>
+     GROUP BY d.PRTNR_NUM
+      ,d.job_id</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="PRTNR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="SHIFTS_WORKED" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="EARLYAM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="AM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="MIDDAY_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="PM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
-            <Field name="LATEPM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;where bus_dt between '04-Sep-2017' and '10-Sep-2017' &#xA;     AND job_id = 50000362 -- baristas only&#xA;) select d.PRTNR_NUM&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM" type="Double" />
+            <Field name="PRTNR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="JOB_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="SHIFTS_WORKED" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="EARLYAM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="AM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="MIDDAY_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="PM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="LATEPM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -85,16 +96,22 @@ from d
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="198" y="150" />
+        <Position x="174" y="126" />
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_12300_09339e8cd0734a83ad7d8b04df5bf11b_\Engine_1452_97229130c9de4ad2b538b4240b8e2cdb_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -107,7 +124,7 @@ from d
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="78" y="78" width="100" height="40" />
+        <Position x="54" y="54" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -128,7 +145,7 @@ from d
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="390" y="150" />
+        <Position x="366" y="126" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -454,7 +471,7 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="366" y="78" width="100" height="40" />
+        <Position x="342" y="54" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -475,10 +492,12 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
     </Node>
     <Node ToolID="7">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="498" y="150" />
+        <Position x="474" y="126" />
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_12300_09339e8cd0734a83ad7d8b04df5bf11b_\Engine_1452_4eaed573f2e24d51bea61bdbf17baa83_.yxdb</TempFile>
+        </Configuration>
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />
