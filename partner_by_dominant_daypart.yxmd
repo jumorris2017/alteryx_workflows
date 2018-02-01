@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="66" y="126" />
+        <Position x="18" y="90" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -23,7 +23,6 @@ from appdwh.AFT_GLS_PRTNR_TMCARD
 --where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life
 --where bus_dt between '04-Dec-2017' and '17-Dec-2017' 
 where bus_dt between '08-Jan-2018' and '21-Jan-2018' 
-     --AND job_id = 50000362 -- baristas only
      AND job_id IN (50000362,50000358) -- baristas and shifts
 ) select d.PRTNR_NUM
       ,d.job_id
@@ -64,7 +63,6 @@ from appdwh.AFT_GLS_PRTNR_TMCARD
 --where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life
 --where bus_dt between '04-Dec-2017' and '17-Dec-2017' 
 where bus_dt between '08-Jan-2018' and '21-Jan-2018' 
-     --AND job_id = 50000362 -- baristas only
      AND job_id IN (50000362,50000358) -- baristas and shifts
 ) select d.PRTNR_NUM
       ,d.job_id
@@ -81,14 +79,14 @@ from d
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="PRTNR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="JOB_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="SHIFTS_WORKED" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="EARLYAM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="AM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="MIDDAY_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="PM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
-            <Field name="LATEPM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     --AND job_id = 50000362 -- baristas only&#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="PRTNR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="JOB_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="SHIFTS_WORKED" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="EARLYAM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="AM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="MIDDAY_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="PM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
+            <Field name="LATEPM_SHIFTS" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||with d as&#xA;(select prtnr_num&#xA;      ,bus_dt&#xA;      ,job_id&#xA;      ,to_char(start_dtm,'hh24miss') as start_punch_tm&#xA;      ,to_char(end_dtm,'hh24miss') as end_punch_tm&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &lt;= 60000 THEN 1 ELSE 0 END) AS EARLYAM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 60000 AND to_char(start_dtm,'hh24miss') &lt;= 100000 THEN 1 ELSE 0 END) AS AM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 100000 AND to_char(start_dtm,'hh24miss') &lt;= 130000 THEN 1 ELSE 0 END) AS MIDDAY_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 130000 AND to_char(start_dtm,'hh24miss') &lt;= 160000 THEN 1 ELSE 0 END) AS PM_SHIFT&#xA;      ,(CASE WHEN to_char(start_dtm,'hh24miss') &gt; 160000 THEN 1 ELSE 0 END) AS LATEPM_SHIFT&#xA;from appdwh.AFT_GLS_PRTNR_TMCARD&#xA;--where bus_dt between '04-Sep-2017' and '10-Sep-2017' -- partner life&#xA;--where bus_dt between '04-Dec-2017' and '17-Dec-2017' &#xA;where bus_dt between '08-Jan-2018' and '21-Jan-2018' &#xA;     AND job_id IN (50000362,50000358) -- baristas and shifts&#xA;) select d.PRTNR_NUM&#xA;      ,d.job_id&#xA;     ,count(d.BUS_DT) AS SHIFTS_WORKED&#xA;     ,sum(d.EARLYAM_SHIFT) AS EARLYAM_SHIFTS&#xA;     ,sum(d.AM_SHIFT) AS AM_SHIFTS&#xA;     ,sum(d.MIDDAY_SHIFT) AS MIDDAY_SHIFTS&#xA;     ,sum(d.PM_SHIFT) AS PM_SHIFTS&#xA;     ,sum(d.LATEPM_SHIFT) AS LATEPM_SHIFTS&#xA;from d&#xA;     GROUP BY d.PRTNR_NUM&#xA;      ,d.job_id" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -96,7 +94,7 @@ from d
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="174" y="126" />
+        <Position x="90" y="90" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -124,11 +122,11 @@ from d
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="54" y="54" width="100" height="40" />
+        <Position x="30" y="6" width="100" height="88" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text><![CDATA[Partners by Shifts in DayPart
+          <Text><![CDATA[Partners' Shifts by Day Part (EDW)
 ]]></Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
@@ -145,320 +143,112 @@ from d
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="366" y="126" />
+        <Position x="618" y="90" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <RScript><![CDATA[##Analysis of Partner Demographics by Dominant Day-Part Worked
-##Author: Julie Morris
+          <RScript>##high performing stores by day part
 
-##load libraries
-library(foreign)
+#load libraries
 library(data.table)
-library(ggplot2)
-library(tidyverse)
-library(eeptools) #age_calc
-library(xlsx)
 
-#set up functions
-#calculate mode
-calculate_mode <- function(x) {
-  uniqx <- unique(x)
-  uniqx[which.max(tabulate(match(x, uniqx)))]
-}
-#convert SPSS date format into R date format
-spss2date <- function(x) as.Date(x/86400, origin = "1582-10-14")
+#load data.
+hp &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/store_daypart_comp_q1fy18.csv") 
+cc &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/cc_score_bydaypart_by_store_q1fy18.csv") 
+setnames(cc,"STORE_NUM","STORE_NUMBER")
+pu1 &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/pulse_q1_byhour_bypartner_q1fy18.csv")
+setnames(pu1,"STORE_NUM","STORE_NUMBER")
+pu2d &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/pulse_q2d_byhour_bypartner_q1fy18.csv")
+setnames(pu2d,"STORE_NUM","STORE_NUMBER")
+##cc
+#keep AM/PM
+cc &lt;- cc[DAY_PART==2|DAY_PART==4]
+#keep only necessary variables
+cc &lt;- cc[,.(STORE_NUMBER,DAY_PART,TOTAL_TB,TOTAL_RSPNS,CC_SCORE)]
+#swing wide
+cc &lt;- dcast.data.table(cc, STORE_NUMBER ~ DAY_PART, value.var=c("TOTAL_TB","TOTAL_RSPNS","CC_SCORE"))
+#get delta
+cc[, ccdelta := CC_SCORE_4 - CC_SCORE_2]
+cc &lt;- na.omit(cc)
 
-##read in SPSS dataset (as data.frame) and set as data.table
-db <- read.spss("//starbucks/amer/portal/Departments/WMO/Marketing Research/New Q drive/Partner Insights/Partner Perspectives/Research/Partner Life Survey/Data/Partner Life_FinalData_CLEAN_1.sav", to.data.frame=TRUE)
-setDT(db)
-setnames(db,"PanelistIdQuestion","RID")
-##read in tenure data
-tenuredt <- read.csv("//starbucks/amer/portal/Departments/WMO/Marketing Research/New Q drive/Partner Insights/Partner Perspectives/Research/Partner Life Survey/Data/partner_tenure.csv", fileEncoding="UTF-8-BOM")
-setDT(tenuredt)
-#subset tenuredt to only active PartnerIDs for recoding, pre-mergin
-pids <- unique(db[,PartnerID])
-tenuredt <- tenuredt[PartnerID %in% pids]
-#convert serial date format into R date format
-tenuredt[, (names(select(tenuredt,contains("date")))) := lapply(.SD, function(x) excel_numeric_to_date(as.numeric(as.character(x), date_system = "modern"))),
-         .SDcols = names(select(tenuredt,contains("date")))]
-#merge in tenure data
-db <- left_join(db,tenuredt,by="PartnerID")
-setDT(db)
+#pulse
+#aggregate by day part and store (just need AM and PM)
+pu1[shift_start_hour&gt;=6&amp;shift_start_hour&lt;=10, DAY_PART_NAME := 'AM']
+pu1[shift_start_hour&gt;=13&amp;shift_start_hour&lt;=16, DAY_PART_NAME := 'PM']
+#keep only am and pm
+pu1 &lt;- na.omit(pu1,cols="DAY_PART_NAME")
+#aggregate
+pu1 &lt;- pu1[, lapply(.SD,sum,na.rm=T), by=c("STORE_NUMBER","DAY_PART_NAME"), .SDcols=c("Q1_RESP","Q1_TB")]
+#swing wide
+pu1 &lt;- dcast.data.table(pu1, STORE_NUMBER ~ DAY_PART_NAME, value.var=c("Q1_RESP","Q1_TB"))
+#create TB scores
+pu1[, pulse_q1_am := Q1_TB_AM/Q1_RESP_AM]
+pu1[, pulse_q1_pm := Q1_TB_PM/Q1_RESP_PM]
+pu1 &lt;- na.omit(pu1,cols="pulse_q1_pm")
 
-#keep only baristas
-db <- db[Store_Role=="Barista"]
+#pulse
+#aggregate by day part and store (just need AM and PM)
+pu2d[shift_start_hour&gt;=6&amp;shift_start_hour&lt;=10, DAY_PART_NAME := 'AM']
+pu2d[shift_start_hour&gt;=13&amp;shift_start_hour&lt;=16, DAY_PART_NAME := 'PM']
+#keep only am and pm
+pu2d &lt;- na.omit(pu2d,cols="DAY_PART_NAME")
+#aggregate
+pu2d &lt;- pu2d[, lapply(.SD,sum,na.rm=T), by=c("STORE_NUMBER","DAY_PART_NAME"), .SDcols=c("Q2D_RESP","Q2D_TB")]
+#swing wide
+pu2d &lt;- dcast.data.table(pu2d, STORE_NUMBER ~ DAY_PART_NAME, value.var=c("Q2D_RESP","Q2D_TB"))
+#create TB scores
+pu2d[, pulse_q2d_am := Q2D_TB_AM/Q2D_RESP_AM]
+pu2d[, pulse_q2d_pm := Q2D_TB_PM/Q2D_RESP_PM]
+pu2d &lt;- na.omit(pu2d,cols="pulse_q2d_pm")
 
-#read in daypart data
-dp <- fread("O:/CoOp/CoOp194_PROReportng&OM/Julie/partner_domdaypart.csv")
-setnames(dp,"PRTNR_NUM","PartnerID")
+#keep only high performing stores for whom we have CC results
+hp &lt;- hp[STORE_NUMBER %in% unique(cc[,STORE_NUMBER])]
+#merge
+hp &lt;- merge(hp,cc,by="STORE_NUMBER")
+hp &lt;- merge(hp,pu1,by="STORE_NUMBER")
+hp &lt;- merge(hp,pu2d,all.x=T,by="STORE_NUMBER")
 
-#recalcualate PM_DOM as necessary
-dp[, earlyam_prp := EARLYAM_SHIFTS/SHIFTS_WORKED]
-dp[, am_prp := AM_SHIFTS/SHIFTS_WORKED]
-dp[, midday_prp := MIDDAY_SHIFTS/SHIFTS_WORKED]
-dp[, pm_prp := PM_SHIFTS/SHIFTS_WORKED]
-dp[, latepm_prp := LATEPM_SHIFTS/SHIFTS_WORKED]
-#calculate dominate daypart
-dp[, DOM := colnames(.SD)[max.col(.SD, ties.method="first")], .SDcols = c("earlyam_prp","am_prp","midday_prp","pm_prp","latepm_prp")]
-#rename so they're ordered
-dp[DOM=="earlyam_prp", DOM := "1-EarlyAM"]
-dp[DOM=="am_prp", DOM := "2-AM"]
-dp[DOM=="midday_prp", DOM := "3-Midday"]
-dp[DOM=="pm_prp", DOM := "4-PM"]
-dp[DOM=="latepm_prp", DOM := "5-LatePM"]
+#keep afternoons
+hp &lt;- hp[DAY_PART_NAME=='PM']
 
-#merge in daypart data
-db <- left_join(db,dp,by=c("PartnerID"))
-setDT(db)
-#drop baristas missing dominant daypart info
-db <- na.omit(db,cols="DOM")
+#omit stores without LY info
+hp &lt;- na.omit(hp,cols=c("SALES_AMT","SALES_LY_AMT",
+                        "CC_SCORE_2","CC_SCORE_4",
+                        "pulse_q1_am","pulse_q1_pm"))
 
-##outliers
-#drop values where Sbux hours worked is 0 or >60 (same as Q1_7_Starbucks_Hours_Worked_Remove_Outliers)
-db[Q1_7_Starbucks_Hours_Worked>0 & Q1_7_Starbucks_Hours_Worked<61, sbux_hours_worked := Q1_7_Starbucks_Hours_Worked]
+#calculate comp
+hp[, comp := (SALES_AMT-SALES_LY_AMT)/SALES_LY_AMT]
 
-##start using the SAP question. only for hoursly; all managers *should* be 40 
-##(not what is reported; most managers report >40 hours)
-db[role==3, SAP_Avg_Hrs_per_Wk_8_weeks := 40]
+#split by comp into 10 groups
+hp &lt;- hp %&gt;% mutate(ntile = ntile(comp, 10))
+setDT(hp)
+hp &lt;- na.omit(hp,cols="ntile")
 
-#convert SPSS date format into R date format
-db[, dateofbirth := spss2date(db[,DOB])]
-db[, age := floor(age_calc(db[,dateofbirth], units = "years"))]
+#recode ntiles
+hp[ntile==1, tiers3 := "3-bottom10"] #bottom 10%
+hp[ntile&gt;=2&amp;ntile&lt;=9, tiers3 := "2-mid80"] #middle 80%
+hp[ntile==10, tiers3 := "1-top10"] #top 10%
 
-###recode binary variables as 0/1
-#more than one job (yes=1;no=0)
-db[Q1_1_Recode_Flag_MT1_Job=="No", more_than_one_job := 0]
-db[Q1_1_Recode_Flag_MT1_Job=="Yes", more_than_one_job := 1]
+#aggregate by tier
+#give fake store number for agging
+hp[, storeN := 1]
+hp &lt;- hp[, lapply(.SD,sum,na.rm=T), by="tiers3", .SDcols=c("storeN","SALES_AMT","SALES_LY_AMT","TOTAL_TB_2","TOTAL_TB_4","TOTAL_RSPNS_2","TOTAL_RSPNS_4",
+                                                           "Q1_RESP_AM","Q1_RESP_PM","Q1_TB_AM","Q1_TB_PM",
+                                                           "Q2D_RESP_AM","Q2D_RESP_PM","Q2D_TB_AM","Q2D_TB_PM")]
+hp[, comp := round((SALES_AMT-SALES_LY_AMT)/SALES_LY_AMT,3)]
+hp[, cc_am := round(TOTAL_TB_2/TOTAL_RSPNS_2,3)]
+hp[, cc_pm := round(TOTAL_TB_4/TOTAL_RSPNS_4,3)]
+hp[, ccdelta := cc_pm - cc_am]
+hp[, pulse_q1_am := round(Q1_TB_AM/Q1_RESP_AM,3)]
+hp[, pulse_q1_pm := round(Q1_TB_PM/Q1_RESP_PM,3)]
+hp[, pulseq1delta := pulse_q1_pm - pulse_q1_am]
+hp[, pulse_q2d_am := round(Q2D_TB_AM/Q2D_RESP_AM,3)]
+hp[, pulse_q2d_pm := round(Q2D_TB_PM/Q2D_RESP_PM,3)]
+hp[, pulseq2ddelta := pulse_q2d_pm - pulse_q2d_am]
 
-##marital status: married or living with partner
-db[Q8_1_Marital_Status=="Living with a partner", marital_married_part := 1]
-db[Q8_1_Marital_Status=="Married/remarried", marital_married_part := 1]
-db[Q8_1_Marital_Status=="Single, never been married", marital_married_part := 0]
-db[Q8_1_Marital_Status=="Prefer not to answer", marital_married_part := NA]
-db[Q8_1_Marital_Status=="Separated", marital_married_part := 0]
-db[Q8_1_Marital_Status=="Divorced or widowed", marital_married_part := 0]
-
-###student status
-db[Q8_6_Student_Flag=="Not Student", student := 0]
-db[Q8_6_Student_Flag=="Student", student := 1]
-
-#consistent work schedules (very consistent = 1; else = 0)
-db[Q2_1_Schedule_Consistency=="Very consistent", sched_very_consistent := 1]
-db[Q2_1_Schedule_Consistency=="Somewhat consistent", sched_very_consistent := 0]
-db[Q2_1_Schedule_Consistency=="Neutral", sched_very_consistent := 0]
-db[Q2_1_Schedule_Consistency=="Somewhat inconsistent", sched_very_consistent := 0]
-db[Q2_1_Schedule_Consistency=="Very inconsistent", sched_very_consistent := 0]
-
-#revalue, for labels
-db[Q8_5_Health_Coverage=="Affordable Care Act (also referred to as Obamacare or the Health Insurance Marketplace)", Q8_5_Health_Coverage := "Affordable Care Act"]
-db[Q8_5_Health_Coverage=="Through Starbucks", health_sbux := 1]
-db[Q8_5_Health_Coverage=="Affordable Care Act", health_sbux := 0]
-db[Q8_5_Health_Coverage=="Through my parents", health_sbux := 0]
-db[Q8_5_Health_Coverage=="Through my spouse", health_sbux := 0]
-db[Q8_5_Health_Coverage=="Other (e.g., school, military)", health_sbux := 0]
-db[Q8_5_Health_Coverage=="I don't currently have health insurance", health_sbux := 0]
-db[Q8_5_Health_Coverage=="Prefer not to answer", health_sbux := NA]
-###highest education level
-##high school
-db[Q8_7_Education_Level=="Some college or Associate degree", educ_highschool := 1]
-db[Q8_7_Education_Level=="Graduated college/Bachelor's degree", educ_highschool := 1]
-db[Q8_7_Education_Level=="Some Graduate school", educ_highschool := 1]
-db[Q8_7_Education_Level=="Advanced degree (Master's, Ph.D.)", educ_highschool := 1]
-db[Q8_7_Education_Level=="High school graduate or GED", educ_highschool := 1]
-db[Q8_7_Education_Level=="Some high school", educ_highschool := 0]
-db[Q8_7_Education_Level=="Trade/technical school degree", educ_highschool := 1]
-db[Q8_7_Education_Level=="Other", educ_highschool := NA]
-db[Q8_7_Education_Level=="Prefer not to answer", educ_highschool := NA]
-##bachelor's degree
-db[Q8_7_Education_Level=="Some college or Associate degree", educ_bach := 0]
-db[Q8_7_Education_Level=="Graduated college/Bachelor's degree", educ_bach := 1]
-db[Q8_7_Education_Level=="Some Graduate school", educ_bach := 1]
-db[Q8_7_Education_Level=="Advanced degree (Master's, Ph.D.)", educ_bach := 1]
-db[Q8_7_Education_Level=="High school graduate or GED", educ_bach := 0]
-db[Q8_7_Education_Level=="Some high school", educ_bach := 0]
-db[Q8_7_Education_Level=="Trade/technical school degree", educ_bach := 0]
-db[Q8_7_Education_Level=="Other", educ_bach := NA]
-db[Q8_7_Education_Level=="Prefer not to answer", educ_bach := NA]
-
-###which factors most influenced decision to join starbucks
-#brand reputation
-db[Q3_1_Reason_Join_Brandreputation=="Not Selected", reason_join_brand := 0]
-db[Q3_1_Reason_Join_Brandreputation=="Selected", reason_join_brand := 1]
-#career advancement
-db[Q3_1_Reason_Join_Careeradvancementopportunities=="Not Selected", reason_join_career := 0]
-db[Q3_1_Reason_Join_Careeradvancementopportunities=="Selected", reason_join_career := 1]
-#company culture
-db[Q3_1_Reason_Join_Companyculture=="Not Selected", reason_join_culture := 0]
-db[Q3_1_Reason_Join_Companyculture=="Selected", reason_join_culture := 1]
-#flexible schedule
-db[Q3_1_Reason_Join_Flexibilityofschedule=="Not Selected", reason_join_flex_sched := 0]
-db[Q3_1_Reason_Join_Flexibilityofschedule=="Selected", reason_join_flex_sched := 1]
-#health coverage
-db[Q3_1_Reason_Join_Healthcoveragemedicaldentalvision=="Not Selected", reason_join_health := 0]
-db[Q3_1_Reason_Join_Healthcoveragemedicaldentalvision=="Selected", reason_join_health := 1]
-#connect with customers
-db[Q3_1_Reason_Join_Opportunitytoconnectwithcustomers=="Not Selected", reason_join_cust := 0]
-db[Q3_1_Reason_Join_Opportunitytoconnectwithcustomers=="Selected", reason_join_cust := 1]
-#other benefits
-db[Q3_1_Reason_Join_OtherfinancialbenefitsFutureRoast401kBeanStockS=="Not Selected", reason_join_oth_benef := 0]
-db[Q3_1_Reason_Join_OtherfinancialbenefitsFutureRoast401kBeanStockS=="Selected", reason_join_oth_benef := 1]
-#pay
-db[Q3_1_Reason_Join_Pay=="Not Selected", reason_join_pay := 0]
-db[Q3_1_Reason_Join_Pay=="Selected", reason_join_pay := 1]
-#CAP
-db[Q3_1_Reason_Join_StarbucksCollegeAchievementPlan=="Not Selected", reason_join_cap := 0]
-db[Q3_1_Reason_Join_StarbucksCollegeAchievementPlan=="Selected", reason_join_cap := 1]
-#mission and values
-db[Q3_1_Reason_Join_StarbucksMissionandValues=="Not Selected", reason_join_values := 0]
-db[Q3_1_Reason_Join_StarbucksMissionandValues=="Selected", reason_join_values := 1]
-#products and beverages
-db[Q3_1_Reason_Join_Starbucksproductsbeveragesfoodetc=="Not Selected", reason_join_prodbev := 0]
-db[Q3_1_Reason_Join_Starbucksproductsbeveragesfoodetc=="Selected", reason_join_prodbev := 1]
-#fun place
-db[Q3_1_Reason_Join_Starbucksseemedlikeafunplacetowork=="Not Selected", reason_join_fun := 0]
-db[Q3_1_Reason_Join_Starbucksseemedlikeafunplacetowork=="Selected", reason_join_fun := 1]
-#question 3_2: store choice (remove "other" for plotting)
-db[Q3_2_Store_Choice!="Other", store_choice_without_other := Q3_2_Store_Choice]
-db[Q3_2_Store_Choice=="Other", store_choice_without_other := NA]
-##agree with the following statements (completely agree = 1; else = 0)
-#be true self
-db[Q3_5_0=="Completely Agree", agree_true_self := 1]
-db[Q3_5_0=="Somewhat Agree", agree_true_self := 0]
-db[Q3_5_0=="Neither Agree nor Disagree", agree_true_self := 0]
-db[Q3_5_0=="Somewhat Disagree", agree_true_self := 0]
-db[Q3_5_0=="Completely Disagree", agree_true_self := 0]
-#recommend store as great place to work
-db[Q3_5_1=="Completely Agree", agree_reco_great := 1]
-db[Q3_5_1=="Somewhat Agree", agree_reco_great := 0]
-db[Q3_5_1=="Neither Agree nor Disagree", agree_reco_great := 0]
-db[Q3_5_1=="Somewhat Disagree", agree_reco_great := 0]
-db[Q3_5_1=="Completely Disagree", agree_reco_great := 0]
-#great team
-db[Q3_5_2=="Completely Agree", agree_great_team := 1]
-db[Q3_5_2=="Somewhat Agree", agree_great_team := 0]
-db[Q3_5_2=="Neither Agree nor Disagree", agree_great_team := 0]
-db[Q3_5_2=="Somewhat Disagree", agree_great_team := 0]
-db[Q3_5_2=="Completely Disagree", agree_great_team := 0]
-#make decisions
-db[Q3_5_3=="Completely Agree", agree_decisions := 1]
-db[Q3_5_3=="Somewhat Agree", agree_decisions := 0]
-db[Q3_5_3=="Neither Agree nor Disagree", agree_decisions := 0]
-db[Q3_5_3=="Somewhat Disagree", agree_decisions := 0]
-db[Q3_5_3=="Completely Disagree", agree_decisions := 0]
-#creatively problem solve
-db[Q3_5_4=="Completely Agree", agree_problem_solve := 1]
-db[Q3_5_4=="Somewhat Agree", agree_problem_solve := 0]
-db[Q3_5_4=="Neither Agree nor Disagree", agree_problem_solve := 0]
-db[Q3_5_4=="Somewhat Disagree", agree_problem_solve := 0]
-db[Q3_5_4=="Completely Disagree", agree_problem_solve := 0]
-##agree with the following items describing partners on your team  (completely agree = 1; else = 0)
-#are just like me
-db[Q3_8_Team_Diversity_0=="Completely Agree", team_like_me := 1]
-db[Q3_8_Team_Diversity_0=="Somewhat Agree", team_like_me := 0]
-db[Q3_8_Team_Diversity_0=="Neither Agree nor Disagree", team_like_me := 0]
-db[Q3_8_Team_Diversity_0=="Somewhat Disagree", team_like_me := 0]
-db[Q3_8_Team_Diversity_0=="Completely Disagree", team_like_me := 0]
-#bring diverse perspectives
-db[Q3_8_Team_Diversity_1=="Completely Agree", team_perspectives := 1]
-db[Q3_8_Team_Diversity_1=="Somewhat Agree", team_perspectives := 0]
-db[Q3_8_Team_Diversity_1=="Neither Agree nor Disagree", team_perspectives := 0]
-db[Q3_8_Team_Diversity_1=="Somewhat Disagree", team_perspectives := 0]
-db[Q3_8_Team_Diversity_1=="Completely Disagree", team_perspectives := 0]
-#spend time together outside of work
-db[Q3_8_Team_Diversity_2=="Completely Agree", team_spend_time := 1]
-db[Q3_8_Team_Diversity_2=="Somewhat Agree", team_spend_time := 0]
-db[Q3_8_Team_Diversity_2=="Neither Agree nor Disagree", team_spend_time := 0]
-db[Q3_8_Team_Diversity_2=="Somewhat Disagree", team_spend_time := 0]
-db[Q3_8_Team_Diversity_2=="Completely Disagree", team_spend_time := 0]
-#work well together
-db[Q3_8_Team_Diversity_3=="Completely Agree", team_work_well := 1]
-db[Q3_8_Team_Diversity_3=="Somewhat Agree", team_work_well := 0]
-db[Q3_8_Team_Diversity_3=="Neither Agree nor Disagree", team_work_well := 0]
-db[Q3_8_Team_Diversity_3=="Somewhat Disagree", team_work_well := 0]
-db[Q3_8_Team_Diversity_3=="Completely Disagree", team_work_well := 0]
-##agree with the following items describing partners on your team  (completely agree = 1; else = 0)
-#difficult
-db[Q4_1_Job_Characteristics_0=="Completely Agree", job_char_diff := 1]
-db[Q4_1_Job_Characteristics_0=="Somewhat Agree", job_char_diff := 0]
-db[Q4_1_Job_Characteristics_0=="Neither Agree nor Disagree", job_char_diff := 0]
-db[Q4_1_Job_Characteristics_0=="Somewhat Disagree", job_char_diff := 0]
-db[Q4_1_Job_Characteristics_0=="Completely Disagree", job_char_diff := 0]
-#fun
-db[Q4_1_Job_Characteristics_1=="Completely Agree", job_char_fun := 1]
-db[Q4_1_Job_Characteristics_1=="Somewhat Agree", job_char_fun := 0]
-db[Q4_1_Job_Characteristics_1=="Neither Agree nor Disagree", job_char_fun := 0]
-db[Q4_1_Job_Characteristics_1=="Somewhat Disagree", job_char_fun := 0]
-db[Q4_1_Job_Characteristics_1=="Completely Disagree", job_char_fun := 0]
-#stressful
-db[Q4_1_Job_Characteristics_2=="Completely Agree", job_char_stress := 1]
-db[Q4_1_Job_Characteristics_2=="Somewhat Agree", job_char_stress := 0]
-db[Q4_1_Job_Characteristics_2=="Neither Agree nor Disagree", job_char_stress := 0]
-db[Q4_1_Job_Characteristics_2=="Somewhat Disagree", job_char_stress := 0]
-db[Q4_1_Job_Characteristics_2=="Completely Disagree", job_char_stress := 0]
-#overwhelming
-db[Q4_1_Job_Characteristics_3=="Completely Agree", job_char_overwhelm := 1]
-db[Q4_1_Job_Characteristics_3=="Somewhat Agree", job_char_overwhelm := 0]
-db[Q4_1_Job_Characteristics_3=="Neither Agree nor Disagree", job_char_overwhelm := 0]
-db[Q4_1_Job_Characteristics_3=="Somewhat Disagree", job_char_overwhelm := 0]
-db[Q4_1_Job_Characteristics_3=="Completely Disagree", job_char_overwhelm := 0]
-#exciting
-db[Q4_1_Job_Characteristics_4=="Completely Agree", job_char_exciting := 1]
-db[Q4_1_Job_Characteristics_4=="Somewhat Agree", job_char_exciting := 0]
-db[Q4_1_Job_Characteristics_4=="Neither Agree nor Disagree", job_char_exciting := 0]
-db[Q4_1_Job_Characteristics_4=="Somewhat Disagree", job_char_exciting := 0]
-db[Q4_1_Job_Characteristics_4=="Completely Disagree", job_char_exciting := 0]
-#social
-db[Q4_1_Job_Characteristics_5=="Completely Agree", job_char_social := 1]
-db[Q4_1_Job_Characteristics_5=="Somewhat Agree", job_char_social := 0]
-db[Q4_1_Job_Characteristics_5=="Neither Agree nor Disagree", job_char_social := 0]
-db[Q4_1_Job_Characteristics_5=="Somewhat Disagree", job_char_social := 0]
-db[Q4_1_Job_Characteristics_5=="Completely Disagree", job_char_social := 0]
-
-#frequency table: binary & continuous variables
-tempbin <- db %>%
-  group_by(DOM) %>%
-  summarize(n = n(), 
-            more_than_one_job = round(mean(more_than_one_job,na.rm=T),3),
-            age = round(mean(age,na.rm=T),1),
-            marital_married_part = round(mean(marital_married_part,na.rm=T),3),
-            Kids_Flag = round(mean(Kids_Flag,na.rm=T),3),
-            student = round(mean(student,na.rm=T),3),
-            primary_income = round(mean(Q8_4_Primary_Income_Flag,na.rm=T),3),
-            sched_very_consistent = round(mean(sched_very_consistent,na.rm=T),3),
-            health_sbux = round(mean(health_sbux,na.rm=T),3),
-            educ_highschool = round(mean(educ_highschool,na.rm=T),3),
-            educ_bach = round(mean(educ_bach,na.rm=T),3),
-            job_months = round(mean(job_months,na.rm=T),1),
-            hrs_avg_selfrpt = round(mean(sbux_hours_worked,na.rm=T),1),
-            hrs_med_selfrpt = round(median(sbux_hours_worked,na.rm=T),1),
-            hrs_avg_SAP = round(mean(SAP_Avg_Hrs_per_Wk_8_weeks,na.rm=T),1),
-            hrs_med_SAP = round(median(SAP_Avg_Hrs_per_Wk_8_weeks,na.rm=T),1),
-            reason_join_brand = round(mean(reason_join_brand,na.rm=T),3),
-            reason_join_cap = round(mean(reason_join_cap,na.rm=T),3),           
-            reason_join_career = round(mean(reason_join_career,na.rm=T),3),
-            reason_join_culture = round(mean(reason_join_culture,na.rm=T),3),
-            reason_join_flex_sched = round(mean(reason_join_flex_sched,na.rm=T),3),
-            reason_join_fun = round(mean(reason_join_fun,na.rm=T),3),
-            reason_join_health = round(mean(reason_join_health,na.rm=T),3),
-            reason_join_pay = round(mean(reason_join_pay,na.rm=T),3),
-            reason_join_prodbev = round(mean(reason_join_prodbev,na.rm=T),3),
-            reason_join_values = round(mean(reason_join_values,na.rm=T),3),
-            agree_decisions = round(mean(agree_decisions,na.rm=T),3),
-            agree_great_team = round(mean(agree_great_team,na.rm=T),3),
-            agree_problem_solve = round(mean(agree_problem_solve,na.rm=T),3),
-            agree_reco_great = round(mean(agree_reco_great,na.rm=T),3),
-            agree_true_self = round(mean(agree_true_self,na.rm=T),3),
-            job_char_diff = round(mean(job_char_diff,na.rm=T),3),
-            job_char_exciting = round(mean(job_char_exciting,na.rm=T),3),
-            job_char_fun = round(mean(job_char_fun,na.rm=T),3),
-            job_char_overwhelm = round(mean(job_char_overwhelm,na.rm=T),3),
-            job_char_social = round(mean(job_char_social,na.rm=T),3),
-            job_char_stress = round(mean(job_char_stress,na.rm=T),3))
-setDT(tempbin)
-#write to .xlsx
-write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart.xlsx")
-]]></RScript>
+#set order
+hp &lt;- setorder(hp,tiers3)
+write.xlsx(hp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/high_PM_comping_stores_q1fy18.xlsx")</RScript>
           <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
@@ -471,11 +261,11 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="342" y="54" width="100" height="40" />
+        <Position x="606" y="30" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text><![CDATA[Connect with Partner Life
+          <Text><![CDATA[High Performing Stores
 ]]></Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
@@ -490,14 +280,353 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
         </Annotation>
       </Properties>
     </Node>
-    <Node ToolID="7">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="474" y="126" />
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="198" y="6" width="100" height="88" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_12300_09339e8cd0734a83ad7d8b04df5bf11b_\Engine_1452_4eaed573f2e24d51bea61bdbf17baa83_.yxdb</TempFile>
+          <Text>Active Partners (Retention) (415ss)</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
         </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="186" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>44DBEF0C0EC74C7F3E3E2D0DACE27B0939DC40115AEC0</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||/*Pulls active partners by PartnerID*/
+SELECT * FROM [PDW_Bulk].[hpohlman].[PRO_BaseData]
+WHERE [PDW_Bulk].[hpohlman].[PRO_BaseData].[Action_Group] = 'Headcount'
+AND [PDW_Bulk].[hpohlman].[PRO_BaseData].[FY] = 2018
+AND [PDW_Bulk].[hpohlman].[PRO_BaseData].[FP] = 4 ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=/*Pulls active partners by PartnerID*/
+SELECT * FROM [PDW_Bulk].[hpohlman].[PRO_BaseData]
+WHERE [PDW_Bulk].[hpohlman].[PRO_BaseData].[Action_Group] = 'Headcount'
+AND [PDW_Bulk].[hpohlman].[PRO_BaseData].[FY] = 2018
+AND [PDW_Bulk].[hpohlman].[PRO_BaseData].[FP] = 4 ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="342" y="294" width="100" height="88" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulse by day part (415ss)</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="330" y="390" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>44DBEF0C0EC74C7F3E3E2D0DACE27B0939DC40115AEC0</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||/*export as "pulse_q1_byhour_bypartner_q1fy18.csv"*/
+SELECT 
+    b.PRTNR_ID as PRTNR_NUM
+    --,DATEPART(week, a.surveyRespDate) as survWeek
+    ,DATEPART(hour, c.START_DTM_LCL) as shift_start_hour
+    ,c.BUS_DT
+    ,(CASE WHEN a.Question_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP
+    ,(CASE WHEN a.RespID = 7 THEN 1 ELSE 0 END) AS Q1_TB
+    ,c.STORE_NUM_ASSIGNED as STORE_NUM
+	FROM Surveys.MOODRING.Survey_Responses a
+	LEFT JOIN [Surveys].[MOODRING].[PDW_PRTNR_ID_HASH] b
+		ON a.PartnerID = b.PRTNR_ID_MD5_HASHED
+  LEFT JOIN [Surveys].[MOODRING].[Last_Matching_Shift] c
+		ON (a.caseID = c.caseID AND a.surveyRespDate = c.surveyRespDate)
+    WHERE c.BUS_DT &gt; '10/01/2017 11:59:59 PM' AND c.BUS_DT &lt;= '12/31/2017 11:59:59 PM'
+    AND a.Question_ID = 'Q1'
+  GROUP BY 
+    b.PRTNR_ID 
+    ,c.BUS_DT
+    ,DATEPART(hour, c.START_DTM_LCL) 
+    ,a.Question_ID
+    ,a.RespID
+    ,c.STORE_NUM_ASSIGNED
+
+/*export as "pulse_q2d_byhour_bypartner_q1fy18.csv"*/
+SELECT 
+    b.PRTNR_ID as PRTNR_NUM
+    --,DATEPART(week, a.surveyRespDate) as survWeek
+    ,DATEPART(hour, c.START_DTM_LCL) as shift_start_hour
+    ,c.BUS_DT
+    ,(CASE WHEN a.Question_ID = 'Q2_D' THEN 1 ELSE 0 END) AS Q2D_RESP
+    ,(CASE WHEN a.RespID = 7 THEN 1 ELSE 0 END) AS Q2D_TB
+    ,c.STORE_NUM_ASSIGNED as STORE_NUM
+	FROM Surveys.MOODRING.Survey_Responses a
+	LEFT JOIN [Surveys].[MOODRING].[PDW_PRTNR_ID_HASH] b
+		ON a.PartnerID = b.PRTNR_ID_MD5_HASHED
+  LEFT JOIN [Surveys].[MOODRING].[Last_Matching_Shift] c
+		ON (a.caseID = c.caseID AND a.surveyRespDate = c.surveyRespDate)
+    WHERE c.BUS_DT &gt; '10/01/2017 11:59:59 PM' AND c.BUS_DT &lt;= '12/31/2017 11:59:59 PM'
+    AND a.Question_ID = 'Q2_D'
+  GROUP BY 
+    b.PRTNR_ID 
+    ,c.BUS_DT
+    ,DATEPART(hour, c.START_DTM_LCL) 
+    ,a.Question_ID
+    ,a.RespID
+    ,c.STORE_NUM_ASSIGNED</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=/*export as "pulse_q1_byhour_bypartner_q1fy18.csv"*/
+SELECT 
+    b.PRTNR_ID as PRTNR_NUM
+    --,DATEPART(week, a.surveyRespDate) as survWeek
+    ,DATEPART(hour, c.START_DTM_LCL) as shift_start_hour
+    ,c.BUS_DT
+    ,(CASE WHEN a.Question_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP
+    ,(CASE WHEN a.RespID = 7 THEN 1 ELSE 0 END) AS Q1_TB
+    ,c.STORE_NUM_ASSIGNED as STORE_NUM
+	FROM Surveys.MOODRING.Survey_Responses a
+	LEFT JOIN [Surveys].[MOODRING].[PDW_PRTNR_ID_HASH] b
+		ON a.PartnerID = b.PRTNR_ID_MD5_HASHED
+  LEFT JOIN [Surveys].[MOODRING].[Last_Matching_Shift] c
+		ON (a.caseID = c.caseID AND a.surveyRespDate = c.surveyRespDate)
+    WHERE c.BUS_DT &gt; '10/01/2017 11:59:59 PM' AND c.BUS_DT &lt;= '12/31/2017 11:59:59 PM'
+    AND a.Question_ID = 'Q1'
+  GROUP BY 
+    b.PRTNR_ID 
+    ,c.BUS_DT
+    ,DATEPART(hour, c.START_DTM_LCL) 
+    ,a.Question_ID
+    ,a.RespID
+    ,c.STORE_NUM_ASSIGNED
+
+/*export as "pulse_q2d_byhour_bypartner_q1fy18.csv"*/
+SELECT 
+    b.PRTNR_ID as PRTNR_NUM
+    --,DATEPART(week, a.surveyRespDate) as survWeek
+    ,DATEPART(hour, c.START_DTM_LCL) as shift_start_hour
+    ,c.BUS_DT
+    ,(CASE WHEN a.Question_ID = 'Q2_D' THEN 1 ELSE 0 END) AS Q2D_RESP
+    ,(CASE WHEN a.RespID = 7 THEN 1 ELSE 0 END) AS Q2D_TB
+    ,c.STORE_NUM_ASSIGNED as STORE_NUM
+	FROM Surveys.MOODRING.Survey_Responses a
+	LEFT JOIN [Surveys].[MOODRING].[PDW_PRTNR_ID_HASH] b
+		ON a.PartnerID = b.PRTNR_ID_MD5_HASHED
+  LEFT JOIN [Surveys].[MOODRING].[Last_Matching_Shift] c
+		ON (a.caseID = c.caseID AND a.surveyRespDate = c.surveyRespDate)
+    WHERE c.BUS_DT &gt; '10/01/2017 11:59:59 PM' AND c.BUS_DT &lt;= '12/31/2017 11:59:59 PM'
+    AND a.Question_ID = 'Q2_D'
+  GROUP BY 
+    b.PRTNR_ID 
+    ,c.BUS_DT
+    ,DATEPART(hour, c.START_DTM_LCL) 
+    ,a.Question_ID
+    ,a.RespID
+    ,c.STORE_NUM_ASSIGNED</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="486" y="294" width="100" height="88" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC by day part (CAW)</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="474" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>49DAF891AB1B58B7702EF676B9DCAA37A04C46A4D</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') < 7 THEN 1 -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 11 THEN 2 -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 14 THEN 3 -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 17 THEN 4 -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=17 THEN 5 -- late pm
+        ELSE 0 
+        END) AS DAY_PART
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID <> '9'
+  AND (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) 
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+)
+SELECT sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE
+FROM sq
+GROUP BY sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+ORDER BY sq.STORE_NUM
+,sq.DAY_PART
+
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') < 7 THEN 1 -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 11 THEN 2 -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 14 THEN 3 -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') < 17 THEN 4 -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') >=17 THEN 5 -- late pm
+        ELSE 0 
+        END) AS DAY_PART
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID <> '9'
+  AND (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1) 
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  ,sr.STORE_NUM
+  ,sr.QSTN_ID
+)
+SELECT sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS CC_SCORE
+FROM sq
+GROUP BY sq.STORE_NUM
+,sq.QSTN_ID
+,sq.DAY_PART
+ORDER BY sq.STORE_NUM
+,sq.DAY_PART
+
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="546" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />
@@ -506,6 +635,121 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="642" y="294" width="100" height="88" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Comps by day part (EDW)</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="630" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>49DAF891AB1B58B7702EF676B9DCAA37A04C46A4D</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||SELECT  STORE_NUMBER, 
+    FISCAL_YEAR_NUMBER, DAY_PART_DESCRIPTION, DAY_PART_NAME,
+   sum(SALES_AMT) AS sales_amt,   
+   --sum(TRANS_CNT),  
+   sum(SALES_LY_AMT) AS sales_ly_amt
+   --sum(TRANS_LY_CNT) 
+FROM APPBUS.USR_CO_STORE_WEEK_HOUR_RPT
+where  FISCAL_YEAR_NUMBER=2018 AND FISCAL_PERIOD_NUMBER IN (1,2,3)
+group by STORE_NUMBER, FISCAL_YEAR_NUMBER, DAY_PART_DESCRIPTION, DAY_PART_NAME</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=SELECT  STORE_NUMBER, 
+    FISCAL_YEAR_NUMBER, DAY_PART_DESCRIPTION, DAY_PART_NAME,
+   sum(SALES_AMT) AS sales_amt,   
+   --sum(TRANS_CNT),  
+   sum(SALES_LY_AMT) AS sales_ly_amt
+   --sum(TRANS_LY_CNT) 
+FROM APPBUS.USR_CO_STORE_WEEK_HOUR_RPT
+where  FISCAL_YEAR_NUMBER=2018 AND FISCAL_PERIOD_NUMBER IN (1,2,3)
+group by STORE_NUMBER, FISCAL_YEAR_NUMBER, DAY_PART_DESCRIPTION, DAY_PART_NAME</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="714" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="426" y="30" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[Partner Profiles by Day Part
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="438" y="90" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript />
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
   </Nodes>
   <Connections>
     <Connection>
@@ -513,8 +757,12 @@ write.xlsx(tempbin,"O:/CoOp/CoOp194_PROReportng&OM/Julie/partnerdemos_domdaypart
       <Destination ToolID="2" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output1" />
-      <Destination ToolID="7" Connection="Input" />
+      <Origin ToolID="13" Connection="Output" />
+      <Destination ToolID="14" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="17" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
