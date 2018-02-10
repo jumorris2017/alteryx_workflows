@@ -8,8 +8,7 @@
       <Properties>
         <Configuration>
           <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
-          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||
-WITH bl AS
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH bl AS
 (select b.FSCL_YR_NUM
   ,b.FSCL_PER_IN_YR_NUM
   ,a.GUID_ID
@@ -24,32 +23,36 @@ inner join APPCA.D_CAL b
 
 inner join APPCA.D_SVC_TRANS_TYPE c 
   on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
-
-inner join (SELECT
-  sr.GUID_USER_ID
-  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB
-  ,COUNT(*) AS TOTAL_RSPNS
-  ,ca.FSCL_YR_NUM
-  ,ca.FSCL_PER_IN_YR_NUM
-FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
-
-JOIN APPCA.D_CAL ca
-  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
   
 JOIN APPCA.D_STORE_VERS st
-  ON sr.STORE_NUM = st.STORE_NUM
+  ON a.STORE_NUM = st.STORE_NUM
     AND st.CURRENT_FLG = 'Y'
     AND st.OWNR_TYPE_CD = 'CO'
     AND st.CNTRY_CD_2_DGT_ISO = 'US'
 
-WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))
+inner join (SELECT
+  sr.GUID_USER_ID
+  ,SUM(CASE WHEN sr.RSPNS_ID = '7' AND sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_TB
+  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+
+WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 2))
   AND sr.QSTN_ID IN ('Q2_2')
   --AND sr.STORE_NUM = 5798 -- for testing
   AND sr.RSPNS_ID &lt;&gt; '9'
+  --AND TRUNC(sr.TRANS_DTM) = '31-OCT-17'
+  --AND sr.GUID_USER_ID IN ('0A431223-46E3-438C-B301-B9AEDE967A29','6454D29D-5CC3-4809-AD03-4FA2CBCCFF6B','8F959E6B-5B96-4FD9-B699-04CDE1475DC5')
 GROUP BY 
   sr.GUID_USER_ID
   ,ca.FSCL_YR_NUM
   ,ca.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM)
   ) sq
   
 ON a.GUID_ID = sq.GUID_USER_ID
@@ -57,14 +60,15 @@ ON a.GUID_ID = sq.GUID_USER_ID
   AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM
 
 where c.SVC_INTRNL_RQST_NM = 'Redemption' 
-  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))
-
+  AND ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 2))
+  --AND a.BUS_DT BETWEEN sq.SVY_RSPN_DATE - 30 AND sq.SVY_RSPN_DATE
+  --AND sq.GUID_USER_ID IN ('0A431223-46E3-438C-B301-B9AEDE967A29','6454D29D-5CC3-4809-AD03-4FA2CBCCFF6B','8F959E6B-5B96-4FD9-B699-04CDE1475DC5')
 group by b.FSCL_YR_NUM
   ,b.FSCL_PER_IN_YR_NUM
   ,a.GUID_ID
   ,sq.TOTAL_TB
-  ,sq.TOTAL_RSPNS) 
-
+  ,sq.TOTAL_RSPNS
+  ) 
 SELECT 
   bl.FSCL_YR_NUM
   ,bl.FSCL_PER_IN_YR_NUM
@@ -94,8 +98,7 @@ ORDER BY
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText>Database: @SBP416.world
-Table=
-WITH bl AS
+Table=WITH bl AS
 (select b.FSCL_YR_NUM
   ,b.FSCL_PER_IN_YR_NUM
   ,a.GUID_ID
@@ -110,32 +113,36 @@ inner join APPCA.D_CAL b
 
 inner join APPCA.D_SVC_TRANS_TYPE c 
   on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
-
-inner join (SELECT
-  sr.GUID_USER_ID
-  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB
-  ,COUNT(*) AS TOTAL_RSPNS
-  ,ca.FSCL_YR_NUM
-  ,ca.FSCL_PER_IN_YR_NUM
-FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
-
-JOIN APPCA.D_CAL ca
-  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
   
 JOIN APPCA.D_STORE_VERS st
-  ON sr.STORE_NUM = st.STORE_NUM
+  ON a.STORE_NUM = st.STORE_NUM
     AND st.CURRENT_FLG = 'Y'
     AND st.OWNR_TYPE_CD = 'CO'
     AND st.CNTRY_CD_2_DGT_ISO = 'US'
 
-WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))
+inner join (SELECT
+  sr.GUID_USER_ID
+  ,SUM(CASE WHEN sr.RSPNS_ID = '7' AND sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_TB
+  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+
+WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 2))
   AND sr.QSTN_ID IN ('Q2_2')
   --AND sr.STORE_NUM = 5798 -- for testing
   AND sr.RSPNS_ID &lt;&gt; '9'
+  --AND TRUNC(sr.TRANS_DTM) = '31-OCT-17'
+  --AND sr.GUID_USER_ID IN ('0A431223-46E3-438C-B301-B9AEDE967A29','6454D29D-5CC3-4809-AD03-4FA2CBCCFF6B','8F959E6B-5B96-4FD9-B699-04CDE1475DC5')
 GROUP BY 
   sr.GUID_USER_ID
   ,ca.FSCL_YR_NUM
   ,ca.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM)
   ) sq
   
 ON a.GUID_ID = sq.GUID_USER_ID
@@ -143,14 +150,15 @@ ON a.GUID_ID = sq.GUID_USER_ID
   AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM
 
 where c.SVC_INTRNL_RQST_NM = 'Redemption' 
-  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))
-
+  AND ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 2))
+  --AND a.BUS_DT BETWEEN sq.SVY_RSPN_DATE - 30 AND sq.SVY_RSPN_DATE
+  --AND sq.GUID_USER_ID IN ('0A431223-46E3-438C-B301-B9AEDE967A29','6454D29D-5CC3-4809-AD03-4FA2CBCCFF6B','8F959E6B-5B96-4FD9-B699-04CDE1475DC5')
 group by b.FSCL_YR_NUM
   ,b.FSCL_PER_IN_YR_NUM
   ,a.GUID_ID
   ,sq.TOTAL_TB
-  ,sq.TOTAL_RSPNS) 
-
+  ,sq.TOTAL_RSPNS
+  ) 
 SELECT 
   bl.FSCL_YR_NUM
   ,bl.FSCL_PER_IN_YR_NUM
@@ -169,16 +177,6 @@ ORDER BY
   ,bl.TRANS</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
-        <MetaInfo connection="Output">
-          <RecordInfo>
-            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-            <Field name="USER_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-            <Field name="TRANS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-            <Field name="TB_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-            <Field name="RSPSN_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||&#xA;WITH bl AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '7' THEN 1 ELSE 0 END) AS TOTAL_TB&#xA;  ,COUNT(*) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;WHERE ((ca.FSCL_YR_NUM = 2018 and ca.FSCL_PER_IN_YR_NUM &lt;=3) OR (ca.FSCL_YR_NUM = 2017 and ca.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  --AND sr.STORE_NUM = 5798 -- for testing&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  and ((b.FSCL_YR_NUM = 2018  and b.FSCL_PER_IN_YR_NUM &lt;=3) OR (b.FSCL_YR_NUM = 2017 and b.FSCL_PER_IN_YR_NUM &gt; 3))&#xA;&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_TB&#xA;  ,sq.TOTAL_RSPNS) &#xA;&#xA;SELECT &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,count(bl.GUID_ID) AS USER_COUNT&#xA;  ,bl.TRANS&#xA;  ,sum(bl.TOTAL_TB) AS TB_COUNT&#xA;  ,sum(bl.TOTAL_RSPNS) AS RSPSN_COUNT&#xA;FROM bl&#xA;GROUP BY &#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS&#xA;ORDER BY&#xA;  bl.FSCL_YR_NUM&#xA;  ,bl.FSCL_PER_IN_YR_NUM&#xA;  ,bl.TRANS" type="Double" />
-          </RecordInfo>
-        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
     </Node>
@@ -188,7 +186,7 @@ ORDER BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_3912_4b54746ab54f48adb074b7ea8c670308_\Engine_10616_242095744dae401db3d4f55aaaae72db_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>

@@ -8,8 +8,32 @@
       <Properties>
         <Configuration>
           <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
-          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a
-]]></File>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel, at the GUID level -- CAW */ 
+
+SELECT DISTINCT
+  sr.GUID_USER_ID
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN 1 WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+ 
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE ca.CAL_DT &gt;= '30-NOV-17' AND ca.CAL_DT &lt;= '11-DEC-17'
+AND sr.RSPNS_ID &lt;&gt; '9'
+
+GROUP BY
+  sr.GUID_USER_ID
+  ,sr.QSTN_ID</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -22,54 +46,40 @@
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
-Table=select * from APPCA.F_SVC_FIN_TRANS a
-]]></DefaultAnnotationText>
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=/* CE by channel, at the GUID level -- CAW */ 
+
+SELECT DISTINCT
+  sr.GUID_USER_ID
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN 1 WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+ 
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE ca.CAL_DT &gt;= '30-NOV-17' AND ca.CAL_DT &lt;= '11-DEC-17'
+AND sr.RSPNS_ID &lt;&gt; '9'
+
+GROUP BY
+  sr.GUID_USER_ID
+  ,sr.QSTN_ID</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="BUS_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="DateTime" />
-            <Field name="TRANS_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="DateTime" />
-            <Field name="TIME_SID" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="SVC_ACCT_ID" size="20" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="SVC_CARD_STAT_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="CUST_VERS_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="CUST_STAT_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="LYLTY_MBR_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="LYLTY_MBR_STAT_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="LYLTY_PGM_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="LCL_CRNCY_CD" size="4" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="BASE_CRNCY_CD" size="4" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="MRCHT_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="STORE_VERS_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="SVC_TRANS_TYPE_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="DVCE_VERS_KEY" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="PTD_TRANS_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="SBUX_POS_TRANS_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="RGSTR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="TRANS_TMSTMP_DTM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="DateTime" />
-            <Field name="TRANS_AMT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="BASE_AMT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="ACCT_BAL_AMT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="NON_ESCHEATABLE_TRANS_IND" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="TRANS_CNTR" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="ETL_PROCESS_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="DateTime" />
-            <Field name="ETL_INSERT_DTM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="DateTime" />
-            <Field name="GUID_ID" size="41" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="V_WString" />
-            <Field name="RPT_CRNCY_CD" size="4" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="RPT_AMT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="ALT_MRCHT_ID" size="17" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="SVC_CARD_PROMO_ID" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="CONSORTIUM_ID" size="5" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="TRANS_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
-            <Field name="CUST_CNTRY_CD" size="3" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="MSR_MBR_ID" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="CUR_TIER_LVL_CD" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="WString" />
-            <Field name="PGM_NM" size="81" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="V_WString" />
-            <Field name="DVCE_ID" size="101" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="V_WString" />
-            <Field name="DVCE_PLTFRM_NM" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="V_WString" />
-            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||select * from APPCA.F_SVC_FIN_TRANS a&#xA;" type="Double" />
+            <Field name="GUID_USER_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel, at the GUID level -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN 1 WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA; &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE ca.CAL_DT &gt;= '30-NOV-17' AND ca.CAL_DT &lt;= '11-DEC-17'&#xA;AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID" type="V_WString" />
+            <Field name="QSTN_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel, at the GUID level -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN 1 WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA; &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE ca.CAL_DT &gt;= '30-NOV-17' AND ca.CAL_DT &lt;= '11-DEC-17'&#xA;AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID" type="V_WString" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel, at the GUID level -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN 1 WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA; &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE ca.CAL_DT &gt;= '30-NOV-17' AND ca.CAL_DT &lt;= '11-DEC-17'&#xA;AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY&#xA;  sr.GUID_USER_ID&#xA;  ,sr.QSTN_ID" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -81,7 +91,7 @@ Table=select * from APPCA.F_SVC_FIN_TRANS a
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_16076_95ed47f1f6a04c93956276afea8e1329_\Engine_1452_4e8cb2ff5b2d4befa71b92b44de7ca00_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11924_60ac39c329da4f61915870552c50f780_\Engine_1452_58307cedc8814123a4b4a1bf1c20946a_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
