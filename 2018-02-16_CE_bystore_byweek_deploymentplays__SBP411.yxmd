@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="90" y="162" />
+        <Position x="54" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -139,11 +139,11 @@ Order BY
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="162" y="162" />
+        <Position x="126" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_15820_320a838471b14962a4bd6148ee2df5e7_\Engine_13956_f21055121a93466593c9654371a12244_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8232_634c63fa3ffc40c282bb27265f5fb48d_\Engine_10928_a084c4152af44fe5996e0598827a3998_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -167,7 +167,7 @@ Order BY
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="102" y="42" width="100" height="64" />
+        <Position x="66" y="54" width="100" height="64" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -188,11 +188,195 @@ Order BY
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="102" y="114" width="100" height="40" />
+        <Position x="66" y="126" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Text>Pull CE scores for each store and week for Jan/Feb 2017 and 2018. Will group based on stores that *are* or *are not* using the new plays for analyses within R.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="282" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript><![CDATA[##making plots for deployment plays w/ CE indicators
+##weekly trends and YoY comparison
+##with YoY deltas called out
+##CE measures: CC, SO, Speed, Cleanliness
+
+#load libraries
+library(data.table)
+library(ggplot2)
+library(tidyverse)
+library(ggthemes)
+
+#group by stores that *are* or *are not* using the new plays
+
+#load data
+dp <- fread("O:/CoOp/CoOp194_PROReportng&OM/Julie/CE_deploymentplays.csv")
+strlist <- fread("Q:/Departments/WMO/Marketing Research/New Q drive/Partner Insights/Project Mood Ring/Email Mood Ring Solution 2017/Data & Reporting/Pulse_All_Responses_w_Matched_Shift.csv")
+strlist <- strlist[QUESTION_ID=='Q2_FA']
+strlist[QUESTION_ID=='Q2_FA'&RESP_ID==1, useploy := 1]; strlist[QUESTION_ID=='Q2_FA'&(RESP_ID==2|RESP_ID==3), useploy := 0]
+strlist <- strlist[JOB_ID==50000117]
+setnames(strlist,"STORE_NUM_WORKED","STORE_NUM")
+strlist <- strlist[,.(STORE_NUM,useploy)]
+
+#MERGE TOGETHER
+dp <- merge(dp,strlist,by="STORE_NUM")
+dp <- na.omit(dp,cols="useploy")
+
+#agg by week
+dp <- dp[, lapply(.SD,sum,na.rm=T), .SDcols=grep("Q",names(dp),value=T), by=c("FSCL_WK_IN_YR_NUM","FSCL_YR_NUM","useploy")]
+dp[, cc_sc := round(Q2_2_TB_CNT/Q2_2_RESPONSE_TOTAL*100,1)]
+dp[, sp_sc := round(Q2_1_TB_CNT/Q2_1_RESPONSE_TOTAL*100,1)]
+dp[, ab_sc := round(Q2_3_TB_CNT/Q2_3_RESPONSE_TOTAL*100,1)]
+dp[, ac_sc := round(Q2_4_TB_CNT/Q2_4_RESPONSE_TOTAL*100,1)]
+dp[, bt_sc := round(Q2_5_TB_CNT/Q2_5_RESPONSE_TOTAL*100,1)]
+dp[, ft_sc := round(Q2_6_TB_CNT/Q2_6_RESPONSE_TOTAL*100,1)]
+dp[, cl_sc := round(Q2_7_TB_CNT/Q2_7_RESPONSE_TOTAL*100,1)]
+dp[, so_sc := round(rowMeans(.SD, na.rm = TRUE),1), .SDcols=c("sp_sc","ab_sc","ac_sc",
+                                                    "bt_sc","ft_sc","cl_sc")]
+#make year and wek indicator for plotting
+dp[, fyfw := paste0(FSCL_YR_NUM,"-",FSCL_WK_IN_YR_NUM)]
+#calculate delta
+#ensure sorted properly
+setorder(dp,useploy,FSCL_WK_IN_YR_NUM,FSCL_YR_NUM)
+dp[, cc_lag := lapply(.SD, function(x) c(NA, x[-.N])), by=c("useploy","FSCL_WK_IN_YR_NUM"), .SDcols="cc_sc"]
+dp[, so_lag := lapply(.SD, function(x) c(NA, x[-.N])), by=c("useploy","FSCL_WK_IN_YR_NUM"), .SDcols="so_sc"]
+
+#calcualte delta
+dp[, ccdelta := round(cc_sc-cc_lag,1)]
+dp[, sodelta := round(so_sc-so_lag,1)]
+
+#reduce variables
+dp <- dp[, .(FSCL_WK_IN_YR_NUM,FSCL_YR_NUM,fyfw,useploy,cc_sc,so_sc,sp_sc,cl_sc,ccdelta,sodelta)]
+
+##CC plot
+#set labels
+xlabels1a <- c("FW 14","FW 15","FW 16","FW 17","FW 18","FW 19","FW 20","FW 21")
+xlabel1a <- c("Fiscal Week")
+ylabel1a <- "TB Score"
+tlabel1a <- "Deployment Play Utilization on Customer Experience"
+sublabel1a <- "Customer Connection and Store Operations"
+caption1a <- "Deployment Activities Timeline sent to SMs:\nFW17 - Understand the change for yourself and your team\nFW18 - Prepare to lead the change for your team\nFW20 - Lead the change for your team"
+# caption1a <- "U.S. Company Operated Stores"
+#manual legend labels
+lname11a <- "Fiscal Year"
+llabels11a <- c("2017","2018")
+lname21a <- "Deployment Play Utilization"
+llabels21a <- c("Not utilized","Utilized")
+#values
+pdata1a <- dp
+px1a <- dp[,FSCL_WK_IN_YR_NUM]
+py1a <- dp[,cc_sc]
+py1b <- dp[,so_sc]
+groupvar1a <- dp[,useploy]
+colourvar1a <- dp[,FSCL_YR_NUM]
+#plot itself
+plot1a <- ggplot(data=pdata1a, aes(x=px1a, y=py1a, colour=factor(colourvar1a), linetype=factor(groupvar1a), group=interaction(groupvar1a, colourvar1a))) + 
+  geom_line(size=1) + annotate(geom = "text", x=14, y=70, hjust=0, label = "Store Operations") +
+  geom_line(y=py1b,size=1) + annotate(geom = "text", x=14, y=40, hjust=0, label = "Customer Connection") +
+  geom_vline(aes(xintercept = 17)) + annotate(geom = "text", x=17, y=3, hjust=0, vjust=-0.5, label = "Understand", angle=90, size=3, fontface = "italic") +
+  geom_vline(aes(xintercept = 18)) + annotate(geom = "text", x=18, y=3, hjust=0, vjust=-0.5, label = "Prepare", angle=90, size=3, fontface = "italic") +
+  geom_vline(aes(xintercept = 20)) + annotate(geom = "text", x=20, y=3, hjust=0, vjust=-0.5, label = "Lead", angle=90, size=3, fontface = "italic") +
+  xlab(xlabel1a) + ylab(ylabel1a) + 
+  scale_colour_discrete(name=lname11a, labels=llabels11a, guide=guide_legend(order=1)) +
+  guides(colour = guide_legend(override.aes = list(size = 7))) + 
+  scale_linetype_discrete(name=lname21a, labels=llabels21a, guide=guide_legend(order=1)) +
+  scale_x_continuous(breaks=14:21) +
+  scale_y_continuous(limits=c(0,70)) + theme_economist() +
+  ggtitle(tlabel1a) + labs(subtitle=sublabel1a,caption=caption1a)
+print(plot1a)
+
+#melt for delta plot
+dpm <- melt(dp[FSCL_YR_NUM==2018,.(useploy,FSCL_WK_IN_YR_NUM,ccdelta,sodelta)], id=c("useploy","FSCL_WK_IN_YR_NUM"))
+
+##CC plot
+#set labels
+xlabels2a <- c("FW 14","FW 15","FW 16","FW 17","FW 18","FW 19","FW 20")
+xlabel2a <- c("Fiscal Week")
+ylabel2a <- "YoY Delta"
+tlabel2a <- "Deployment Play Utilization on Customer Experience"
+sublabel2a <- "Customer Connection and Store Operations YoY Deltas"
+caption2a <- "Deployment Activities Timeline sent to SMs:\nFW17 - Understand the change for yourself and your team\nFW18 - Prepare to lead the change for your team\nFW20 - Lead the change for your team\nN = 533 stores (432 utilizing plays, 101 not utilizing plays)"
+#manual legend labels
+lname12a <- "CE Metric"
+llabels12a <- c("Customer Connection","Store Operations")
+lname22a <- "Deployment Play Utilization"
+llabels22a <- c("Not utilized","Utilized")
+#values
+pdata2a <- dpm
+px2a <- dpm[,FSCL_WK_IN_YR_NUM]
+py2a <- dpm[,value]
+# py2b <- dpm[variable=="sodelta",value]
+groupvar2a <- dpm[,useploy]
+colourvar2a <- dpm[,variable]
+#plot itself
+plot2a <- ggplot(data=pdata2a, aes(x=px2a, y=py2a, colour=factor(colourvar2a), linetype=factor(groupvar2a), group=interaction(groupvar2a, colourvar2a))) + 
+  geom_line(size=1) +
+  geom_vline(aes(xintercept = 17)) + annotate(geom = "text", x=17, y=-4, hjust=0, vjust=-0.5, label = "Understand", angle=90, size=3, fontface = "italic") +
+  geom_vline(aes(xintercept = 18)) + annotate(geom = "text", x=18, y=-4, hjust=0, vjust=-0.5, label = "Prepare", angle=90, size=3, fontface = "italic") +
+  geom_vline(aes(xintercept = 20)) + annotate(geom = "text", x=20, y=-4, hjust=0, vjust=-0.5, label = "Lead", angle=90, size=3, fontface = "italic") +
+  xlab(xlabel2a) + ylab(ylabel2a) + 
+  scale_colour_discrete(name=lname12a, labels=llabels12a, guide=guide_legend(order=1)) +
+  guides(colour = guide_legend(override.aes = list(size = 7))) + 
+  scale_linetype_discrete(name=lname22a, labels=llabels22a, guide=guide_legend(order=1)) +
+  scale_x_continuous(breaks=14:21) +
+  scale_y_continuous(limits=c(-4,4)) + theme_economist() +
+  ggtitle(tlabel2a) + labs(subtitle=sublabel2a,caption=caption2a)
+print(plot2a)
+]]></RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="54" width="100" height="64" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[CC and SO YoY Delta Plots
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Creates plots of CC and SO scores and YoY deltas by deployment play utilization (from SM pulse reports)</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
