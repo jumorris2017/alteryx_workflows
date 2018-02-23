@@ -262,7 +262,7 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_900ab2dd85a04df39635b32f6cb82f76_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -333,15 +333,47 @@ Home Store
       <Properties>
         <Configuration>
           <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
-          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--PDW BULK (415ss)
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--PDW (415)
+--Pulls hire date by partner ID and store number... But, only for current...
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,20000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+
+--PDW Bulk (415ss)
+--Pulls average store tenure by week (what we need for this project!)
 
 SELECT
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,StoreNumNum AS STORE_NUM
-  ,AVG(CompanyTenureYears) AS AVG_COMP_TENURE
-   
+  ,[StoreNumNum] AS [Store Num]
+  ,AVG([Company Tenure Years]) AS [Avg Compnay Tenure]
+  
 FROM (
 SELECT 
 	 [PRODM].[Org_and_Job_History].[Personnel_Number]
@@ -352,14 +384,13 @@ SELECT
   ,[PRODW].[Calendar].[FSCL_YR_NUM]
   ,(SELECT * FROM [PRODM].[YearsAsOf]
 		(ch.[Start_Date],[PRODW].[Calendar].[CAL_DT])
-	) AS [CompanyTenureYears] 
+	) AS [Company Tenure Years] 
 	,[PRODM].[Stores_by_Org].[StoreNumNum]
 FROM [PDW_Bulk].[PRODM].[Org_and_Job_History]
   
 INNER JOIN [PDW_Bulk].[PRODW].[Calendar]
   ON [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] BETWEEN [Org_and_Job_History].[Start_Date] AND [Org_and_Job_History].[End_Date]
-    AND ( ([PDW_Bulk].[PRODW].[Calendar].[FSCL_WK_IN_YR_NUM] > 47 AND [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] = 2016) OR [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] >= 2017 )
-    --AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] < '03-01-2017'
+    AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] &gt; '09-01-2015'
   
 INNER JOIN [PDW_Bulk].[PRODM].[Stores_by_Org]
   ON [PRODM].[Org_and_Job_History].[Organizational_Unit] = [PRODM].[Stores_by_Org].[OrgID]
@@ -374,26 +405,15 @@ LEFT JOIN [PRODM].[Company_History] ch
 	ON [PRODM].[Org_and_Job_History].[Personnel_Number]= ch.[Personnel_Number]
 			AND
 		[PRODW].[Calendar].[CAL_DT] BETWEEN ch.[Start_Date] AND ch.[End_Date]
---    (SELECT [PRODW].[Calendar].[CAL_DT]
---    FROM [PDW_Bulk].[PRODW].[Calendar]
---    WHERE [PRODW].[Calendar].[FSCL_QTR_IN_YR_NUM] = 'FP-2016-9'
---      AND [PRODW].[Calendar].FSCL_PER_END_IND = 'Y') BETWEEN ch.[Start_Date] AND ch.[End_Date]
 
 WHERE
   [PRODM].[Org_and_Job_History].[Job_Key] IN ('50000362','50000358','50018175','50000445')  --hourly positions
-  --[PRODM].[Org_and_Job_History].[Job_Key] = '50000117'  --sm
 ) a
 
 GROUP BY
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,[StoreNumNum]
-  
-  
-  
-  
-]]></File>
+  ,[StoreNumNum]</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -406,16 +426,48 @@ GROUP BY
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
-Table=--PDW BULK (415ss)
+          <DefaultAnnotationText>Database: @SBP415.WORLD
+Table=--PDW (415)
+--Pulls hire date by partner ID and store number... But, only for current...
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,20000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+
+--PDW Bulk (415ss)
+--Pulls average store tenure by week (what we need for this project!)
 
 SELECT
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,StoreNumNum AS STORE_NUM
-  ,AVG(CompanyTenureYears) AS AVG_COMP_TENURE
-   
+  ,[StoreNumNum] AS [Store Num]
+  ,AVG([Company Tenure Years]) AS [Avg Compnay Tenure]
+  
 FROM (
 SELECT 
 	 [PRODM].[Org_and_Job_History].[Personnel_Number]
@@ -426,14 +478,13 @@ SELECT
   ,[PRODW].[Calendar].[FSCL_YR_NUM]
   ,(SELECT * FROM [PRODM].[YearsAsOf]
 		(ch.[Start_Date],[PRODW].[Calendar].[CAL_DT])
-	) AS [CompanyTenureYears] 
+	) AS [Company Tenure Years] 
 	,[PRODM].[Stores_by_Org].[StoreNumNum]
 FROM [PDW_Bulk].[PRODM].[Org_and_Job_History]
   
 INNER JOIN [PDW_Bulk].[PRODW].[Calendar]
   ON [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] BETWEEN [Org_and_Job_History].[Start_Date] AND [Org_and_Job_History].[End_Date]
-    AND ( ([PDW_Bulk].[PRODW].[Calendar].[FSCL_WK_IN_YR_NUM] > 47 AND [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] = 2016) OR [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] >= 2017 )
-    --AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] < '03-01-2017'
+    AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] &gt; '09-01-2015'
   
 INNER JOIN [PDW_Bulk].[PRODM].[Stores_by_Org]
   ON [PRODM].[Org_and_Job_History].[Organizational_Unit] = [PRODM].[Stores_by_Org].[OrgID]
@@ -448,26 +499,15 @@ LEFT JOIN [PRODM].[Company_History] ch
 	ON [PRODM].[Org_and_Job_History].[Personnel_Number]= ch.[Personnel_Number]
 			AND
 		[PRODW].[Calendar].[CAL_DT] BETWEEN ch.[Start_Date] AND ch.[End_Date]
---    (SELECT [PRODW].[Calendar].[CAL_DT]
---    FROM [PDW_Bulk].[PRODW].[Calendar]
---    WHERE [PRODW].[Calendar].[FSCL_QTR_IN_YR_NUM] = 'FP-2016-9'
---      AND [PRODW].[Calendar].FSCL_PER_END_IND = 'Y') BETWEEN ch.[Start_Date] AND ch.[End_Date]
 
 WHERE
   [PRODM].[Org_and_Job_History].[Job_Key] IN ('50000362','50000358','50018175','50000445')  --hourly positions
-  --[PRODM].[Org_and_Job_History].[Job_Key] = '50000117'  --sm
 ) a
 
 GROUP BY
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,[StoreNumNum]
-  
-  
-  
-  
-]]></DefaultAnnotationText>
+  ,[StoreNumNum]</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>
@@ -479,7 +519,7 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_a25f03f5b380466e9b8e4b67ce39cb80_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -624,7 +664,7 @@ Table=--SBP411
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_0e9a6e9c50c84652ad3454dcc914ccb9_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -687,6 +727,184 @@ TSDs</Text>
         </Annotation>
       </Properties>
     </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="690" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_WK_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt
+
+  -- Compute top box scores for each question
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score
+
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+    ON ce.STORE_NUM = org.STORE_NUM
+      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery
+      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_WK_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_WK_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt
+
+  -- Compute top box scores for each question
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score
+
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+    ON ce.STORE_NUM = org.STORE_NUM
+      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery
+      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_WK_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="Int64" />
+            <Field name="FSCL_WK_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="Int64" />
+            <Field name="Q2_2_RESPONSE_TOTAL" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="Double" />
+            <Field name="Q2_2_TB_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="Double" />
+            <Field name="Q2_2_TB_SCORE" size="8" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS Q2_2_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS Q2_2_TB_Cnt&#xA;&#xA;  -- Compute top box scores for each question&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS Q2_2_TB_Score&#xA;&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND ((c.FSCL_YR_NUM = 2016 AND c.FSCL_WK_IN_YR_NUM &gt; 47) OR c.FSCL_YR_NUM &gt;= 2017)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_WK_IN_YR_NUM" type="WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="810" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_da58d87083e545489bdee2a0b95d68e8_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="21">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="690" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pred model:
+CC Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="690" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls CC scores at the store level, by the week.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
   </Nodes>
   <Connections>
     <Connection>
@@ -700,6 +918,10 @@ TSDs</Text>
     <Connection>
       <Origin ToolID="15" Connection="Output" />
       <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="19" Connection="Output" />
+      <Destination ToolID="20" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>

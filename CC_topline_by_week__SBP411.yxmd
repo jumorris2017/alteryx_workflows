@@ -262,7 +262,7 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_900ab2dd85a04df39635b32f6cb82f76_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -333,15 +333,47 @@ Home Store
       <Properties>
         <Configuration>
           <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
-          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--PDW BULK (415ss)
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--PDW (415)
+--Pulls hire date by partner ID and store number... But, only for current...
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,20000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+
+--PDW Bulk (415ss)
+--Pulls average store tenure by week (what we need for this project!)
 
 SELECT
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,StoreNumNum AS STORE_NUM
-  ,AVG(CompanyTenureYears) AS AVG_COMP_TENURE
-   
+  ,[StoreNumNum] AS [Store Num]
+  ,AVG([Company Tenure Years]) AS [Avg Compnay Tenure]
+  
 FROM (
 SELECT 
 	 [PRODM].[Org_and_Job_History].[Personnel_Number]
@@ -352,14 +384,13 @@ SELECT
   ,[PRODW].[Calendar].[FSCL_YR_NUM]
   ,(SELECT * FROM [PRODM].[YearsAsOf]
 		(ch.[Start_Date],[PRODW].[Calendar].[CAL_DT])
-	) AS [CompanyTenureYears] 
+	) AS [Company Tenure Years] 
 	,[PRODM].[Stores_by_Org].[StoreNumNum]
 FROM [PDW_Bulk].[PRODM].[Org_and_Job_History]
   
 INNER JOIN [PDW_Bulk].[PRODW].[Calendar]
   ON [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] BETWEEN [Org_and_Job_History].[Start_Date] AND [Org_and_Job_History].[End_Date]
-    AND ( ([PDW_Bulk].[PRODW].[Calendar].[FSCL_WK_IN_YR_NUM] > 47 AND [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] = 2016) OR [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] >= 2017 )
-    --AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] < '03-01-2017'
+    AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] &gt; '09-01-2015'
   
 INNER JOIN [PDW_Bulk].[PRODM].[Stores_by_Org]
   ON [PRODM].[Org_and_Job_History].[Organizational_Unit] = [PRODM].[Stores_by_Org].[OrgID]
@@ -374,26 +405,15 @@ LEFT JOIN [PRODM].[Company_History] ch
 	ON [PRODM].[Org_and_Job_History].[Personnel_Number]= ch.[Personnel_Number]
 			AND
 		[PRODW].[Calendar].[CAL_DT] BETWEEN ch.[Start_Date] AND ch.[End_Date]
---    (SELECT [PRODW].[Calendar].[CAL_DT]
---    FROM [PDW_Bulk].[PRODW].[Calendar]
---    WHERE [PRODW].[Calendar].[FSCL_QTR_IN_YR_NUM] = 'FP-2016-9'
---      AND [PRODW].[Calendar].FSCL_PER_END_IND = 'Y') BETWEEN ch.[Start_Date] AND ch.[End_Date]
 
 WHERE
   [PRODM].[Org_and_Job_History].[Job_Key] IN ('50000362','50000358','50018175','50000445')  --hourly positions
-  --[PRODM].[Org_and_Job_History].[Job_Key] = '50000117'  --sm
 ) a
 
 GROUP BY
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,[StoreNumNum]
-  
-  
-  
-  
-]]></File>
+  ,[StoreNumNum]</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -406,16 +426,48 @@ GROUP BY
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
-Table=--PDW BULK (415ss)
+          <DefaultAnnotationText>Database: @SBP415.WORLD
+Table=--PDW (415)
+--Pulls hire date by partner ID and store number... But, only for current...
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,20000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+
+--PDW Bulk (415ss)
+--Pulls average store tenure by week (what we need for this project!)
 
 SELECT
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,StoreNumNum AS STORE_NUM
-  ,AVG(CompanyTenureYears) AS AVG_COMP_TENURE
-   
+  ,[StoreNumNum] AS [Store Num]
+  ,AVG([Company Tenure Years]) AS [Avg Compnay Tenure]
+  
 FROM (
 SELECT 
 	 [PRODM].[Org_and_Job_History].[Personnel_Number]
@@ -426,14 +478,13 @@ SELECT
   ,[PRODW].[Calendar].[FSCL_YR_NUM]
   ,(SELECT * FROM [PRODM].[YearsAsOf]
 		(ch.[Start_Date],[PRODW].[Calendar].[CAL_DT])
-	) AS [CompanyTenureYears] 
+	) AS [Company Tenure Years] 
 	,[PRODM].[Stores_by_Org].[StoreNumNum]
 FROM [PDW_Bulk].[PRODM].[Org_and_Job_History]
   
 INNER JOIN [PDW_Bulk].[PRODW].[Calendar]
   ON [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] BETWEEN [Org_and_Job_History].[Start_Date] AND [Org_and_Job_History].[End_Date]
-    AND ( ([PDW_Bulk].[PRODW].[Calendar].[FSCL_WK_IN_YR_NUM] > 47 AND [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] = 2016) OR [PDW_Bulk].[PRODW].[Calendar].[FSCL_YR_NUM] >= 2017 )
-    --AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] < '03-01-2017'
+    AND [PDW_Bulk].[PRODW].[Calendar].[CAL_DT] &gt; '09-01-2015'
   
 INNER JOIN [PDW_Bulk].[PRODM].[Stores_by_Org]
   ON [PRODM].[Org_and_Job_History].[Organizational_Unit] = [PRODM].[Stores_by_Org].[OrgID]
@@ -448,26 +499,15 @@ LEFT JOIN [PRODM].[Company_History] ch
 	ON [PRODM].[Org_and_Job_History].[Personnel_Number]= ch.[Personnel_Number]
 			AND
 		[PRODW].[Calendar].[CAL_DT] BETWEEN ch.[Start_Date] AND ch.[End_Date]
---    (SELECT [PRODW].[Calendar].[CAL_DT]
---    FROM [PDW_Bulk].[PRODW].[Calendar]
---    WHERE [PRODW].[Calendar].[FSCL_QTR_IN_YR_NUM] = 'FP-2016-9'
---      AND [PRODW].[Calendar].FSCL_PER_END_IND = 'Y') BETWEEN ch.[Start_Date] AND ch.[End_Date]
 
 WHERE
   [PRODM].[Org_and_Job_History].[Job_Key] IN ('50000362','50000358','50018175','50000445')  --hourly positions
-  --[PRODM].[Org_and_Job_History].[Job_Key] = '50000117'  --sm
 ) a
 
 GROUP BY
-  -- [CAL_DT]
   [FSCL_WK_IN_YR_NUM]
   ,[FSCL_YR_NUM]
-  ,[StoreNumNum]
-  
-  
-  
-  
-]]></DefaultAnnotationText>
+  ,[StoreNumNum]</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>
@@ -479,7 +519,7 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_a25f03f5b380466e9b8e4b67ce39cb80_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -624,7 +664,7 @@ Table=--SBP411
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_0e9a6e9c50c84652ad3454dcc914ccb9_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -802,7 +842,7 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17776_3da1d2a4873345f99e2b9fd2792101b2_\Engine_1452_0c96cc2170ce478db7edad3550e8d2e3_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_8428_23d6204cc33846858dafb14fe2c592d2_\Engine_10928_da58d87083e545489bdee2a0b95d68e8_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
