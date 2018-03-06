@@ -1757,6 +1757,52 @@ temp <- temp[, .( FY,MFStermrate,UStermrate)]
 temp[, c("MFStermrate","UStermrate") := lapply(.SD,function(x) round(x,4)*100), .SDcols=c("MFStermrate","UStermrate")]
 temp[, MFStoUS_termrate_delta := MFStermrate-UStermrate]
 
+
+
+#Q1FY18 STORE-LEVEL snapshot of cc/so
+q1stce <- fread("O:/CoOp/CoOp194_PROReportng&OM/Julie/MFS_q1fy18_ccso.csv")
+q1stp <- fread("O:/CoOp/CoOp194_PROReportng&OM/Julie/MFS_q1fy18_pulse.csv")
+
+#set labels
+xlabel <- "Customer Connection Score"
+ylabel <- "Number of Stores"
+tlabel <- "Distribution of MFS Customer Connection Scores"
+sublabel <- "Q1 FY18"
+#plot itself
+plot2 <- ggplot(q1stce,aes(CC_SCORE)) + 
+  geom_histogram(binwidth=1,show.legend=FALSE,fill="lightgrey",col=I("black")) + 
+  theme_economist() + scale_colour_brewer(palette = 1, name="", labels="") +
+  scale_x_continuous(limits=c(17,55), breaks = scales::pretty_breaks(35)) +
+  xlab(xlabel) + ylab(ylabel) + ggtitle(tlabel) + labs(subtitle=sublabel)
+print(plot2)
+
+#set labels
+xlabel <- "Store Operations Score"
+ylabel <- "Number of Stores"
+tlabel <- "Distribution of MFS Store Operations Scores"
+sublabel <- "Q1 FY18"
+#plot itself
+plot2 <- ggplot(q1stce,aes(SO_SCORE)) + 
+  geom_histogram(binwidth=1,show.legend=FALSE,fill="lightgrey",col=I("black")) + 
+  theme_economist() + scale_colour_brewer(palette = 1, name="", labels="") +
+  scale_x_continuous(limits=c(49,76), breaks = scales::pretty_breaks(35)) +
+  xlab(xlabel) + ylab(ylabel) + ggtitle(tlabel) + labs(subtitle=sublabel)
+print(plot2)
+
+#set labels
+xlabel <- "Pulse ('Lived up to Values') Score"
+ylabel <- "Number of Stores"
+tlabel <- "Distribution of MFS Partner Pulse Scores"
+sublabel <- "Q1 FY18"
+#plot itself
+plot2 <- ggplot(q1stp,aes(Q1_AVG)) + 
+  geom_histogram(binwidth=.25,show.legend=FALSE,fill="lightgrey",col=I("black")) + 
+  theme_economist() + scale_colour_brewer(palette = 1, name="", labels="") +
+  scale_x_continuous(limits=c(3.5,6.75), breaks = scales::pretty_breaks(10)) +
+  xlab(xlabel) + ylab(ylabel) + ggtitle(tlabel) + labs(subtitle=sublabel)
+print(plot2)
+
+
 ]]></RScript>
           <UseFullUpdate value="False" />
         </Configuration>
