@@ -1,0 +1,886 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+--/* % home store customers */
+
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM
+  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 
+       ELSE NULL 
+   END) AS HS_CUST_COUNT
+  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+    
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+--/* % home store customers */
+
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM
+  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 
+       ELSE NULL 
+   END) AS HS_CUST_COUNT
+  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+    
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+            <Field name="FSCL_PER_CNT_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+            <Field name="HS_CUST_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+            <Field name="ALL_CUST_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM&#xA;  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 &#xA;       ELSE NULL &#xA;   END) AS HS_CUST_COUNT&#xA;  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;    &#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,ca.FSCL_PER_IN_YR_NUM&#xA;      ,ca.FSCL_PER_CNT_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,ca.FSCL_PER_CNT_NUM&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,T1.FSCL_PER_IN_YR_NUM&#xA;      ,T1.FSCL_PER_CNT_NUM&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  ,T3.FSCL_PER_IN_YR_NUM&#xA;  ,T3.FSCL_PER_CNT_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_8d37913454e042c687dcc1f66967d562_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[Home Store
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pull percent home store customers at the store level for FEB FY18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="258" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_ORG_LVL_ID
+        , org.RGN_ORG_LVL_DESCR
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+            ON f.STORE_NUMBER = org.STORE_NUM
+            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_ORG_LVL_ID
+    , org.RGN_ORG_LVL_DESCR</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_ORG_LVL_ID
+        , org.RGN_ORG_LVL_DESCR
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+            ON f.STORE_NUMBER = org.STORE_NUM
+            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_ORG_LVL_ID
+    , org.RGN_ORG_LVL_DESCR</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="CustTrans" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="day_count" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="RGN_ORG_LVL_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="RGN_ORG_LVL_DESCR" size="81" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="378" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_e5f982c221c7436596c97ed7f81a4cb9_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>TSDs and Region</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls TSDs and Region at the store level for FEB FY18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="462" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+    ON ce.STORE_NUM = org.STORE_NUM
+      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery
+      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+ORDER BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt
+  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+    ON ce.STORE_NUM = org.STORE_NUM
+      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery
+      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+ORDER BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Int64" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Int64" />
+            <Field name="CC_RESPONSE_TOTAL" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="SP_RESPONSE_TOTAL" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="CC_TB_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="SP_TB_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="CC_TOP2B_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="CC_BOT2B_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="SP_TOP2B_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="SP_BOT2B_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA;SELECT&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;  -- Total valid response counts by question&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total&#xA;  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total&#xA;&#xA;  -- Total top box responses&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt&#xA;  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_BOT2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '6' OR ce.RSPNS_ID = '7') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TOP2B_Cnt&#xA;  ,SUM(CASE WHEN (ce.RSPNS_ID = '1' OR ce.RSPNS_ID = '2') AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_BOT2B_Cnt&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;&#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'&#xA;      &#xA;  INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;    ON ce.STORE_NUM = org.STORE_NUM&#xA;      AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- U.S. company stores only (including reserve bar), but excluding New Concepts and Roastery&#xA;      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;&#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY&#xA;      ce.STORE_NUM&#xA;      ,c.FSCL_YR_NUM&#xA;      ,c.FSCL_PER_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="582" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_286aeef1033a45bf9f1e280cc81fd08e_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="462" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC and Speed Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="462" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls CC and Speed TB counts and counts for top 2 (6's and 7's) and bottom 2 (1's and 2's) at the store level, for FEB FY 18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="726" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>#expected CC and speed values for Neha deployment
+#feb 2018 scores
+#using TSDs, region, and home store % as indicators
+
+#load libaries
+library(data.table)
+library(nlme)
+
+
+##FEBRUARY
+#set path (new Q)
+data_dir &lt;- "Q:/Departments/WMO/Marketing Research/New Q drive/Foundational/Customer Voice/2.0/Foundational/2018_03_12_Deployment_Expected_CC_and_Speed"
+
+#load data
+ce &lt;- fread(paste0(data_dir,"/FebFY18_CC-Speed_StoreLevel.csv"))
+hs &lt;- fread(paste0(data_dir,"/FP5FY18_homestore.csv"))
+tsd &lt;- fread(paste0(data_dir,"/FP5FY18_TSD.csv"))
+
+#calculate home store percent
+hs[, hspct := round(HS_CUST_COUNT/ALL_CUST_COUNT,4)]
+
+#calculate TSDs
+tsd[, tsd := round(CustTrans/day_count,1)]
+
+#merge
+cedt &lt;- Reduce(function(x, y) {merge(x, y, 
+                                     by=c("STORE_NUM","FSCL_YR_NUM","FSCL_PER_IN_YR_NUM"), 
+                                     all = TRUE)}, list(ce,hs,tsd))
+#na omit region
+cedt &lt;- na.omit(cedt,cols=c("CC_TB_SCORE","SP_TB_SCORE","hspct","tsd","RGN_ORG_LVL_DESCR"))
+
+#run models split by region - CC
+newData &lt;- cedt[, .(STORE_NUM,RGN_ORG_LVL_DESCR,hspct,tsd)]
+ll = lmList(CC_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predCCscore")
+
+#run models split by region - Speed
+ll = lmList(SP_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predSPscore")
+
+#write.csv
+newData &lt;- newData[, .(STORE_NUM,predCCscore,predSPscore)]
+write.csv(newData,file=paste0(data_dir,"/FebFY18_EXP_CC-Speed_StoreLevel.csv"))
+
+
+
+##JANUARY
+#set path (new Q)
+data_dir &lt;- "Q:/Departments/WMO/Marketing Research/New Q drive/Foundational/Customer Voice/2.0/Foundational/2018_03_12_Deployment_Expected_CC_and_Speed"
+
+#load data
+ce &lt;- fread(paste0(data_dir,"/JanFY18_CC-Speed_StoreLevel.csv"))
+hs &lt;- fread(paste0(data_dir,"/FP4FY18_homestore.csv"))
+tsd &lt;- fread(paste0(data_dir,"/FP4FY18_TSD.csv"))
+
+#calculate CC/SP score
+ce[, CC_TB_SCORE := CC_TB_CNT/CC_RESPONSE_TOTAL]
+ce[, SP_TB_SCORE := SP_TB_CNT/SP_RESPONSE_TOTAL]
+
+#calculate home store percent
+hs[, hspct := round(HS_CUST_COUNT/ALL_CUST_COUNT,4)]
+
+#calculate TSDs
+tsd[, tsd := round(CustTrans/day_count,1)]
+
+#merge
+cedt &lt;- Reduce(function(x, y) {merge(x, y, 
+                                     by=c("STORE_NUM","FSCL_YR_NUM","FSCL_PER_IN_YR_NUM"), 
+                                     all = TRUE)}, list(ce,hs,tsd))
+#na omit region
+cedt &lt;- na.omit(cedt,cols=c("CC_TB_SCORE","SP_TB_SCORE","hspct","tsd","RGN_ORG_LVL_DESCR"))
+
+#calculate home store percent
+cedt[, hspct := round(HS_CUST_COUNT/ALL_CUST_COUNT,4)]
+
+#calculate TSDs
+cedt[, tsd := round(CustTrans/day_count,1)]
+
+#run models split by region - CC
+newData &lt;- cedt[, .(STORE_NUM,RGN_ORG_LVL_DESCR,hspct,tsd)]
+ll = lmList(CC_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predCCscore")
+
+#run models split by region - Speed
+ll = lmList(SP_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predSPscore")
+
+#write.csv
+newData &lt;- newData[, .(STORE_NUM,predCCscore,predSPscore)]
+write.csv(newData,file=paste0(data_dir,"/JanFY18_EXP_CC-Speed_StoreLevel.csv"))</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="702" y="54" width="100" height="48" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC and Speed Expected Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="702" y="114" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[Expected CC and Speed scores using TSDs, region, and home store % as indicators.
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="Output" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-03-21_CC-Speed_Drivers</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

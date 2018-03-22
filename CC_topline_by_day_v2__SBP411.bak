@@ -136,10 +136,12 @@ ORDER BY
 
 #load libraries
 library(data.table)
-#library(ggplot2)
 library(forecast)
 library(zoo)
-#set.seed(98115)
+library(mFilter)
+library(censReg)
+library(stringr)
+set.seed(98115)
 
 #load data
 cct <- read.Alteryx("#1",mode="data.frame")
@@ -152,38 +154,61 @@ setnames(cct, tolower(names(cct)))
 #cct[, caldate := as.Date(caldate, "%d-%b-%y")]
 cct[, ccscore := as.numeric(as.character(ccscore))]
 
+#set names as lower case for ease
+setnames(cct, tolower(names(cct)))
+
+#update variable classes
+cct[, caldate := as.Date(caldate, format = "%Y-%m-%d")]
+cct[, ccscore := as.numeric(ccscore)]
+#create a separate db that is just the latest 3 weeks for validating
+# cctforcheck <- cct[caldate>'2018-01-13']
+# cctforcheck <- cctforcheck[, .(caldate,ccscore)]
+
+#only keep data post august 2015
+cct <- cct[caldate>='2015-09-01']
+# 
+# #omit the latest 3 weeks for validating
+# cct <- cct[caldate<='2018-01-13']
+
 #recode holiday as binary
-#cct[holidayflag=='N', holiday := 0];cct[holidayflag=='Y', holiday := 1]
-#cct[, holidayflag := NULL]
+cct[holidayflag=='N', holiday := 0];cct[holidayflag=='Y', holiday := 1]
+cct[, holidayflag := NULL]
 
 #create dataset for prophet
-#pcc <- copy(cct)
-#setnames(pcc,c("caldate","ccscore"),c("ds","y"))
+pcc <- copy(cct)
+setnames(pcc,c("caldate","ccscore"),c("ds","y"))
 
-#pcchol <- copy(cct)
-#pcchol <- pcchol[, c("caldate","holiday")]
-#setnames(pcchol,c("caldate"),c("ds"))
-#pcchol[, holiday := as.character(holiday)]
+#day of week trends
+temp <- pcc[,.(ds,y)]
+temp <- setorder(temp,ds)
+x_new  <- msts(temp[,"y"], seasonal.periods=c(7,7*52))
+fit <- tbats(x_new,set.seed(98115))
+fc <- forecast(fit, h=25)
+predvalues <- fc$mean[1:25]
 
-#prophet forecast model
-#pr <- prophet(pcc, growth="linear", daily.seasonality=TRUE, weekly.seasonality=TRUE, holidays=pcchol)
-#dataframe returned from mode
-#fcst <- predict(pr,pcc)
-#plot model
-#prophet_plot_components(pr, fcst, uncertainty = TRUE, plot_cap = TRUE,
-#                        weekly_start = 0, yearly_start = 0)
-#predict forward
-#future <- make_future_dataframe(pr, periods = 365)
-#forecast <- predict(pr, future)
-#plot(pr, forecast, xlab="Calendar Date", ylab="Customer Connection")
-#sample from posterior preditive distribution
-#predictive_samples(pr, pcc)
+#make a vector of past/future dates
+datevec_hist <- cct[, caldate]
+datevec_pred <- as.Date(x = integer(25), origin = "1970-01-01")
+for (i in 1:length(datevec_pred)) {
+  datevec_pred[i] <- max(cct[,caldate]) + i
+}
+dates <- c(datevec_hist,datevec_pred)
+dates <- dates[order(as.Date(dates, format = "%Y-%m-%d"))]
 
-#restrict for plotting
-#cct <- cct[calyear==2017]
+#make dt of historical (fc$x) and predicted values (fc$mean)
+fc_full <- c(fc$x, fc$mean)
+fc_full <- as.data.table(fc_full)
+setnames(fc_full,"fc_full","ccscore")
+fc_full[, predvalue := 1]
+fc_full[1:length(fc$x), predvalue := 0]
+fc_full[, caldate := dates]
+
+#create a split var for plotting
+fc_full[predvalue==0, cc_hist := ccscore]
+fc_full[predvalue==1, cc_pred := ccscore]
 
 #write data
-write.Alteryx(cct, 1)
+write.Alteryx(fc_full, 1)
 
 ]]></RScript>
           <UseFullUpdate value="False" />
@@ -193,17 +218,6 @@ write.Alteryx(cct, 1)
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <MetaInfo connection="Output1">
-          <RecordInfo>
-            <Field name="calweekday" source="R-DATA:" type="Double" />
-            <Field name="holidayflag" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="calyear" source="R-DATA:" type="Double" />
-            <Field name="calweek" source="R-DATA:" type="Double" />
-            <Field name="caldayyear" source="R-DATA:" type="Double" />
-            <Field name="caldate" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="ccscore" source="R-DATA:" type="Double" />
-          </RecordInfo>
-        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
@@ -214,36 +228,35 @@ write.Alteryx(cct, 1)
       <Properties>
         <Configuration>
           <ChartType>Line</ChartType>
-          <GroupingFields orderChanged="False">
-            <Field name="calyear" />
-          </GroupingFields>
-          <LabelField>caldayyear</LabelField>
-          <GeneralStyles ThreeDInterior="false" GradientColoring="false" ChartSizeW="432" ChartSizeH="288" Resolution="2x (192 dpi)" ChartTitle="CC Time Series" ChartTitleSize="14" ChartSubTitle="" ChartSubTitleSize="12" ChartPrimaryFont="Microsoft Sans Serif" />
+          <GroupingFields orderChanged="False" />
+          <LabelField>fc_full</LabelField>
+          <GeneralStyles ThreeDInterior="false" GradientColoring="false" ChartSizeW="432" ChartSizeH="288" Resolution="2x (192 dpi)" ChartTitle="Customer Connection Forecast" ChartTitleSize="14" ChartSubTitle="" ChartSubTitleSize="12" ChartPrimaryFont="Microsoft Sans Serif" />
           <TitleStyles ChangeTitleFont="false" ChartTitleFont="Microsoft Sans Serif" ChartTitleSize="14" ChartTitleColor="#000000" ChartTitleAlignment="Center" ChangeSubTitleFont="false" ChartSubTitleFont="Microsoft Sans Serif" ChartSubTitleSize="12" ChartSubTitleColor="#000000" SubTitleAlignment="Center" ChangeLegendTextFont="false" LegendTextFont="Microsoft Sans Serif" LegendTextSize="12" LegendTextColor="#000000" />
           <Styles UseChartBorder="false" ChartBorderWidth="2" ChartBorderColor="#000000" UseAreaBorder="false" AreaBorderWidth="2" AreaBorderColor="#000000" ChartBGColor="#ffffff" ChartAreaBGColor="#ffffff" ChartInteriorBGColor="#ffffff" />
-          <ChartTypeStyles ShowChartLegend="false" LegendSeparateImage="false" LegendPosition="Top" LegendAlignment="Center" UseLegendBorder="false" LegendBorderWidth="2" LegendBorderColor="#000000" TransposeData="Record" ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesPalette="#779dbf,#d6707b,#82b16a,#eb8953,#fae16b,#907a52,#c194fe,#8a8d82" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="6" />
-          <YAxis YAxisLabelFont="Microsoft Sans Serif" YAxisLabelSize="8" YAxisLabelColor="#000000" YAxisTitle="CC Score" YAxisTitleFont="Microsoft Sans Serif" YAxisTitleSize="10" YAxisTitleColor="#000000" YAxisShowGrid="true" YPrefix="" YPostfix="" YAxisOverrideIncrement="false" YAxisIncrement="100" YAxisOverrideBaseline="false" YAxisBaseline="0" YAxisOverrideTopline="false" YAxisTopline="1000" UseYAxisHiliteline="false" YAxisHiliteValue="0" YAxisHiliteColor="#000000" YAxisOverrideDecimalPlaces="false" YAxisNumDecimalPlaces="0" />
+          <ChartTypeStyles ShowChartLegend="false" LegendSeparateImage="false" LegendPosition="Top" LegendAlignment="Center" UseLegendBorder="false" LegendBorderWidth="2" LegendBorderColor="#000000" TransposeData="Record" ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="6" />
+          <YAxis YAxisLabelFont="Microsoft Sans Serif" YAxisLabelSize="8" YAxisLabelColor="#000000" YAxisTitle="CC Score" YAxisTitleFont="Microsoft Sans Serif" YAxisTitleSize="10" YAxisTitleColor="#000000" YAxisShowGrid="true" YPrefix="" YPostfix="" YAxisOverrideIncrement="false" YAxisIncrement="100" YAxisOverrideBaseline="true" YAxisBaseline="0.2" YAxisOverrideTopline="true" YAxisTopline="0.5" UseYAxisHiliteline="false" YAxisHiliteValue="0" YAxisHiliteColor="#000000" YAxisOverrideDecimalPlaces="false" YAxisNumDecimalPlaces="0" />
           <OAxis UseOpposedAxis="false" OAxisLabelFont="Microsoft Sans Serif" OAxisLabelSize="8" OAxisLabelColor="#000000" OAxisTitle="" OAxisTitleFont="Microsoft Sans Serif" OAxisTitleSize="10" OAxisTitleColor="#000000" OAxisShowGrid="true" OPrefix="" OPostfix="" OAxisOverrideOrigin="false" OAxisCustomOrigin="0" OAxisOverrideIncrement="false" OAxisIncrement="100" OAxisOverrideBaseline="false" OAxisBaseline="0" OAxisOverrideTopline="false" OAxisTopline="1000" UseOAxisHiliteline="false" OAxisHiliteValue="0" OAxisHiliteColor="#000000" OAxisOverrideDecimalPlaces="false" OAxisNumDecimalPlaces="0" />
-          <XAxis XAxisLabelFont="Microsoft Sans Serif" XAxisLabelSize="2" XAxisLabelColor="#000000" XAxisTitle="Day of Calendar Year" XAxisTitleFont="Microsoft Sans Serif" XAxisTitleSize="10" XAxisTitleColor="#000000" XAxisShowGrid="true" />
-          <StylesSeries1 ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesColor="#004080" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="6" PlotOnOpposedAxis="false" />
-          <StylesSeries2 ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesColor="#00488c" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="6" PlotOnOpposedAxis="false" />
+          <XAxis XAxisLabelFont="Microsoft Sans Serif" XAxisLabelSize="2" XAxisLabelColor="#000000" XAxisTitle="Day" XAxisTitleFont="Microsoft Sans Serif" XAxisTitleSize="10" XAxisTitleColor="#000000" XAxisShowGrid="true" />
+          <StylesSeries1 ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesColor="#000000" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="false" SeriesDotSize="6" PlotOnOpposedAxis="false" />
+          <StylesSeries2 ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesColor="#00488c" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="4" PlotOnOpposedAxis="false" />
+          <StylesSeries3 ShowDataPointText="false" DataPointFontFaceName="Microsoft Sans Serif" DataPointFontSize="8" DataPointTextColor="#000000" DataPointTextOffset="2" DataPointUsePrePostfix="false" DataPointOverrideDecimalPlaces="false" DataPointNumDecimalPlaces="0" SeriesColor="#1e6c0b" SeriesPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" SeriesBorderWidth="2" ShowSeriesDots="true" SeriesDotSize="6" PlotOnOpposedAxis="false" />
           <WatermarkStyles UseWatermark="None" WatermarkText="Property of Alteryx, Inc." WatermarkTextFont="Microsoft Sans Serif" WatermarkTextSize="14" WatermarkTextColor="#000000" WatermarkOpacity="60" WatermarkImage="" />
           <AllowMultiple value="true" />
           <CombinationChart value="false" />
-          <SeriesList numSeries="2">
+          <SeriesList numSeries="3">
             <Series1>
-              <Y_ValueField yValueName="LineValue" yValueDesc="Line">ccscore</Y_ValueField>
+              <Y_ValueField yValueName="LineValue" yValueDesc="Line">cc_hist</Y_ValueField>
             </Series1>
             <Series2>
-              <Y_ValueField yValueName="LineValue" yValueDesc="Line">[None]</Y_ValueField>
+              <Y_ValueField yValueName="LineValue" yValueDesc="Line">cc_pred</Y_ValueField>
             </Series2>
+            <Series3>
+              <Y_ValueField yValueName="LineValue" yValueDesc="Line">[None]</Y_ValueField>
+            </Series3>
           </SeriesList>
           <CurrentKnownFields>
-            <Field name="calweekday" />
-            <Field name="calyear" />
-            <Field name="calweek" />
-            <Field name="caldayyear" />
-            <Field name="ccscore" />
+            <Field name="fc_full" />
+            <Field name="predvalue" />
           </CurrentKnownFields>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -260,7 +273,7 @@ write.Alteryx(cct, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2832_7db045fdbb004e20ba20adf7b6880525_\Engine_8988_8342d9c7aa0441d09b8b1f37c76c94e5_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_9528_7a88d4f1b0624832966f06400e7fc6e4_\Engine_8988_2c328fccb40b4d9fbc6a4917d769200b_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -288,7 +301,7 @@ write.Alteryx(cct, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2832_7db045fdbb004e20ba20adf7b6880525_\Engine_8988_db8ac8ac11e448e8b6fd6fa37c373acb_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_9528_7a88d4f1b0624832966f06400e7fc6e4_\Engine_8988_3eaf93dfb7e14d0c907ca3573288db65_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -316,7 +329,7 @@ write.Alteryx(cct, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2832_7db045fdbb004e20ba20adf7b6880525_\Engine_8988_ba53616a1c2f4a3b9b8804b661f667ed_.yxdb</TempFile>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_9528_7a88d4f1b0624832966f06400e7fc6e4_\Engine_8988_453ece8b877e407590804d33a6f00f29_.yxdb</TempFile>
           <TempFileDataProfiling />
           <Layout>
             <ViewMode>Single</ViewMode>
@@ -350,11 +363,11 @@ write.Alteryx(cct, 1)
     </Connection>
     <Connection>
       <Origin ToolID="2" Connection="Output1" />
-      <Destination ToolID="3" Connection="Input" />
+      <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="2" Connection="Output1" />
-      <Destination ToolID="5" Connection="Input" />
+      <Destination ToolID="3" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="3" Connection="Output" />
