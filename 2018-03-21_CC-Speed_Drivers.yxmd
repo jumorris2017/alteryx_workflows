@@ -351,7 +351,7 @@ GROUP BY
             AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
         INNER JOIN APPDWH.ADT_CAL ca
             ON f.BUSINESS_DATE = ca.CAL_DT
-            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
         INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
             ON f.STORE_NUMBER = comp.STORE_NUMBER
             AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
@@ -389,7 +389,7 @@ Table=--SBP411
             AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
         INNER JOIN APPDWH.ADT_CAL ca
             ON f.BUSINESS_DATE = ca.CAL_DT
-            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
         INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
             ON f.STORE_NUMBER = comp.STORE_NUMBER
             AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
@@ -403,13 +403,13 @@ Table=--SBP411
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
-            <Field name="CustTrans" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
-            <Field name="day_count" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
-            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
-            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
-            <Field name="RGN_ORG_LVL_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
-            <Field name="RGN_ORG_LVL_DESCR" size="81" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="V_WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="CustTrans" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="day_count" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="RGN_ORG_LVL_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="RGN_ORG_LVL_DESCR" size="81" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="V_WString" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -469,7 +469,7 @@ Table=--SBP411
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Pulls TSDs and Region at the store level for FEB FY18.</Text>
+          <Text>Pulls TSDs and Region at the store level for FEB FY18 and FY17 (for TSD comp).</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -830,6 +830,601 @@ write.csv(newData,file=paste0(data_dir,"/JanFY18_EXP_CC-Speed_StoreLevel.csv"))<
         </Annotation>
       </Properties>
     </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="678" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT >= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,50000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP415.WORLD
+Table=--SBP414/411
+
+WITH prtnr AS 
+(SELECT DISTINCT
+      SAP_PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      FROM D_PRTNR_VERS
+      WHERE EMP_STAT_CD = 'Active'
+ ) SELECT 
+      prtnr.SAP_PRTNR_ID AS PRTNR_NUM
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,gls.STORE_NUM
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT >= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,50000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="PRTNR_NUM" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411&#xA;&#xA;WITH prtnr AS &#xA;(SELECT DISTINCT&#xA;      SAP_PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      FROM D_PRTNR_VERS&#xA;      WHERE EMP_STAT_CD = 'Active'&#xA; ) SELECT &#xA;      prtnr.SAP_PRTNR_ID AS PRTNR_NUM&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,gls.STORE_NUM&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM&#xA;" type="WString" />
+            <Field name="ORIG_HIRE_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411&#xA;&#xA;WITH prtnr AS &#xA;(SELECT DISTINCT&#xA;      SAP_PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      FROM D_PRTNR_VERS&#xA;      WHERE EMP_STAT_CD = 'Active'&#xA; ) SELECT &#xA;      prtnr.SAP_PRTNR_ID AS PRTNR_NUM&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,gls.STORE_NUM&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM&#xA;" type="DateTime" />
+            <Field name="MOST_RECENT_HIRE_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411&#xA;&#xA;WITH prtnr AS &#xA;(SELECT DISTINCT&#xA;      SAP_PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      FROM D_PRTNR_VERS&#xA;      WHERE EMP_STAT_CD = 'Active'&#xA; ) SELECT &#xA;      prtnr.SAP_PRTNR_ID AS PRTNR_NUM&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,gls.STORE_NUM&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM&#xA;" type="DateTime" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411&#xA;&#xA;WITH prtnr AS &#xA;(SELECT DISTINCT&#xA;      SAP_PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      FROM D_PRTNR_VERS&#xA;      WHERE EMP_STAT_CD = 'Active'&#xA; ) SELECT &#xA;      prtnr.SAP_PRTNR_ID AS PRTNR_NUM&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,gls.STORE_NUM&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM&#xA;" type="Double" />
+            <Field name="JOB_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP414/411&#xA;&#xA;WITH prtnr AS &#xA;(SELECT DISTINCT&#xA;      SAP_PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      FROM D_PRTNR_VERS&#xA;      WHERE EMP_STAT_CD = 'Active'&#xA; ) SELECT &#xA;      prtnr.SAP_PRTNR_ID AS PRTNR_NUM&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,gls.STORE_NUM&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, STORE_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM&#xA;" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="798" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_e5f982c221c7436596c97ed7f81a4cb9_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="678" y="246" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Partner Tenure</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="678" y="294" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls partner tenure and assigned store</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="894" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+
+/* SR Transaction Percent by Store */
+
+WITH SQ AS
+(SELECT
+   ss.STORE_NUM
+  ,ss.DRIVE_THRU_IND
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tr.TRANS_ID
+  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER
+
+FROM APPCA.F_POS_HDR tr
+
+INNER JOIN D_POS_HDR_TRANS_TYPE ty
+  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY
+  
+INNER JOIN APPCA.D_STORE_VERS ss
+  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY
+  
+INNER JOIN APPCA.D_CAL ca
+  ON tr.BUS_DT = ca.CAL_DT
+
+WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'
+  AND ss.OWNR_TYPE_CD = 'CO'
+  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15
+  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1
+
+GROUP BY
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,ss.DRIVE_THRU_IND
+  ,tr.TRANS_ID
+  ,tr.GUID_ID)
+SELECT 
+   SQ.STORE_NUM
+  ,SQ.DRIVE_THRU_IND
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.SR_MEMBER
+  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT
+  
+FROM SQ
+
+GROUP BY
+   SQ.STORE_NUM
+  ,SQ.DRIVE_THRU_IND
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.SR_MEMBER
+
+ORDER BY
+   SQ.STORE_NUM
+  ,SQ.SR_MEMBER</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+
+/* SR Transaction Percent by Store */
+
+WITH SQ AS
+(SELECT
+   ss.STORE_NUM
+  ,ss.DRIVE_THRU_IND
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tr.TRANS_ID
+  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER
+
+FROM APPCA.F_POS_HDR tr
+
+INNER JOIN D_POS_HDR_TRANS_TYPE ty
+  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY
+  
+INNER JOIN APPCA.D_STORE_VERS ss
+  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY
+  
+INNER JOIN APPCA.D_CAL ca
+  ON tr.BUS_DT = ca.CAL_DT
+
+WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'
+  AND ss.OWNR_TYPE_CD = 'CO'
+  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15
+  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1
+
+GROUP BY
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,ss.DRIVE_THRU_IND
+  ,tr.TRANS_ID
+  ,tr.GUID_ID)
+SELECT 
+   SQ.STORE_NUM
+  ,SQ.DRIVE_THRU_IND
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.SR_MEMBER
+  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT
+  
+FROM SQ
+
+GROUP BY
+   SQ.STORE_NUM
+  ,SQ.DRIVE_THRU_IND
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.SR_MEMBER
+
+ORDER BY
+   SQ.STORE_NUM
+  ,SQ.SR_MEMBER</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+            <Field name="DRIVE_THRU_IND" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+            <Field name="SR_MEMBER" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+            <Field name="TTL_TRANS_CNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,ss.DRIVE_THRU_IND&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID)&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;  ,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.DRIVE_THRU_IND&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.SR_MEMBER&#xA;&#xA;ORDER BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.SR_MEMBER" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="21">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1014" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_8d37913454e042c687dcc1f66967d562_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="894" y="246" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>SR Trans and Cafe-Only Flag</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="894" y="294" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls total transaction count by SR members and non-SR members, and pulls DT flag, at the store level.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="894" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+--SBP416
+
+WITH SQ AS
+      (SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ), SQ2 AS
+(SELECT 
+ SQ.STORE_NUM
+,SQ.FSCL_YR_NUM
+,SQ.FSCL_PER_IN_YR_NUM
+,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0
+      WHEN SQ.N_TRANS &gt;= 26 THEN 1
+      END) AS HIGH_TRANS_CUST
+,SQ.GUID_ID
+
+FROM SQ
+
+GROUP BY
+ SQ.STORE_NUM
+,SQ.FSCL_YR_NUM
+,SQ.FSCL_PER_IN_YR_NUM
+,SQ.N_TRANS
+,SQ.GUID_ID)
+SELECT 
+ SQ2.STORE_NUM
+,SQ2.FSCL_YR_NUM
+,SQ2.FSCL_PER_IN_YR_NUM
+,SQ2.HIGH_TRANS_CUST
+,COUNT(GUID_ID) AS N_CUST
+FROM SQ2
+GROUP BY 
+ SQ2.STORE_NUM
+,SQ2.FSCL_YR_NUM
+,SQ2.FSCL_PER_IN_YR_NUM
+,SQ2.HIGH_TRANS_CUST</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+--SBP416
+
+WITH SQ AS
+      (SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM = 4
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ), SQ2 AS
+(SELECT 
+ SQ.STORE_NUM
+,SQ.FSCL_YR_NUM
+,SQ.FSCL_PER_IN_YR_NUM
+,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0
+      WHEN SQ.N_TRANS &gt;= 26 THEN 1
+      END) AS HIGH_TRANS_CUST
+,SQ.GUID_ID
+
+FROM SQ
+
+GROUP BY
+ SQ.STORE_NUM
+,SQ.FSCL_YR_NUM
+,SQ.FSCL_PER_IN_YR_NUM
+,SQ.N_TRANS
+,SQ.GUID_ID)
+SELECT 
+ SQ2.STORE_NUM
+,SQ2.FSCL_YR_NUM
+,SQ2.FSCL_PER_IN_YR_NUM
+,SQ2.HIGH_TRANS_CUST
+,COUNT(GUID_ID) AS N_CUST
+FROM SQ2
+GROUP BY 
+ SQ2.STORE_NUM
+,SQ2.FSCL_YR_NUM
+,SQ2.FSCL_PER_IN_YR_NUM
+,SQ2.HIGH_TRANS_CUST</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--SBP416&#xA;&#xA;WITH SQ AS&#xA;      (SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ), SQ2 AS&#xA;(SELECT &#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0&#xA;      WHEN SQ.N_TRANS &gt;= 26 THEN 1&#xA;      END) AS HIGH_TRANS_CUST&#xA;,SQ.GUID_ID&#xA;&#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,SQ.N_TRANS&#xA;,SQ.GUID_ID)&#xA;SELECT &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST&#xA;,COUNT(GUID_ID) AS N_CUST&#xA;FROM SQ2&#xA;GROUP BY &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--SBP416&#xA;&#xA;WITH SQ AS&#xA;      (SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ), SQ2 AS&#xA;(SELECT &#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0&#xA;      WHEN SQ.N_TRANS &gt;= 26 THEN 1&#xA;      END) AS HIGH_TRANS_CUST&#xA;,SQ.GUID_ID&#xA;&#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,SQ.N_TRANS&#xA;,SQ.GUID_ID)&#xA;SELECT &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST&#xA;,COUNT(GUID_ID) AS N_CUST&#xA;FROM SQ2&#xA;GROUP BY &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--SBP416&#xA;&#xA;WITH SQ AS&#xA;      (SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ), SQ2 AS&#xA;(SELECT &#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0&#xA;      WHEN SQ.N_TRANS &gt;= 26 THEN 1&#xA;      END) AS HIGH_TRANS_CUST&#xA;,SQ.GUID_ID&#xA;&#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,SQ.N_TRANS&#xA;,SQ.GUID_ID)&#xA;SELECT &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST&#xA;,COUNT(GUID_ID) AS N_CUST&#xA;FROM SQ2&#xA;GROUP BY &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST" type="Double" />
+            <Field name="HIGH_TRANS_CUST" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--SBP416&#xA;&#xA;WITH SQ AS&#xA;      (SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ), SQ2 AS&#xA;(SELECT &#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0&#xA;      WHEN SQ.N_TRANS &gt;= 26 THEN 1&#xA;      END) AS HIGH_TRANS_CUST&#xA;,SQ.GUID_ID&#xA;&#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,SQ.N_TRANS&#xA;,SQ.GUID_ID)&#xA;SELECT &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST&#xA;,COUNT(GUID_ID) AS N_CUST&#xA;FROM SQ2&#xA;GROUP BY &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST" type="Double" />
+            <Field name="N_CUST" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;--SBP416&#xA;&#xA;WITH SQ AS&#xA;      (SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM = 2018 &#xA;       AND ca.FSCL_PER_IN_YR_NUM = 4&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,ca.FSCL_PER_IN_YR_NUM&#xA;        ), SQ2 AS&#xA;(SELECT &#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,(CASE WHEN SQ.N_TRANS &lt; 26 THEN 0&#xA;      WHEN SQ.N_TRANS &gt;= 26 THEN 1&#xA;      END) AS HIGH_TRANS_CUST&#xA;,SQ.GUID_ID&#xA;&#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA; SQ.STORE_NUM&#xA;,SQ.FSCL_YR_NUM&#xA;,SQ.FSCL_PER_IN_YR_NUM&#xA;,SQ.N_TRANS&#xA;,SQ.GUID_ID)&#xA;SELECT &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST&#xA;,COUNT(GUID_ID) AS N_CUST&#xA;FROM SQ2&#xA;GROUP BY &#xA; SQ2.STORE_NUM&#xA;,SQ2.FSCL_YR_NUM&#xA;,SQ2.FSCL_PER_IN_YR_NUM&#xA;,SQ2.HIGH_TRANS_CUST" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1014" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_8d37913454e042c687dcc1f66967d562_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="894" y="42" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>High Frequency Customers</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="894" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls number of customers that are &lt;26 trans/month versus number of customers that are &gt;=26 trans/month at the store level.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
   </Nodes>
   <Connections>
     <Connection>
@@ -843,6 +1438,18 @@ write.csv(newData,file=paste0(data_dir,"/JanFY18_EXP_CC-Speed_StoreLevel.csv"))<
     <Connection>
       <Origin ToolID="9" Connection="Output" />
       <Destination ToolID="10" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="17" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="20" Connection="Output" />
+      <Destination ToolID="21" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="24" Connection="Output" />
+      <Destination ToolID="25" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
