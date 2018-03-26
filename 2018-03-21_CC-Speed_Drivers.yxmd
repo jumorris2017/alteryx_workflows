@@ -996,7 +996,7 @@ ON prtnr.SAP_PRTNR_ID = gls.PRTNR_NUM
     </Node>
     <Node ToolID="20">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="894" y="342" />
+        <Position x="894" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1143,7 +1143,7 @@ ORDER BY
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1014" y="342" />
+        <Position x="1014" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1171,7 +1171,7 @@ ORDER BY
     </Node>
     <Node ToolID="22">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="894" y="246" width="100" height="40" />
+        <Position x="894" y="54" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1191,7 +1191,7 @@ ORDER BY
     </Node>
     <Node ToolID="23">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="894" y="294" width="100" height="40" />
+        <Position x="894" y="114" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1211,7 +1211,7 @@ ORDER BY
     </Node>
     <Node ToolID="24">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="894" y="150" />
+        <Position x="1326" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1359,7 +1359,7 @@ GROUP BY
     </Node>
     <Node ToolID="25">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1014" y="150" />
+        <Position x="1422" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1387,7 +1387,7 @@ GROUP BY
     </Node>
     <Node ToolID="26">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="894" y="42" width="100" height="52" />
+        <Position x="1338" y="54" width="100" height="52" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1407,11 +1407,573 @@ GROUP BY
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="894" y="102" width="100" height="40" />
+        <Position x="1338" y="114" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Text>Pulls number of customers that are &lt;26 trans/month versus number of customers that are &gt;=26 trans/month at the store level.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="28">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1110" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+
+--/* CAW */
+
+SELECT S3.STORE_NUM,
+AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,
+AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,
+AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD
+FROM
+(
+  SELECT S2.*, 
+  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,
+  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,
+  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD
+  FROM
+  (
+    SELECT S.GUID_USER_ID,
+    S.CASE_ID,
+    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,
+    S.STORE_NUM,
+    C.CAL_DT,
+    C.DAY_NM,
+    C.WKDY_IND
+    FROM APPOTHER.AFT_CV_SRVY_RSPNS S
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+    ON S.STORE_NUM = STR.STORE_NUM 
+    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W
+    ON S.CASE_ID = W.CASE_ID
+    LEFT OUTER JOIN APPCA.D_CAL C
+    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+    AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+    AND STR.CURRENT_FLG = 'Y'
+    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'
+    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'
+    GROUP BY S.GUID_USER_ID,
+    S.CASE_ID,
+    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),
+    S.STORE_NUM,
+    C.CAL_DT,
+    C.DAY_NM,
+    C.WKDY_IND
+  ) S2
+  INNER JOIN APPCA.F_POS_HDR POSH
+  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)
+  AND S2.GUID_USER_ID = POSH.GUID_ID
+) S3
+GROUP BY S3.STORE_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+
+--/* CAW */
+
+SELECT S3.STORE_NUM,
+AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,
+AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,
+AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD
+FROM
+(
+  SELECT S2.*, 
+  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,
+  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,
+  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD
+  FROM
+  (
+    SELECT S.GUID_USER_ID,
+    S.CASE_ID,
+    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,
+    S.STORE_NUM,
+    C.CAL_DT,
+    C.DAY_NM,
+    C.WKDY_IND
+    FROM APPOTHER.AFT_CV_SRVY_RSPNS S
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+    ON S.STORE_NUM = STR.STORE_NUM 
+    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W
+    ON S.CASE_ID = W.CASE_ID
+    LEFT OUTER JOIN APPCA.D_CAL C
+    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+    AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+    AND STR.CURRENT_FLG = 'Y'
+    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'
+    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'
+    GROUP BY S.GUID_USER_ID,
+    S.CASE_ID,
+    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),
+    S.STORE_NUM,
+    C.CAL_DT,
+    C.DAY_NM,
+    C.WKDY_IND
+  ) S2
+  INNER JOIN APPCA.F_POS_HDR POSH
+  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)
+  AND S2.GUID_USER_ID = POSH.GUID_ID
+) S3
+GROUP BY S3.STORE_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;--/* CAW */&#xA;&#xA;SELECT S3.STORE_NUM,&#xA;AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,&#xA;AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,&#xA;AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD&#xA;FROM&#xA;(&#xA;  SELECT S2.*, &#xA;  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,&#xA;  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,&#xA;  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD&#xA;  FROM&#xA;  (&#xA;    SELECT S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;    FROM APPOTHER.AFT_CV_SRVY_RSPNS S&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;    ON S.STORE_NUM = STR.STORE_NUM &#xA;    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W&#xA;    ON S.CASE_ID = W.CASE_ID&#xA;    LEFT OUTER JOIN APPCA.D_CAL C&#xA;    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;    AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    AND STR.CURRENT_FLG = 'Y'&#xA;    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'&#xA;    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'&#xA;    GROUP BY S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;  ) S2&#xA;  INNER JOIN APPCA.F_POS_HDR POSH&#xA;  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)&#xA;  AND S2.GUID_USER_ID = POSH.GUID_ID&#xA;) S3&#xA;GROUP BY S3.STORE_NUM" type="WString" />
+            <Field name="N_ITEMS_TOTAL" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;--/* CAW */&#xA;&#xA;SELECT S3.STORE_NUM,&#xA;AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,&#xA;AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,&#xA;AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD&#xA;FROM&#xA;(&#xA;  SELECT S2.*, &#xA;  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,&#xA;  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,&#xA;  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD&#xA;  FROM&#xA;  (&#xA;    SELECT S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;    FROM APPOTHER.AFT_CV_SRVY_RSPNS S&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;    ON S.STORE_NUM = STR.STORE_NUM &#xA;    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W&#xA;    ON S.CASE_ID = W.CASE_ID&#xA;    LEFT OUTER JOIN APPCA.D_CAL C&#xA;    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;    AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    AND STR.CURRENT_FLG = 'Y'&#xA;    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'&#xA;    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'&#xA;    GROUP BY S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;  ) S2&#xA;  INNER JOIN APPCA.F_POS_HDR POSH&#xA;  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)&#xA;  AND S2.GUID_USER_ID = POSH.GUID_ID&#xA;) S3&#xA;GROUP BY S3.STORE_NUM" type="Double" />
+            <Field name="N_ITEMS_BEV" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;--/* CAW */&#xA;&#xA;SELECT S3.STORE_NUM,&#xA;AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,&#xA;AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,&#xA;AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD&#xA;FROM&#xA;(&#xA;  SELECT S2.*, &#xA;  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,&#xA;  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,&#xA;  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD&#xA;  FROM&#xA;  (&#xA;    SELECT S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;    FROM APPOTHER.AFT_CV_SRVY_RSPNS S&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;    ON S.STORE_NUM = STR.STORE_NUM &#xA;    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W&#xA;    ON S.CASE_ID = W.CASE_ID&#xA;    LEFT OUTER JOIN APPCA.D_CAL C&#xA;    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;    AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    AND STR.CURRENT_FLG = 'Y'&#xA;    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'&#xA;    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'&#xA;    GROUP BY S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;  ) S2&#xA;  INNER JOIN APPCA.F_POS_HDR POSH&#xA;  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)&#xA;  AND S2.GUID_USER_ID = POSH.GUID_ID&#xA;) S3&#xA;GROUP BY S3.STORE_NUM" type="Double" />
+            <Field name="N_ITEMS_FOOD" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;--/* CAW */&#xA;&#xA;SELECT S3.STORE_NUM,&#xA;AVG(S3.N_ITEMS_TOTAL) AS N_ITEMS_TOTAL,&#xA;AVG(S3.N_ITEMS_BEV) AS N_ITEMS_BEV,&#xA;AVG(S3.N_ITEMS_FOOD) AS N_ITEMS_FOOD&#xA;FROM&#xA;(&#xA;  SELECT S2.*, &#xA;  (POSH.TRANS_QTY) AS N_ITEMS_TOTAL,&#xA;  (POSH.TTL_BEV_QTY) AS N_ITEMS_BEV,&#xA;  (POSH.TTL_FOOD_QTY) AS N_ITEMS_FOOD&#xA;  FROM&#xA;  (&#xA;    SELECT S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)) AS TRANS_ID,&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;    FROM APPOTHER.AFT_CV_SRVY_RSPNS S&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;    ON S.STORE_NUM = STR.STORE_NUM &#xA;    LEFT OUTER JOIN APPOTHER.CUST_INS_WEIGHTS W&#xA;    ON S.CASE_ID = W.CASE_ID&#xA;    LEFT OUTER JOIN APPCA.D_CAL C&#xA;    ON TRUNC(S.TRANS_DTM) = TRUNC(C.CAL_DT)&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;    AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    AND STR.CURRENT_FLG = 'Y'&#xA;    AND TRUNC(S.TRANS_DTM) &gt;= '01-FEB-2018'&#xA;    AND TRUNC(S.TRANS_DTM) &lt;= '28-FEB-2018'&#xA;    GROUP BY S.GUID_USER_ID,&#xA;    S.CASE_ID,&#xA;    TO_CHAR(S.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S.RGSTR_NUM, '00')) || TRIM(to_char(S.TRANS_ID)),&#xA;    S.STORE_NUM,&#xA;    C.CAL_DT,&#xA;    C.DAY_NM,&#xA;    C.WKDY_IND&#xA;  ) S2&#xA;  INNER JOIN APPCA.F_POS_HDR POSH&#xA;  ON S2.TRANS_ID = TO_CHAR(POSH.TRANS_ID)&#xA;  AND S2.GUID_USER_ID = POSH.GUID_ID&#xA;) S3&#xA;GROUP BY S3.STORE_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="29">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1230" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_8d37913454e042c687dcc1f66967d562_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="30">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1110" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Product Mix</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="31">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1110" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls average number of beverage and food items sold per ticket (Feb 2018) at the store-level.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="32">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1518" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="18"><![CDATA[odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)
+
+SELECT
+  sbo.StoreNumNum AS Store_Num
+  ,drad.AreaAbbrev
+  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date 
+  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'
+  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'
+  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'
+
+FROM PDW_Bulk.PRODM.Org_and_Job_History ojh
+
+INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo
+		ON ojh.Organizational_Unit = sbo.OrgID
+    
+INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad
+  ON ojh.Organizational_Unit = drad.BaseOrgid
+    AND drad.AreaAbbrev IN ('A010','A037')
+
+INNER JOIN PDW_Bulk.PRODM.Company_History ch
+		ON ojh.Personnel_Number = ch.Personnel_Number
+			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date
+
+WHERE ojh.Job_Key = '50000117'  -- Store Managers
+  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date 
+]]></File>
+          <FormatSpecificOptions>
+            <PreSQL />
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <TableStyle>Quoted</TableStyle>
+            <ReadUncommitted>False</ReadUncommitted>
+            <PostSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Source=MS10905
+Catalog=PDW_Bulk
+Table=--SBP415ss (PDW_Bulk)
+
+SELECT
+  sbo.StoreNumNum AS Store_Num
+  ,drad.AreaAbbrev
+  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date 
+  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'
+  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'
+  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'
+
+FROM PDW_Bulk.PRODM.Org_and_Job_History ojh
+
+INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo
+		ON ojh.Organizational_Unit = sbo.OrgID
+    
+INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad
+  ON ojh.Organizational_Unit = drad.BaseOrgid
+    AND drad.AreaAbbrev IN ('A010','A037')
+
+INNER JOIN PDW_Bulk.PRODM.Company_History ch
+		ON ojh.Personnel_Number = ch.Personnel_Number
+			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date
+
+WHERE ojh.Job_Key = '50000117'  -- Store Managers
+  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date 
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Store_Num" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="Int32" />
+            <Field name="AreaAbbrev" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Personnel_Number" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Start_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="End_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Organizational_Unit" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Job_Key" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Unit_Start_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Unit_End_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Job_Key_Start_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Job_Key_End_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Job_Store_Start_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Job_Store_End_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Store_Start_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="Org_Store_End_Date" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="V_WString" />
+            <Field name="SM_Tenure_Store_Yrs" scale="6" size="20" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="FixedDecimal" />
+            <Field name="SM_Tenure_Yrs" scale="6" size="20" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="FixedDecimal" />
+            <Field name="Company_Tenure_Yrs" scale="6" size="20" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;SELECT&#xA;  sbo.StoreNumNum AS Store_Num&#xA;  ,drad.AreaAbbrev&#xA;  ,ojh.Personnel_Number, ojh.Start_Date, ojh.End_Date, Organizational_Unit, Job_Key, Org_Unit_Start_Date, Org_Unit_End_Date, Job_Key_Start_Date, Job_Key_End_Date, Org_Job_Store_Start_Date, Org_Job_Store_End_Date, Org_Store_Start_Date, Org_Store_End_Date &#xA;  ,DATEDIFF(day, Org_Job_Store_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Store_Yrs'&#xA;  ,DATEDIFF(day, Job_Key_Start_Date, GETDATE()) / 365.25 AS 'SM_Tenure_Yrs'&#xA;  ,DATEDIFF(day, ch.Start_Date, GETDATE()) / 365.25 AS 'Company_Tenure_Yrs'&#xA;&#xA;FROM PDW_Bulk.PRODM.Org_and_Job_History ojh&#xA;&#xA;INNER JOIN PDW_Bulk.[PRODM].[Stores_by_Org] sbo&#xA;		ON ojh.Organizational_Unit = sbo.OrgID&#xA;    &#xA;INNER JOIN PDW_Bulk.PRODW.ORG_TREE_DRAD drad&#xA;  ON ojh.Organizational_Unit = drad.BaseOrgid&#xA;    AND drad.AreaAbbrev IN ('A010','A037')&#xA;&#xA;INNER JOIN PDW_Bulk.PRODM.Company_History ch&#xA;		ON ojh.Personnel_Number = ch.Personnel_Number&#xA;			AND CONVERT(date, GETDATE()) BETWEEN ch.Start_Date AND ch.End_Date&#xA;&#xA;WHERE ojh.Job_Key = '50000117'  -- Store Managers&#xA;  AND CONVERT(date, GETDATE()) BETWEEN ojh.Start_Date AND ojh.End_Date &#xA;" type="FixedDecimal" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="33">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1638" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_e5f982c221c7436596c97ed7f81a4cb9_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="34">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1518" y="66" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>SM Tenure in Store</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="35">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1518" y="114" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls SM tenure in store, current.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="36">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1734" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="18">odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)
+
+WITH sq AS (
+SELECT
+   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'
+  --,ojm.Org_ID
+  ,ojm.Period_Name
+  --,pt.Start_Date
+  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'
+  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'
+  ,SUM(ojm.Turnover_Period) AS 'Terms'
+
+FROM PRODM.Org_Job_Measures ojm
+       
+INNER JOIN PRODW.ORG_TREE_DRAD ot
+  ON ojm.Org_ID = ot.BaseOrgid
+    AND ot.AreaAbbrev IN ('A058','A140')
+
+INNER JOIN PRODM.Periods_Table pt
+    ON ojm.Period_Name = pt.Period_Name
+      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015
+      AND pt.Period_Type = 'FM'
+
+WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs
+
+GROUP BY
+   CAST(ot.StoreAbbrev AS INT)
+  ,ojm.Org_ID
+  ,ojm.Period_Name
+  ,pt.Start_Date)
+
+SELECT sq.StoreNum
+, sq.Period_Name
+, sq.Terms
+, sq.PartnerDays
+, sq.Org_Days
+, (sq.PartnerDays/sq.Org_Days) AS AVG_HC
+, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE
+
+FROM sq
+WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1
+
+GROUP BY sq.StoreNum
+, sq.Period_Name
+, sq.Terms
+, sq.PartnerDays
+, sq.Org_Days</File>
+          <FormatSpecificOptions>
+            <PreSQL />
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <TableStyle>Quoted</TableStyle>
+            <ReadUncommitted>False</ReadUncommitted>
+            <PostSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Source=MS10905
+Catalog=PDW_Bulk
+Table=--SBP415ss (PDW_Bulk)
+
+WITH sq AS (
+SELECT
+   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'
+  --,ojm.Org_ID
+  ,ojm.Period_Name
+  --,pt.Start_Date
+  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'
+  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'
+  ,SUM(ojm.Turnover_Period) AS 'Terms'
+
+FROM PRODM.Org_Job_Measures ojm
+       
+INNER JOIN PRODW.ORG_TREE_DRAD ot
+  ON ojm.Org_ID = ot.BaseOrgid
+    AND ot.AreaAbbrev IN ('A058','A140')
+
+INNER JOIN PRODM.Periods_Table pt
+    ON ojm.Period_Name = pt.Period_Name
+      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015
+      AND pt.Period_Type = 'FM'
+
+WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs
+
+GROUP BY
+   CAST(ot.StoreAbbrev AS INT)
+  ,ojm.Org_ID
+  ,ojm.Period_Name
+  ,pt.Start_Date)
+
+SELECT sq.StoreNum
+, sq.Period_Name
+, sq.Terms
+, sq.PartnerDays
+, sq.Org_Days
+, (sq.PartnerDays/sq.Org_Days) AS AVG_HC
+, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE
+
+FROM sq
+WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1
+
+GROUP BY sq.StoreNum
+, sq.Period_Name
+, sq.Terms
+, sq.PartnerDays
+, sq.Org_Days</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="StoreNum" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+            <Field name="Period_Name" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="V_WString" />
+            <Field name="Terms" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+            <Field name="PartnerDays" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+            <Field name="Org_Days" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+            <Field name="AVG_HC" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+            <Field name="TERM_RATE" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--SBP415ss (PDW_Bulk)&#xA;&#xA;WITH sq AS (&#xA;SELECT&#xA;   CAST(ot.StoreAbbrev AS INT) AS 'StoreNum'&#xA;  --,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  --,pt.Start_Date&#xA;  ,SUM(ojm.Partner_Headcount_Period) AS 'PartnerDays'&#xA;  ,AVG(ojm.Org_Days_In_Period) AS 'Org_Days'&#xA;  ,SUM(ojm.Turnover_Period) AS 'Terms'&#xA;&#xA;FROM PRODM.Org_Job_Measures ojm&#xA;       &#xA;INNER JOIN PRODW.ORG_TREE_DRAD ot&#xA;  ON ojm.Org_ID = ot.BaseOrgid&#xA;    AND ot.AreaAbbrev IN ('A058','A140')&#xA;&#xA;INNER JOIN PRODM.Periods_Table pt&#xA;    ON ojm.Period_Name = pt.Period_Name&#xA;      AND pt.Start_Date BETWEEN '2018-01-01' AND '2018-02-28'  -- fiscal periods in calendar 2015&#xA;      AND pt.Period_Type = 'FM'&#xA;&#xA;WHERE ojm.Job_Key NOT IN ('50000117','50000118')  --exclude SMs and ASMs&#xA;&#xA;GROUP BY&#xA;   CAST(ot.StoreAbbrev AS INT)&#xA;  ,ojm.Org_ID&#xA;  ,ojm.Period_Name&#xA;  ,pt.Start_Date)&#xA;&#xA;SELECT sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days&#xA;, (sq.PartnerDays/sq.Org_Days) AS AVG_HC&#xA;, (CASE WHEN sq.Terms&gt;=1 THEN (sq.Terms*100) / (sq.PartnerDays/sq.Org_Days) ELSE 0 END) AS TERM_RATE&#xA;&#xA;FROM sq&#xA;WHERE sq.PartnerDays &gt;=1 AND sq.Org_Days&gt;=1&#xA;&#xA;GROUP BY sq.StoreNum&#xA;, sq.Period_Name&#xA;, sq.Terms&#xA;, sq.PartnerDays&#xA;, sq.Org_Days" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="37">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1854" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13252_15f9722e38af46cf93387f6ec8ca8b28_\Engine_8988_e5f982c221c7436596c97ed7f81a4cb9_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="38">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1734" y="66" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Hourly partner turnover</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="39">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1734" y="114" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Calculates turnover rate for non-SMs/ASMs at the store-level.</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -1450,6 +2012,18 @@ GROUP BY
     <Connection>
       <Origin ToolID="24" Connection="Output" />
       <Destination ToolID="25" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="28" Connection="Output" />
+      <Destination ToolID="29" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="32" Connection="Output" />
+      <Destination ToolID="33" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="36" Connection="Output" />
+      <Destination ToolID="37" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
