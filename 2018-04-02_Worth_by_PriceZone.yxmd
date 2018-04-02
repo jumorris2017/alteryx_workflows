@@ -1,0 +1,654 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+
+SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+    
+JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz
+  ON sr.STORE_NUM = pz.STORE_NUM
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+
+ORDER BY 
+pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+
+SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+    
+JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz
+  ON sr.STORE_NUM = pz.STORE_NUM
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+
+ORDER BY 
+pz.BEV_PRICE_ZONE_JDA
+,pz.BEV_PRICE_ZONE_NAME
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="QSTN_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="V_WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="BEV_PRICE_ZONE_JDA" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Int64" />
+            <Field name="BEV_PRICE_ZONE_NAME" size="54" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="V_WString" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.BEV_PRICE_ZONE_JDA&#xA;,pz.BEV_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11080_9ed57e7bcccf4e2c9684bf779f3e008d_\Engine_10728_c65e1dd64dee47e7be1022b48492a518_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="66" y="90" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Beverage Zones WP Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="246" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+
+SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+    
+JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz
+  ON sr.STORE_NUM = pz.STORE_NUM
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID <> '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+
+ORDER BY 
+pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=--/* CAW */
+
+SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+    
+JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz
+  ON sr.STORE_NUM = pz.STORE_NUM
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID <> '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+,pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+
+ORDER BY 
+pz.FOOD_PRICE_ZONE_APL
+,pz.FOOD_PRICE_ZONE_NAME
+,ca.FSCL_YR_NUM
+,ca.FSCL_QTR_IN_YR_NUM
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="QSTN_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="V_WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Double" />
+            <Field name="FOOD_PRICE_ZONE_APL" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Int64" />
+            <Field name="FOOD_PRICE_ZONE_NAME" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="V_WString" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Double" />
+            <Field name="TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    &#xA;JOIN DEPT_CUST_INS.TN_PRICE_ZONES_DEC2017 pz&#xA;  ON sr.STORE_NUM = pz.STORE_NUM&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM = 1))&#xA;&#xA;GROUP BY&#xA;sr.QSTN_ID&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;,pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;&#xA;ORDER BY &#xA;pz.FOOD_PRICE_ZONE_APL&#xA;,pz.FOOD_PRICE_ZONE_NAME&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_QTR_IN_YR_NUM&#xA;" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="366" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11080_9ed57e7bcccf4e2c9684bf779f3e008d_\Engine_10728_c65e1dd64dee47e7be1022b48492a518_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="90" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Food Zones WP Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="546" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+
+SELECT DISTINCT
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    --AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))
+
+GROUP BY
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+
+ORDER BY 
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+
+SELECT DISTINCT
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) 
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    --AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+WHERE sr.QSTN_ID IN ('Q2_8')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))
+
+GROUP BY
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+
+ORDER BY 
+sr.STORE_NUM
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    --AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))&#xA;&#xA;GROUP BY&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;&#xA;ORDER BY &#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    --AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))&#xA;&#xA;GROUP BY&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;&#xA;ORDER BY &#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_WK_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    --AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))&#xA;&#xA;GROUP BY&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;&#xA;ORDER BY &#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM" type="Double" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    --AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))&#xA;&#xA;GROUP BY&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;&#xA;ORDER BY &#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */&#xA;&#xA;SELECT DISTINCT&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) &#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  --,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    --AND st.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;WHERE sr.QSTN_ID IN ('Q2_8')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND (ca.FSCL_YR_NUM IN (2016,2017) OR (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_WK_IN_YR_NUM &lt;= 25))&#xA;&#xA;GROUP BY&#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM&#xA;&#xA;ORDER BY &#xA;sr.STORE_NUM&#xA;,ca.FSCL_YR_NUM&#xA;,ca.FSCL_WK_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="630" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11080_9ed57e7bcccf4e2c9684bf779f3e008d_\Engine_10728_c65e1dd64dee47e7be1022b48492a518_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="558" y="90" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>WP scores for all stores by week</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="750" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>#load libaries
+library(data.table)
+
+#set path (new Q)
+data_dir &lt;- "O:/CoOp/CoOp194_PROReportng&amp;OM/Julie"
+
+#load data
+wp &lt;- fread(paste0(data_dir,"/FY16-18_WPscores_PriceZones.csv"))
+zones &lt;- fread(paste0(data_dir,"/base_price_zone.csv"))
+
+#merge
+full &lt;- Reduce(function(x,y) {merge(x,y,all=T,by="STORE_NUM")}, list(wp,zones))
+
+#aggregate
+full &lt;- full[, list(TOTAL_TB = sum(TOTAL_TB,na.rm=T),
+                    TOTAL_RSPNS = sum(TOTAL_RSPNS,na.rm=T),
+                    WP_TB = sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T)),
+             by=c("zone_nm","FSCL_YR_NUM","FSCL_WK_IN_YR_NUM")]
+full[, WP_TB := round(WP_TB,3)]
+full &lt;- full[zone_nm!='#N/A']
+full &lt;- na.omit(full)
+#set order
+setorder(full,zone_nm,FSCL_YR_NUM,FSCL_WK_IN_YR_NUM)
+full &lt;- full[,.(zone_nm,FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,WP_TB)]
+
+#export
+write.csv(full,paste0(data_dir,"/FY16-18_WPscores_by_pricezone.csv"))</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="726" y="78" width="100" height="88" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Link weekly WP scores to flat file of pricing zones</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="66" y="42" width="276" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Bev/Food zones in CAW are outdated, so used pricing zone flat file from Molly for this analysis.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="5" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-04-02_Worth_by_PriceZone</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
