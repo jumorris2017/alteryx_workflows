@@ -1,0 +1,1099 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="678" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript><![CDATA[#managing data for SCAP
+
+#load libraries
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+
+#set folder directory
+setwd("C:/Users/jumorris/Desktop/SCAP_PTF/")
+file_list <- list.files("C:/Users/jumorris/Desktop/SCAP_PTF/")
+file_list <- grep(".csv",file_list,value=T)
+
+#load and merge
+DT <- setNames(do.call(rbind, Map('cbind', 
+                                 lapply(file_list, read.table, header = T, sep=","), V3=file_list)), 
+               c("PARTNERID","SCAPSTATUS","PTFDATE"))
+setDT(DT)
+DT <- DT[SCAPSTATUS=="Active-Participant"|SCAPSTATUS=="ActiveParticipant"]
+DT[SCAPSTATUS=="Active-Participant", SCAPSTATUS := "ActiveParticipant"]
+
+#remove file name components
+DT[, ptf := gsub("PartnerFile", "", DT[, PTFDATE])]
+DT[, ptf := gsub(".csv", "", DT[, ptf])]
+
+#reduce to only partner id and date
+activedt <- DT[, .(PARTNERID, ptf)]
+#order by ptf
+activedt <- setorder(activedt,ptf)
+
+#create dataset of binary indicators where partners were active participants
+activedt <- activedt %>%
+  mutate(yesno = 1) %>%
+  distinct %>%
+  spread(ptf, yesno, fill = 0)
+setDT(activedt)
+
+#grab start date
+activedt[, period17N := rowSums(.SD,na.rm=T), .SDcols=grep("2017",colnames(activedt),value=T)]
+activedt[period17N>=1, scap2017 := 1]
+activedt[period17N==0, scap2017 := 0]
+
+#subset vars
+scap <- activedt[, .(PARTNERID,scap2017)]
+
+#read it back in!
+# scap <- fread("C:/Users/jumorris/Desktop/SCAP_PTF/compiledDT/scap_participants.csv")
+#set names to match benefits data
+setnames(scap,"PARTNERID","PRTNR_ID")
+
+#load benefits data
+#only includes januaries.... 
+data_dir <- "O:/CoOp/CoOp194_PROReportng&OM/Julie"
+ben <- fread(paste0(data_dir,"/scap_pnumber_2017start.csv"))
+#ben <- fread(paste0(data_dir,"/scap_pnumber_2017start_extraroles.csv"))
+#ben <- fread(paste0(data_dir,"/scap_pnumber_2017start_allUS.csv"))
+setnames(ben,"Personnel Number","PRTNR_ID")
+ben2 <- fread(paste0(data_dir,"/scap_pnumber_2017end.csv"))
+#ben2 <- fread(paste0(data_dir,"/scap_pnumber_2017end_extraroles.csv"))
+#ben2 <- fread(paste0(data_dir,"/scap_pnumber_2017end_allUS.csv"))
+ben2[, activeforsure := 1]
+setnames(ben2,"Personnel Number","PRTNR_ID")
+ben2 <- ben2[, .(PRTNR_ID,activeforsure)]
+ben <- left_join(ben,ben2,by="PRTNR_ID")
+
+#load turnover data
+prtnr <- fread(paste0(data_dir,"/SCAP_analysis_partner_file.csv"))
+#set names to match benefits data
+prtnr[, (grep("DT",colnames(prtnr),value=T)) := lapply(.SD, function(x) lubridate::mdy_hm(x)), .SDcols=grep("DT",colnames(prtnr),value=T)]
+
+
+#join scap data
+fulldt <- Reduce(function(x,y){merge(x,y,by="PRTNR_ID",all=T)}, list(prtnr,scap))
+fulldt <- left_join(ben,fulldt,by="PRTNR_ID")
+setDT(fulldt)
+
+#keep a subset
+dt <- fulldt[, .(PRTNR_ID, activeforsure, 
+                 SIP_Part, BFT_Part, RET_Part, scap2017, JOB_ID)]
+dt[, active2017end := 0]
+dt[activeforsure==1, active2017end := 1]
+dt[active2017end==0, sepduring2017 := 0]
+dt[active2017end==1, sepduring2017 := 1]
+
+# dt[active2017end==1|sepduring2017==1, wasapartnerin2017 := 1];dt[active2017end==0&sepduring2017==0, wasapartnerin2017 := 0]
+setnames(dt, c("SIP_Part", "BFT_Part", "RET_Part"), c("sip2017","bft2017","ret2017"))
+
+#turn NA's to 0's
+dt[is.na(dt)] <- 0
+
+#get rid of 0's
+#dt <- dt[JOB_ID>1]
+
+# #pull in pulse data
+pulse <- fread("O:/CoOp/CoOp194_PROReportng&OM/Julie/SCAP_pulse_cal2017.csv")
+setnames(pulse,"SAP_PRTNR_ID","PRTNR_ID")
+#keep only partners in dt data
+pulse <- pulse[PRTNR_ID %in% dt[,PRTNR_ID]]
+pulse <- Reduce(function(x,y){merge(x,y,by="PRTNR_ID",all=T)}, list(pulse,fulldt))
+setDT(pulse)
+pulse <- na.omit(pulse,cols=c("scap2017","JOB_ID"))
+pulsedt <- pulse[, list(partnerN = .N, RespPP = round(sum(Q1_RESP,na.rm=T)/.N,1),
+                        Q1_RESP = sum(Q1_RESP,na.rm=T),
+                   Q1_7 = sum(Q1_7,na.rm=T),
+                   Q1_6 = sum(Q1_6,na.rm=T),
+                   Q1_5 = sum(Q1_5,na.rm=T),
+                   Q1_4 = sum(Q1_4,na.rm=T),
+                   Q1_3 = sum(Q1_3,na.rm=T),
+                   Q1_2 = sum(Q1_2,na.rm=T),
+                   Q1_1 = sum(Q1_1,na.rm=T)), by=c("scap2017","JOB_ID")]
+pulsedt[, q1tb := round(Q1_7/Q1_RESP,3)*100]
+pulsedt[, q1tb2 := round((Q1_7+Q1_6)/Q1_RESP,3)*100]
+pulsedt[, q1tb3 := round((Q1_7+Q1_6+Q1_5)/Q1_RESP,3)*100]
+pulsedt[, q1avg := round((Q1_7*7+Q1_6*6+Q1_5*5+Q1_4*4+Q1_3*3+Q1_2*2+Q1_1*1)/Q1_RESP,2)]
+pulsedt <- setorder(pulsedt,JOB_ID,scap2017)
+
+# #agg scores by SCAP and non-SCAP
+# dtscaptemp <- dt[, .(PRTNR_ID,scap2017)]
+# pulse <- 
+# #ok - benefits time!
+#2017
+dt17sip <- dt[, list(benefit = "sip", partnerN = .N,
+                                         #avgtenure = mean(tenure17yrs,na.rm=T),
+                                         activeyearend = sum(active2017end,na.rm=T),
+                                         sepduringyear = sum(sepduring2017,na.rm=T),
+                                         sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+              by=c("sip2017","JOB_ID")]
+setnames(dt17sip,"sip2017","utilization")
+dt17bft <- dt[, list(benefit = "bft", partnerN = .N,
+                                         #avgtenure = mean(tenure17yrs,na.rm=T),
+                                         activeyearend = sum(active2017end,na.rm=T),
+                                         sepduringyear = sum(sepduring2017,na.rm=T),
+                                         sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+              by=c("bft2017","JOB_ID")]
+setnames(dt17bft,"bft2017","utilization")
+dt17ret <- dt[, list(benefit = "ret", partnerN = .N,
+                                         #avgtenure = mean(tenure17yrs,na.rm=T),
+                                         activeyearend = sum(active2017end,na.rm=T),
+                                         sepduringyear = sum(sepduring2017,na.rm=T),
+                                         sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+              by=c("ret2017","JOB_ID")]
+setnames(dt17ret,"ret2017","utilization")
+dt17scap <- dt[, list(benefit = "scap", partnerN = .N,
+                                          #avgtenure = mean(tenure17yrs,na.rm=T),
+                                          activeyearend = sum(active2017end,na.rm=T),
+                                          sepduringyear = sum(sepduring2017,na.rm=T),
+                                          sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+               by=c("scap2017","JOB_ID")]
+setnames(dt17scap,"scap2017","utilization")
+
+#rbindlist
+l = list(dt17sip,dt17bft,dt17ret,dt17scap)
+dtresults <- rbindlist(l, use.names=T, fill = T)
+
+# #pull in headcount
+# dtresults[JOB_ID==50000362, HC := 118273]
+# dtresults[JOB_ID==50000358, HC := 35541]
+# dtresults[JOB_ID==50000117, HC := 118273]
+
+#aggregate and recalculate sep_over_hec
+dtresults <- dtresults[, list(partnerN = sum(partnerN),
+                 activeyearend = sum(activeyearend,na.rm=T),
+                 sepduringyear = sum(sepduringyear,na.rm=T),
+                 sep_over_hc = sum(sepduringyear,na.rm=T)/sum(partnerN),
+                 eoy_retention = sum(activeyearend,na.rm=T)/sum(partnerN)),
+          by=c("utilization","benefit","JOB_ID")]
+dtresults[, sep_over_hc := round(sep_over_hc,3)*100]
+dtresults[, eoy_retention := round(eoy_retention,3)*100]
+#setorder
+dtresults <- setorder(dtresults,benefit,utilization)
+
+#total results
+dtagg <- dt[, list(partnerN = (sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T)),
+                   active2017end = sum(active2017end,na.rm=T),
+                   sepduring2017 = sum(sepduring2017,na.rm=T),
+                   sep_over_hc = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T)),
+                   eoy_retention = sum(active2017end,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+            by=c("JOB_ID")]
+dtagg[, sep_over_hc := round(sep_over_hc,3)*100]
+dtagg[, eoy_retention := round(eoy_retention,3)*100]
+
+#agg and swing to get participation rates
+dtp <- dcast.data.table(dtresults, benefit + activeyearend + JOB_ID ~ utilization, value.var="partnerN")
+setnames(dtp,c("0","1"),c("nonPar","Par"))
+dtp <- dtp[, list(activeyearend = sum(activeyearend,na.rm=T),
+                  nonPar = sum(nonPar,na.rm=T),
+                  Par = sum(Par,na.rm=T)),by=c("benefit","JOB_ID")]
+dtp[, parpct := Par / activeyearend]
+
+#total N and retention rate
+dtagg
+
+#participation rates
+dtp
+
+#avg tenure
+dt17bft
+dt17ret
+dt17scap
+dt17sip
+
+####SMs
+#set labels
+xlabels <- c("Healthcare","Retirement","SCAP","Stock Investment Plan")
+ylabel <- "2017 Retention"
+tlabel <- "Store Managers"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Non-Participant", "Participant")
+#values
+pdata1a <- dtresults[JOB_ID==50000117]
+px1a <- dtresults[JOB_ID==50000117,benefit]
+py1a <- dtresults[JOB_ID==50000117,eoy_retention]
+groupvar1a <- dtresults[JOB_ID==50000117,utilization]
+nvar <- dtresults[JOB_ID==50000117,partnerN]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, guide=FALSE) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,100)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) +
+  geom_text(size = 3, aes(label=paste0("n=",nvar),y=0), stat="identity", vjust = -1, position = position_dodge(0.95)) +
+    geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+####SHIFTS
+#set labels
+xlabels <- c("Healthcare","Retirement","SCAP","Stock Investment Plan")
+ylabel <- "2017 Retention"
+tlabel <- "Shift Supervisors"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Non-Participant", "Participant")
+#values
+pdata1a <- dtresults[JOB_ID==50000358]
+px1a <- dtresults[JOB_ID==50000358,benefit]
+py1a <- dtresults[JOB_ID==50000358,eoy_retention]
+groupvar1a <- dtresults[JOB_ID==50000358,utilization]
+nvar <- dtresults[JOB_ID==50000358,partnerN]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, guide=FALSE) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,100)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) +
+  geom_text(size = 3, aes(label=paste0("n=",nvar),y=0), stat="identity", vjust = -1, position = position_dodge(0.95)) +
+  geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+
+####BARISTA
+#set labels
+xlabels <- c("Healthcare","Retirement","SCAP","Stock Investment Plan")
+ylabel <- "2017 Retention"
+tlabel <- "Baristas"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Non-Participant", "Participant")
+#values
+pdata1a <- dtresults[JOB_ID==50000362]
+px1a <- dtresults[JOB_ID==50000362,benefit]
+py1a <- dtresults[JOB_ID==50000362,eoy_retention]
+groupvar1a <- dtresults[JOB_ID==50000362,utilization]
+nvar <- dtresults[JOB_ID==50000362,partnerN]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, guide=FALSE) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,100)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) +
+  geom_text(size = 3, aes(label=paste0("n=",nvar),y=0), stat="identity", vjust = -1, position = position_dodge(0.95)) +
+  geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+
+#hard code from query data
+dtp[benefit=="bft"&JOB_ID==50000362, parpct := round(22756/118273,3)*100]
+dtp[benefit=="bft"&JOB_ID==50000358, parpct := round(19648/35540,3)*100]
+dtp[benefit=="bft"&JOB_ID==50000117, parpct := round(7138/8301,3)*100]
+
+dtp[benefit=="ret"&JOB_ID==50000362, parpct := round(27561/118273,3)*100]
+dtp[benefit=="ret"&JOB_ID==50000358, parpct := round(17573/35540,3)*100]
+dtp[benefit=="ret"&JOB_ID==50000117, parpct := round(6417/8301,3)*100]
+
+dtp[benefit=="sip"&JOB_ID==50000362, parpct := round(5785/118273,3)*100]
+dtp[benefit=="sip"&JOB_ID==50000358, parpct := round(4806/35540,3)*100]
+dtp[benefit=="sip"&JOB_ID==50000117, parpct := round(2400/8301,3)*100]
+
+#eoy SCAP over beggining of year BFT eligible
+dtp[benefit=="scap"&JOB_ID==50000362, parpct := round(4744/118273,3)*100]
+dtp[benefit=="scap"&JOB_ID==50000358, parpct := round(4688/35540,3)*100]
+dtp[benefit=="scap"&JOB_ID==50000117, parpct := round(818/8301,3)*100]
+
+#create new var for plotting
+dtp[JOB_ID==50000362, jobvar := 1]
+dtp[JOB_ID==50000358, jobvar := 2]
+dtp[JOB_ID==50000117, jobvar := 3]
+
+
+xlabels <- c("Healthcare","Retirement","SCAP","Stock Investment Plan")
+ylabel <- "Participation"
+tlabel <- "Benefit Utilization, 2017, U.S. CO Store Partners"
+caption <- "Partner N: 162,114"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Barista", "Shift Supervisors", "Store Managers")
+#values
+pdata1a <- dtp
+px1a <- dtp[,benefit]
+py1a <- dtp[,parpct]
+groupvar1a <- dtp[,jobvar]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, name=lname, labels=llabels) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,100)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) + labs(caption=caption) +
+  geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+
+
+#hard code from query data
+dtp[benefit=="bft"&JOB_ID==50000362, parpct := 33.4]
+dtp[benefit=="bft"&JOB_ID==50000358, parpct := 58.1]
+dtp[benefit=="bft"&JOB_ID==50000117, parpct := 86.4]
+
+dtp[benefit=="ret"&JOB_ID==50000362, parpct := 31.6]
+dtp[benefit=="ret"&JOB_ID==50000358, parpct := 50.4]
+dtp[benefit=="ret"&JOB_ID==50000117, parpct := 77.7]
+
+dtp[benefit=="sip"&JOB_ID==50000362, parpct := 4.9]
+dtp[benefit=="sip"&JOB_ID==50000358, parpct := 13.5]
+dtp[benefit=="sip"&JOB_ID==50000117, parpct := 29.1]
+
+#eoy SCAP over beggining of year BFT eligible
+dtp[benefit=="scap"&JOB_ID==50000362, parpct := round(4744/64830,3)*100]
+dtp[benefit=="scap"&JOB_ID==50000358, parpct := round(4688/33574,3)*100]
+dtp[benefit=="scap"&JOB_ID==50000117, parpct := round(818/8182,3)*100]
+
+#create new var for plotting
+dtp[JOB_ID==50000362, jobvar := 1]
+dtp[JOB_ID==50000358, jobvar := 2]
+dtp[JOB_ID==50000117, jobvar := 3]
+
+
+xlabels <- c("Healthcare","Retirement","SCAP","Stock Investment Plan")
+ylabel <- "Participation"
+tlabel <- "Benefit Utilization, 2017, Benefits-Eligible U.S. CO Store Partners"
+caption <- "Partner N: 106,640"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Barista", "Shift Supervisors", "Store Managers")
+#values
+pdata1a <- dtp
+px1a <- dtp[,benefit]
+py1a <- dtp[,parpct]
+groupvar1a <- dtp[,jobvar]
+nvar <- dtp[,Par]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, name=lname, labels=llabels) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,100)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) + labs(caption=caption) +
+  geom_text(size = 2.5, aes(label=paste0("n=",nvar),y=0), stat="identity", vjust = -0.5, position = position_dodge(0.95)) +
+  geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+
+#create new only/both variables
+dt[bft2017==1&scap2017==1, bothbftscap := 1]
+dt[bft2017==0|scap2017==0, bothbftscap := 0]
+
+dt[bft2017==0&scap2017==1, onlyscap := 1]
+dt[scap2017==0|(scap2017==1&bft2017==1), onlyscap := 0]
+
+dt[scap2017==0&bft2017==1, onlybft := 1]
+dt[bft2017==0|(bft2017==1&scap2017==1), onlybft := 0]
+
+dt17both <- dt[, list(benefit = "both", partnerN = .N,
+                     #avgtenure = mean(tenure17yrs,na.rm=T),
+                     activeyearend = sum(active2017end,na.rm=T),
+                     sepduringyear = sum(sepduring2017,na.rm=T),
+                     sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+              by=c("bothbftscap","JOB_ID")]
+setnames(dt17both,"bothbftscap","utilization")
+
+dt17onlyscap <- dt[, list(benefit = "onlyscap", partnerN = .N,
+                      #avgtenure = mean(tenure17yrs,na.rm=T),
+                      activeyearend = sum(active2017end,na.rm=T),
+                      sepduringyear = sum(sepduring2017,na.rm=T),
+                      sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+               by=c("onlyscap","JOB_ID")]
+setnames(dt17onlyscap,"onlyscap","utilization")
+
+dt17onlybft <- dt[, list(benefit = "onlybft", partnerN = .N,
+                      #avgtenure = mean(tenure17yrs,na.rm=T),
+                      activeyearend = sum(active2017end,na.rm=T),
+                      sepduringyear = sum(sepduring2017,na.rm=T),
+                      sep_over_hec = sum(sepduring2017,na.rm=T)/(sum(sepduring2017,na.rm=T)+sum(active2017end,na.rm=T))),
+               by=c("onlybft","JOB_ID")]
+setnames(dt17onlybft,"onlybft","utilization")
+
+
+
+#rbindlist
+l = list(dt17both,dt17onlyscap,dt17onlybft)
+dtresults <- rbindlist(l, use.names=T, fill = T)
+dtresults <- na.omit(dtresults,cols="utilization")
+
+#aggregate and recalculate sep_over_hec
+dtresults[, eoy_retention := activeyearend/partnerN]
+dtresults[, eoy_retention := round(eoy_retention,3)*100]
+#setorder
+dtresults <- setorder(dtresults,JOB_ID,benefit,utilization)
+
+#agg and swing to get participation rates
+dtp <- dcast.data.table(dtresults, benefit + JOB_ID + activeyearend ~ utilization, value.var="partnerN")
+setnames(dtp,c("0","1"),c("nonPar","Par"))
+dtp <- dtp[, list(activeyearend = sum(activeyearend,na.rm=T),
+                  nonPar = sum(nonPar,na.rm=T),
+                  Par = sum(Par,na.rm=T)),by="benefit"]
+dtp[, parpct := Par / activeyearend]
+
+#participation rates
+dtp
+
+#avg tenure
+dt17both
+dt17onlyscap
+dt17onlybft
+
+
+#create new var for plotting
+dtresults[JOB_ID==50000362, jobvar := 1]
+dtresults[JOB_ID==50000358, jobvar := 2]
+dtresults[JOB_ID==50000117, jobvar := 3]
+
+dtresults[benefit=="both", benvar := 1]
+dtresults[benefit=="onlyscap", benvar := 2]
+dtresults[benefit=="onlybft", benvar := 3]
+
+xlabels <- c("Barista", "Shift Supervisors", "Store Managers")
+ylabel <- "2017 Retention"
+tlabel <- "Annual Retention by Benefit Utilization Pairings"
+subtitle <- "U.S. Company-Operated Store Partners"
+#manual legend labels
+lname <- "Benefit Utilization"
+llabels <- c("Both SCAP/Healthcare","SCAP Only","Healthcare Only")
+#values
+pdata1a <- dtresults[utilization==1]
+px1a <- dtresults[utilization==1,jobvar]
+py1a <- dtresults[utilization==1,eoy_retention]
+groupvar1a <- dtresults[utilization==1,benvar]
+nvar <- dtresults[utilization==1,partnerN]
+#plot itself
+plot1a <- ggplot(data=pdata1a,aes(y=py1a,x=as.factor(px1a),fill=as.factor(groupvar1a))) + 
+  geom_bar(stat="identity", width = 0.95, position=position_dodge(), colour="black") +
+  scale_fill_brewer(palette = 2, name=lname, labels=llabels) + theme_economist() +
+  scale_x_discrete(name="",labels=xlabels) +
+  scale_y_continuous(limits=c(0,105)) +
+  xlab("") + ylab(ylabel) + ggtitle(tlabel) + 
+  geom_text(size = 3, aes(label=paste0("n=",nvar),y=0), stat="identity", vjust = -1, position = position_dodge(0.95)) +
+  geom_text(size = 3.5, aes(label=paste0(py1a,"%")), stat="identity", vjust = -1, position = position_dodge(0.95)) 
+print(plot1a)
+
+
+
+#total proportion
+dtagg <- dt[, list(partnerN = .N,
+                   sip2017 = sum(sip2017,na.rm=T),
+                   bft2017 = sum(bft2017,na.rm=T),
+                   ret2017 = sum(ret2017,na.rm=T),
+                   scap2017 = sum(scap2017,na.rm=T))]
+dtagg[, sippct := round(sip2017/partnerN,4)*100]
+dtagg[, bftpct := round(bft2017/partnerN,4)*100]
+dtagg[, retpct := round(ret2017/partnerN,4)*100]
+dtagg[, scappct := round(scap2017/partnerN,4)*100]
+]]></RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="654" y="78" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>SCAP/Benefits Analysis</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="654" y="150" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Participation and retention attributable to SCAP and other benefits</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */
+
+WITH prtnr AS 
+(SELECT SAP_PRTNR_ID AS PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      ,SEPARATION_DT
+      ,SNAPSHOT_DT
+      ,EMP_STAT_CD
+      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec
+    FROM D_PRTNR_VERS
+    WHERE EMP_STAT_CD IN ('Separated','Active')
+      AND SNAPSHOT_DT = '26-FEB-2018'
+      AND PRTNR_CNTRY_CD = 'US'
+ ) SELECT 
+      prtnr.PRTNR_ID
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,prtnr.SEPARATION_DT
+      ,prtnr.SNAPSHOT_DT
+      ,prtnr.EMP_STAT_CD
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,50000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.PRTNR_ID = gls.PRTNR_NUM
+WHERE prtnr.mostrec = 1</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP415.WORLD
+Table=--/* PDW (415) */
+
+WITH prtnr AS 
+(SELECT SAP_PRTNR_ID AS PRTNR_ID
+      ,ORIG_HIRE_DT
+      ,MOST_RECENT_HIRE_DT
+      ,SEPARATION_DT
+      ,SNAPSHOT_DT
+      ,EMP_STAT_CD
+      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec
+    FROM D_PRTNR_VERS
+    WHERE EMP_STAT_CD IN ('Separated','Active')
+      AND SNAPSHOT_DT = '26-FEB-2018'
+      AND PRTNR_CNTRY_CD = 'US'
+ ) SELECT 
+      prtnr.PRTNR_ID
+      ,prtnr.ORIG_HIRE_DT
+      ,prtnr.MOST_RECENT_HIRE_DT
+      ,prtnr.SEPARATION_DT
+      ,prtnr.SNAPSHOT_DT
+      ,prtnr.EMP_STAT_CD
+      ,gls.JOB_ID
+
+FROM prtnr
+
+INNER JOIN (
+  SELECT * FROM (
+    SELECT PRTNR_NUM, JOB_ID,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec
+    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  
+    WHERE CNTRY_CD = 'US'
+      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse
+      AND JOB_ID IN (50000362,50000358,50000117)
+    ) WHERE mostrec = 1
+  ) gls 
+  
+ON prtnr.PRTNR_ID = gls.PRTNR_NUM
+WHERE prtnr.mostrec = 1</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="PRTNR_ID" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="WString" />
+            <Field name="ORIG_HIRE_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="DateTime" />
+            <Field name="MOST_RECENT_HIRE_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="DateTime" />
+            <Field name="SEPARATION_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="DateTime" />
+            <Field name="SNAPSHOT_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="DateTime" />
+            <Field name="EMP_STAT_CD" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="WString" />
+            <Field name="JOB_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;WITH prtnr AS &#xA;(SELECT SAP_PRTNR_ID AS PRTNR_ID&#xA;      ,ORIG_HIRE_DT&#xA;      ,MOST_RECENT_HIRE_DT&#xA;      ,SEPARATION_DT&#xA;      ,SNAPSHOT_DT&#xA;      ,EMP_STAT_CD&#xA;      ,ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY EFF_FROM_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE EMP_STAT_CD IN ('Separated','Active')&#xA;      AND SNAPSHOT_DT = '26-FEB-2018'&#xA;      AND PRTNR_CNTRY_CD = 'US'&#xA; ) SELECT &#xA;      prtnr.PRTNR_ID&#xA;      ,prtnr.ORIG_HIRE_DT&#xA;      ,prtnr.MOST_RECENT_HIRE_DT&#xA;      ,prtnr.SEPARATION_DT&#xA;      ,prtnr.SNAPSHOT_DT&#xA;      ,prtnr.EMP_STAT_CD&#xA;      ,gls.JOB_ID&#xA;&#xA;FROM prtnr&#xA;&#xA;INNER JOIN (&#xA;  SELECT * FROM (&#xA;    SELECT PRTNR_NUM, JOB_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_NUM ORDER BY END_DTM DESC) AS mostrec&#xA;    FROM APPDWH.AFT_GLS_PRTNR_TMCARD@SBP411  &#xA;    WHERE CNTRY_CD = 'US'&#xA;      AND BUS_DT &gt;= '10-APR-17'  --one week prior to launch of Pulse&#xA;      AND JOB_ID IN (50000362,50000358,50000117)&#xA;    ) WHERE mostrec = 1&#xA;  ) gls &#xA;  &#xA;ON prtnr.PRTNR_ID = gls.PRTNR_NUM&#xA;WHERE prtnr.mostrec = 1" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_14268_9e44dd027e2142d6827a3edc2a44f17f_\Engine_2156_d3b2bb4dcc7147458775dd2f5ab8ab69_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="54" width="100" height="76" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Partner tenure / job number</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="138" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls partner id, job number, hire date, and employee status - for recent snapshot.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="270" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File RecordLimit="" FileFormat="18">odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */
+
+SELECT
+ 
+a.FP_End,
+a.[Personnel Number],
+a.SIP_Part,
+a.BFT_Part,
+a.RET_Part,
+a.[Job_Number]
+from hpohlman.PRO_BaseData a
+
+--where a.FP_End = '01-29-2017'
+where a.FP_End = '12-31-2017'
+and a.Action_Group = 'headcount'
+and a.[Country] = 'US'
+--and a.BFT_elig = 1
+--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)</File>
+          <FormatSpecificOptions>
+            <PreSQL />
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <TableStyle>Quoted</TableStyle>
+            <ReadUncommitted>False</ReadUncommitted>
+            <PostSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Source=MS10905
+Catalog=PDW_Bulk
+Table=--/* PDW_BULK (415ss) */
+
+SELECT
+ 
+a.FP_End,
+a.[Personnel Number],
+a.SIP_Part,
+a.BFT_Part,
+a.RET_Part,
+a.[Job_Number]
+from hpohlman.PRO_BaseData a
+
+--where a.FP_End = '01-29-2017'
+where a.FP_End = '12-31-2017'
+and a.Action_Group = 'headcount'
+and a.[Country] = 'US'
+--and a.BFT_elig = 1
+--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="FP_End" size="10" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="V_WString" />
+            <Field name="Personnel Number" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="V_WString" />
+            <Field name="SIP_Part" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="Int32" />
+            <Field name="BFT_Part" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="Int32" />
+            <Field name="RET_Part" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="Int32" />
+            <Field name="Job_Number" size="255" source="File: odb:Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=jumorris;Initial Catalog=PDW_Bulk;Data Source=MS10905;Use Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;Workstation ID=JUMORRIS-171012;Use Encryption for Data=False;Tag with column collation when possible=False|||--/* PDW_BULK (415ss) */&#xA;&#xA;SELECT&#xA; &#xA;a.FP_End,&#xA;a.[Personnel Number],&#xA;a.SIP_Part,&#xA;a.BFT_Part,&#xA;a.RET_Part,&#xA;a.[Job_Number]&#xA;from hpohlman.PRO_BaseData a&#xA;&#xA;--where a.FP_End = '01-29-2017'&#xA;where a.FP_End = '12-31-2017'&#xA;and a.Action_Group = 'headcount'&#xA;and a.[Country] = 'US'&#xA;--and a.BFT_elig = 1&#xA;--and a.[Job_Number] In(50000362,50000358,50000117,50018175,50000118)" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="390" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_14268_9e44dd027e2142d6827a3edc2a44f17f_\Engine_2156_d3b2bb4dcc7147458775dd2f5ab8ab69_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="270" y="54" width="100" height="76" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Benefits eligibility / participation</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="270" y="138" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls partner id, benefits eligibility, benefits participation, and employee status - for BFT/RET/SIP - for a beginning of year snapshot and end of year snapshot.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="486" y="78" width="100" height="108" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Note: to calculate headcount and retention, pull various snapshots and compare who is in which snapshot.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="486" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */
+
+SELECT prtnr.SAP_PRTNR_ID
+    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP
+    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7
+    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6
+    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5
+    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4
+    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3
+    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2
+    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1
+    
+FROM SRV_DDV_RESPONSE sr
+
+LEFT JOIN (
+  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (
+    SELECT PRTNR_ID, SAP_PRTNR_ID,
+    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec
+    FROM D_PRTNR_VERS
+    WHERE PRTNR_CNTRY_CD = 'US'
+    ) WHERE mostrec = 1
+  ) prtnr 
+ON sr.PRTNR_ID = prtnr.PRTNR_ID
+  
+  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'
+  AND sr.QUESTION_ID = 'Q1'
+  
+GROUP BY prtnr.SAP_PRTNR_ID</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP415.WORLD
+Table=--/* PDW (415) */
+
+SELECT prtnr.SAP_PRTNR_ID
+    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP
+    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7
+    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6
+    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5
+    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4
+    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3
+    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2
+    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1
+    
+FROM SRV_DDV_RESPONSE sr
+
+LEFT JOIN (
+  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (
+    SELECT PRTNR_ID, SAP_PRTNR_ID,
+    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec
+    FROM D_PRTNR_VERS
+    WHERE PRTNR_CNTRY_CD = 'US'
+    ) WHERE mostrec = 1
+  ) prtnr 
+ON sr.PRTNR_ID = prtnr.PRTNR_ID
+  
+  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'
+  AND sr.QUESTION_ID = 'Q1'
+  
+GROUP BY prtnr.SAP_PRTNR_ID</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="SAP_PRTNR_ID" size="21" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="WString" />
+            <Field name="Q1_RESP" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_7" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_6" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_5" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_4" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_3" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_2" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+            <Field name="Q1_1" source="File: oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--/* PDW (415) */&#xA;&#xA;SELECT prtnr.SAP_PRTNR_ID&#xA;    ,SUM(CASE WHEN sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_RESP&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 7 THEN 1 ELSE 0 END) AS Q1_7&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 6 THEN 1 ELSE 0 END) AS Q1_6&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 5 THEN 1 ELSE 0 END) AS Q1_5&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 4 THEN 1 ELSE 0 END) AS Q1_4&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 3 THEN 1 ELSE 0 END) AS Q1_3&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 2 THEN 1 ELSE 0 END) AS Q1_2&#xA;    ,SUM(CASE WHEN sr.RESP_ID = 1 THEN 1 ELSE 0 END) AS Q1_1&#xA;    &#xA;FROM SRV_DDV_RESPONSE sr&#xA;&#xA;LEFT JOIN (&#xA;  SELECT PRTNR_ID, SAP_PRTNR_ID FROM (&#xA;    SELECT PRTNR_ID, SAP_PRTNR_ID,&#xA;    ROW_NUMBER() OVER (PARTITION BY SAP_PRTNR_ID ORDER BY SNAPSHOT_DT DESC) AS mostrec&#xA;    FROM D_PRTNR_VERS&#xA;    WHERE PRTNR_CNTRY_CD = 'US'&#xA;    ) WHERE mostrec = 1&#xA;  ) prtnr &#xA;ON sr.PRTNR_ID = prtnr.PRTNR_ID&#xA;  &#xA;  WHERE sr.SURVEY_RESP_DT_ORIG BETWEEN '01-JAN-2017' AND '31-DEC-2017'&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;  &#xA;GROUP BY prtnr.SAP_PRTNR_ID" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="606" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_14268_9e44dd027e2142d6827a3edc2a44f17f_\Engine_2156_d3b2bb4dcc7147458775dd2f5ab8ab69_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="486" y="246" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulse</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="486" y="306" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls pulse for a one-year period at the partner level</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="5" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="8" Connection="Output" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="13" Connection="Output" />
+      <Destination ToolID="14" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-03-12_SCAP_ROI</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

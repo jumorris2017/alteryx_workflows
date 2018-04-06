@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_ORG_LVL_ID
+        , org.RGN_ORG_LVL_DESCR
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+            ON f.STORE_NUMBER = org.STORE_NUM
+            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_ORG_LVL_ID
+    , org.RGN_ORG_LVL_DESCR</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_ORG_LVL_ID
+        , org.RGN_ORG_LVL_DESCR
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org
+            ON f.STORE_NUMBER = org.STORE_NUM
+            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_ORG_LVL_ID
+    , org.RGN_ORG_LVL_DESCR</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="CustTrans" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="day_count" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Int64" />
+            <Field name="RGN_ORG_LVL_ID" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="Double" />
+            <Field name="RGN_ORG_LVL_DESCR" size="81" source="File: oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411&#xA;&#xA; SELECT ca.FSCL_YR_NUM&#xA;        , SUM(f.CUST_TRANS_CNT) &quot;CustTrans&quot;&#xA;        , SUM(f.ACTIVE_STORE_DAY_CNT) &quot;day_count&quot;&#xA;        , ca.FSCL_PER_IN_YR_NUM&#xA;        , org.STORE_NUM&#xA;        , org.RGN_ORG_LVL_ID&#xA;        , org.RGN_ORG_LVL_DESCR&#xA;    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      &#xA;        INNER JOIN APPDWH.DDM_RETAIL_ORG_STORE_DIST org&#xA;            ON f.STORE_NUMBER = org.STORE_NUM&#xA;            AND org.DIV_ORG_LVL_ID IN (3,6,106)  -- US CO stores&#xA;        INNER JOIN APPDWH.ADT_CAL ca&#xA;            ON f.BUSINESS_DATE = ca.CAL_DT&#xA;            AND ca.FSCL_YR_NUM IN (2017,2018) AND ca.FSCL_PER_IN_YR_NUM IN (3,4,5)&#xA;        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp&#xA;            ON f.STORE_NUMBER = comp.STORE_NUMBER&#xA;            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE&#xA;            AND COMP_CODE = 'Y'&#xA;    GROUP BY ca.FSCL_YR_NUM&#xA;    , ca.FSCL_PER_IN_YR_NUM&#xA;    , org.STORE_NUM&#xA;    , org.RGN_ORG_LVL_ID&#xA;    , org.RGN_ORG_LVL_DESCR" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17132_da134f87c19247389a5846872d1ae68e_\Engine_10728_81b51e64d5d44a97af1b2e05c378335e_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>TSDs and Region</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls TSDs and Region at the store level for FEB FY18 and FY17 (for TSD comp).</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Speed Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls Speed TB and response counts at the store level.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="44">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="246" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ 
+
+SELECT DISTINCT
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE
+  
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+/* Create universal transaction ID from survey table and use that to join to POS table
+/  Limit to U.S. and Canada and transactions after the survey began to improve performance */
+JOIN APPCA.F_POS_LINE_ITEM pi
+  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))
+      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID
+    AND pi.CNTRY_CD = 'US'
+    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'
+  
+JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
+  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
+  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')
+  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')
+  AND sr.QSTN_ID IN ('Q2_1') -- SPEED
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ca.FSCL_YR_NUM = 2018 
+  AND ca.FSCL_QTR_IN_YR_NUM = 1
+      
+GROUP BY
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD
+ORDER BY
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=/* CE by channel -- CAW */ 
+
+SELECT DISTINCT
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE
+  
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+/* Create universal transaction ID from survey table and use that to join to POS table
+/  Limit to U.S. and Canada and transactions after the survey began to improve performance */
+JOIN APPCA.F_POS_LINE_ITEM pi
+  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))
+      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID
+    AND pi.CNTRY_CD = 'US'
+    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'
+  
+JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
+  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
+  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')
+  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')
+  AND sr.QSTN_ID IN ('Q2_1') -- SPEED
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ca.FSCL_YR_NUM = 2018 
+  AND ca.FSCL_QTR_IN_YR_NUM = 1
+      
+GROUP BY
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD
+ORDER BY
+  sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,tt.ORD_MTHD_CD</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="WString" />
+            <Field name="QSTN_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="V_WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="Double" />
+            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="WString" />
+            <Field name="TOTAL_TB" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="Double" />
+            <Field name="TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* CE by channel -- CAW */ &#xA;&#xA;SELECT DISTINCT&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;  WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP','OTW')&#xA;  --AND sr.QSTN_ID IN ('Q1', 'Q2_1','Q2_2','Q2_3','Q2_4','Q2_5','Q2_6','Q2_7','Q2_8')&#xA;  AND sr.QSTN_ID IN ('Q2_1') -- SPEED&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM = 2018 &#xA;  AND ca.FSCL_QTR_IN_YR_NUM = 1&#xA;      &#xA;GROUP BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD&#xA;ORDER BY&#xA;  sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,tt.ORD_MTHD_CD" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="45">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="366" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17132_da134f87c19247389a5846872d1ae68e_\Engine_10728_ae0a604e1ba14d19984903a3d1f4f9d6_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="5" Connection="Output" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="44" Connection="Output" />
+      <Destination ToolID="45" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-04-04_USCO_Earnings</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
