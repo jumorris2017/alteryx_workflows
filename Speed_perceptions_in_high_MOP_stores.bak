@@ -181,11 +181,11 @@ GROUP BY
     </Node>
     <Node ToolID="9">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="198" y="42" width="100" height="76" />
+        <Position x="198" y="30" width="100" height="88" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Slides 2 and 6: MOP volume by store</Text>
+          <Text>Slides 2,4, 6, and 7: MOP volume by store</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -410,11 +410,11 @@ sr.STORE_NUM
     </Node>
     <Node ToolID="13">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="354" y="54" width="100" height="52" />
+        <Position x="354" y="30" width="100" height="76" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Slide 2: PEAK
+          <Text>Slides 2 and 4: PEAK
 Speed by store</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
@@ -435,8 +435,8 @@ Speed by store</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>DT/CAFE
-Cafe</Text>
+          <Text>CAFE-only stores
+Cafe &amp; MOP Trans</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -490,7 +490,7 @@ JOIN APPCA.F_POS_LINE_ITEM pi
 JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
   ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
 
-WHERE tt.ORD_MTHD_CD IN ('CAFE')
+WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')
   AND sr.QSTN_ID IN ('Q2_1')
   AND sr.RSPNS_ID &lt;&gt; '9'
   AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
@@ -552,7 +552,7 @@ JOIN APPCA.F_POS_LINE_ITEM pi
 JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
   ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
 
-WHERE tt.ORD_MTHD_CD IN ('CAFE')
+WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')
   AND sr.QSTN_ID IN ('Q2_1')
   AND sr.RSPNS_ID &lt;&gt; '9'
   AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
@@ -572,13 +572,13 @@ ORDER BY
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="WString" />
-            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_TB_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_RSPNS_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_TB_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_RSPNS_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_1')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -614,11 +614,18 @@ ORDER BY
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="666" y="126" />
+        <Position x="690" y="126" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <RScript>library(tidyverse)
+          <RScript>##Speed/CC by MOP percentage##
+
+#load libraries
+library(data.table)
+library(tidyverse)
+library(xlsx)
+library(ggplot2)
+library(ggthemes)
 
 
 #SLIDE 2 - Speed
@@ -641,7 +648,7 @@ mopsp &lt;- mopsp[!pnw]
 setkey(mopsp15, STORE_NUM)
 mopsp15 &lt;- mopsp15[!pnw]
 #restrict and rename
-mopsp15 &lt;- mopsp[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT)]
+mopsp15 &lt;- mopsp[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT,ORD_MTHD_CD)]
 setnames(mopsp15,c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"),c("PEAK_TB_COUNT_2015","PEAK_RSPNS_COUNT_2015"))
 
 #calculate MOP percentage
@@ -655,6 +662,7 @@ mop &lt;- na.omit(mop,cols="moppct")
 
 #MOP transactions only &amp; CC only
 mopsp &lt;- mopsp[ORD_MTHD_CD=="CAFE"]
+mopsp15 &lt;- mopsp15[ORD_MTHD_CD=="CAFE"]
 
 #reshape from long to wide to get delta
 # mopsp &lt;- mopsp[FSCL_YR_NUM==2018]
@@ -684,7 +692,10 @@ temp &lt;- temp[, list(n = .N,
              by="ntile"]
 temp &lt;- setorder(temp,ntile)
 #write file
-write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_Speed_peakcafe_by_MOPtile.csv")
+write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_Speed_peakcafe_Cafetrans_by_MOPtile.csv")
+
+
+
 
 
 #SLIDE 2 - CC
@@ -707,7 +718,7 @@ mopcc &lt;- mopcc[!pnw]
 setkey(mopcc15, STORE_NUM)
 mopcc15 &lt;- mopcc15[!pnw]
 #restrict and rename
-mopcc15 &lt;- mopcc[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT)]
+mopcc15 &lt;- mopcc[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT,ORD_MTHD_CD)]
 setnames(mopcc15,c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"),c("PEAK_TB_COUNT_2015","PEAK_RSPNS_COUNT_2015"))
 
 #calculate MOP percentage
@@ -721,6 +732,7 @@ mop &lt;- na.omit(mop,cols="moppct")
 
 #MOP transactions only &amp; CC only
 mopcc &lt;- mopcc[ORD_MTHD_CD=="CAFE"]
+mopsp15 &lt;- mopsp15[ORD_MTHD_CD=="CAFE"]
 
 #reshape from long to wide to get delta
 # mopcc &lt;- mopcc[FSCL_YR_NUM==2018]
@@ -750,7 +762,145 @@ temp &lt;- temp[, list(n = .N,
              by="ntile"]
 temp &lt;- setorder(temp,ntile)
 #write file
-write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_CC_peakcafe_by_MOPtile.csv")</RScript>
+write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_CC_peakcafe_Cafetrans_by_MOPtile.csv")
+
+
+
+
+
+#SLIDE 4 - Speed
+
+#load data
+mop &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/MOP_percent_by_store_FY18Q2.csv")
+mopsp &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/SP_by_store_cafe_only_FY18Q2-FY17Q1.csv")
+mopsp[, STORE_NUM := as.numeric(STORE_NUM)]
+mopsp15 &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC-SP_by_store_cafe_onlyFY15Q4.csv")
+mopsp15 &lt;- mopsp15[QSTN_ID=='Q2_1']
+mopsp15[, STORE_NUM := as.numeric(STORE_NUM)]
+
+#remove PNW stores
+pnw &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/pnw_storelist.csv")
+pnwvec &lt;- unique(pnw[,STORE_NUM])
+setkey(mop, STORE_NUM)
+mop &lt;- mop[!pnw]
+setkey(mopsp, STORE_NUM)
+mopsp &lt;- mopsp[!pnw]
+setkey(mopsp15, STORE_NUM)
+mopsp15 &lt;- mopsp15[!pnw]
+#restrict and rename
+mopsp15 &lt;- mopsp[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT,ORD_MTHD_CD)]
+setnames(mopsp15,c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"),c("PEAK_TB_COUNT_2015","PEAK_RSPNS_COUNT_2015"))
+
+#calculate MOP percentage
+mop[, moppct := PEAK_MOP_TRANS_CNT/PEAK_TTL_TRANS_CNT]
+mop &lt;- na.omit(mop,cols="moppct")
+
+#organize stores into core, high, and super high
+#keep only FY 18 Q2
+mop &lt;- mop[FSCL_YR_NUM==2018&amp;FSCL_QTR_IN_YR_NUM==2]
+mop &lt;- na.omit(mop,cols="moppct")
+
+#MOP transactions only &amp; CC only
+mopsp &lt;- mopsp[ORD_MTHD_CD=="MOP"]
+mopsp15 &lt;- mopsp15[ORD_MTHD_CD=="MOP"]
+
+#reshape from long to wide to get delta
+# mopsp &lt;- mopsp[FSCL_YR_NUM==2018]
+mopsp &lt;- dcast.data.table(mopsp, STORE_NUM ~ FSCL_QTR_IN_YR_NUM + FSCL_YR_NUM, value.var=c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"))
+
+#split by mop into  20 groups
+mop &lt;- mop %&gt;% mutate(ntile = ntile(PEAK_MOP_PCT, 20))
+mopsp &lt;- left_join(mopsp, mop, by=c("STORE_NUM"))
+setDT(mopsp)
+mopsp &lt;- na.omit(mopsp,cols="ntile")
+
+#MERGE IN 2015 DATA
+temp &lt;- left_join(mopsp,mopsp15,by=c("STORE_NUM"))
+setDT(temp)
+
+#aggregate
+temp &lt;- temp[, list(n = .N,
+                    meanPEAK_MOP_PCT = mean(PEAK_MOP_PCT,na.rm=T),
+                    mean_daily_peak_MOP_trans = round(mean(PEAK_MOP_TRANS_CNT,na.rm=T)/91,0),
+                    tbsp_FY15Q4 = sum(PEAK_TB_COUNT_2015,na.rm=T)/sum(PEAK_RSPNS_COUNT_2015,na.rm=T),
+                    tbsp_FY17Q1 = sum(PEAK_TB_COUNT_1_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_1_2017,na.rm=T),
+                    tbsp_FY17Q2 = sum(PEAK_TB_COUNT_2_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_2_2017,na.rm=T),
+                    tbsp_FY17Q3 = sum(PEAK_TB_COUNT_3_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_3_2017,na.rm=T),
+                    tbsp_FY17Q4 = sum(PEAK_TB_COUNT_4_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_4_2017,na.rm=T),
+                    tbsp_FY18Q1 = sum(PEAK_TB_COUNT_1_2018,na.rm=T)/sum(PEAK_RSPNS_COUNT_1_2018,na.rm=T),
+                    tbsp_FY18Q2 = sum(PEAK_TB_COUNT_2_2018,na.rm=T)/sum(PEAK_RSPNS_COUNT_2_2018,na.rm=T)),
+             by="ntile"]
+temp &lt;- setorder(temp,ntile)
+#write file
+write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_Speed_peakcafe_MOPtrans_by_MOPtile.csv")
+
+
+
+#SLIDE 7 - CC
+
+#load data
+mop &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/MOP_percent_by_store_FY18Q2.csv")
+mopcc &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC_by_store_cafe_only_FY18Q2-FY17Q1.csv")
+mopcc[, STORE_NUM := as.numeric(STORE_NUM)]
+mopcc15 &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/CC-SP_by_store_cafe_onlyFY15Q4.csv")
+mopcc15 &lt;- mopcc15[QSTN_ID=='Q2_2']
+mopcc15[, STORE_NUM := as.numeric(STORE_NUM)]
+
+#remove PNW stores
+pnw &lt;- fread("O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/pnw_storelist.csv")
+pnwvec &lt;- unique(pnw[,STORE_NUM])
+setkey(mop, STORE_NUM)
+mop &lt;- mop[!pnw]
+setkey(mopcc, STORE_NUM)
+mopcc &lt;- mopcc[!pnw]
+setkey(mopcc15, STORE_NUM)
+mopcc15 &lt;- mopcc15[!pnw]
+#restrict and rename
+mopcc15 &lt;- mopcc[, .(STORE_NUM,PEAK_TB_COUNT,PEAK_RSPNS_COUNT,ORD_MTHD_CD)]
+setnames(mopcc15,c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"),c("PEAK_TB_COUNT_2015","PEAK_RSPNS_COUNT_2015"))
+
+#calculate MOP percentage
+mop[, moppct := PEAK_MOP_TRANS_CNT/PEAK_TTL_TRANS_CNT]
+mop &lt;- na.omit(mop,cols="moppct")
+
+#organize stores into core, high, and super high
+#keep only FY 18 Q2
+mop &lt;- mop[FSCL_YR_NUM==2018&amp;FSCL_QTR_IN_YR_NUM==2]
+mop &lt;- na.omit(mop,cols="moppct")
+
+#MOP transactions only &amp; CC only
+mopcc &lt;- mopcc[ORD_MTHD_CD=="MOP"]
+mopcc15 &lt;- mopcc15[ORD_MTHD_CD=="MOP"]
+
+#reshape from long to wide to get delta
+# mopcc &lt;- mopcc[FSCL_YR_NUM==2018]
+mopcc &lt;- dcast.data.table(mopcc, STORE_NUM ~ FSCL_QTR_IN_YR_NUM + FSCL_YR_NUM, value.var=c("PEAK_TB_COUNT","PEAK_RSPNS_COUNT"))
+
+#split by mop into  20 groups
+mop &lt;- mop %&gt;% mutate(ntile = ntile(PEAK_MOP_PCT, 20))
+mopcc &lt;- left_join(mopcc, mop, by=c("STORE_NUM"))
+setDT(mopcc)
+mopcc &lt;- na.omit(mopcc,cols="ntile")
+
+#MERGE IN 2015 DATA
+temp &lt;- left_join(mopcc,mopcc15,by=c("STORE_NUM"))
+setDT(temp)
+
+#aggregate
+temp &lt;- temp[, list(n = .N,
+                    meanPEAK_MOP_PCT = mean(PEAK_MOP_PCT,na.rm=T),
+                    mean_daily_peak_MOP_trans = round(mean(PEAK_MOP_TRANS_CNT,na.rm=T)/91,0),
+                    tbcc_FY15Q4 = sum(PEAK_TB_COUNT_2015,na.rm=T)/sum(PEAK_RSPNS_COUNT_2015,na.rm=T),
+                    tbcc_FY17Q1 = sum(PEAK_TB_COUNT_1_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_1_2017,na.rm=T),
+                    tbcc_FY17Q2 = sum(PEAK_TB_COUNT_2_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_2_2017,na.rm=T),
+                    tbcc_FY17Q3 = sum(PEAK_TB_COUNT_3_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_3_2017,na.rm=T),
+                    tbcc_FY17Q4 = sum(PEAK_TB_COUNT_4_2017,na.rm=T)/sum(PEAK_RSPNS_COUNT_4_2017,na.rm=T),
+                    tbcc_FY18Q1 = sum(PEAK_TB_COUNT_1_2018,na.rm=T)/sum(PEAK_RSPNS_COUNT_1_2018,na.rm=T),
+                    tbcc_FY18Q2 = sum(PEAK_TB_COUNT_2_2018,na.rm=T)/sum(PEAK_RSPNS_COUNT_2_2018,na.rm=T)),
+             by="ntile"]
+temp &lt;- setorder(temp,ntile)
+#write file
+write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-12-05_CC_peakcafe_MOPtrans_by_MOPtile.csv")</RScript>
           <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
@@ -763,11 +913,11 @@ write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_CC_peakcafe_
     </Node>
     <Node ToolID="22">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="654" y="78" width="100" height="40" />
+        <Position x="678" y="54" width="100" height="64" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Slides 2 and 6</Text>
+          <Text>Slides 2, 4, 6, and 7</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -783,11 +933,11 @@ write.csv(temp,"O:/CoOp/CoOp194_PROReportng&amp;OM/Julie/2018-04-05_CC_peakcafe_
     </Node>
     <Node ToolID="23">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="510" y="54" width="100" height="52" />
+        <Position x="510" y="30" width="100" height="76" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Slides 6: PEAK
+          <Text>Slides 6 and7: PEAK
 CC by store</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
@@ -808,8 +958,8 @@ CC by store</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>DT/CAFE
-Cafe</Text>
+          <Text>CAFE-only stores
+Cafe &amp; MOP Trans</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -863,7 +1013,7 @@ JOIN APPCA.F_POS_LINE_ITEM pi
 JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
   ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
 
-WHERE tt.ORD_MTHD_CD IN ('CAFE')
+WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')
   AND sr.QSTN_ID IN ('Q2_2')
   AND sr.RSPNS_ID &lt;&gt; '9'
   AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
@@ -925,7 +1075,7 @@ JOIN APPCA.F_POS_LINE_ITEM pi
 JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
   ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
 
-WHERE tt.ORD_MTHD_CD IN ('CAFE')
+WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')
   AND sr.QSTN_ID IN ('Q2_2')
   AND sr.RSPNS_ID &lt;&gt; '9'
   AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
@@ -945,13 +1095,13 @@ ORDER BY
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="WString" />
-            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_TB_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_RSPNS_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
-            <Field name="PEAK_TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="STORE_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_TB_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_RSPNS_COUNT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
+            <Field name="PEAK_TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS PEAK_TB_COUNT&#xA;,SUM(COALESCE(w.WEIGHT_RT,1)) AS PEAK_RSPNS_COUNT&#xA;  ,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('CAFE','MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;,st.STORE_NUM&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -987,7 +1137,7 @@ ORDER BY
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="786" y="66" width="100" height="52" />
+        <Position x="798" y="66" width="100" height="52" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1007,7 +1157,7 @@ ORDER BY
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="786" y="126" width="100" height="48" />
+        <Position x="798" y="126" width="100" height="48" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1027,7 +1177,7 @@ ORDER BY
     </Node>
     <Node ToolID="29">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="786" y="174" />
+        <Position x="798" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1146,7 +1296,7 @@ ORDER BY
     </Node>
     <Node ToolID="30">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="858" y="174" />
+        <Position x="870" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1174,7 +1324,7 @@ ORDER BY
     </Node>
     <Node ToolID="31">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="918" y="66" width="100" height="52" />
+        <Position x="942" y="66" width="100" height="52" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1194,7 +1344,7 @@ ORDER BY
     </Node>
     <Node ToolID="32">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="918" y="126" width="100" height="48" />
+        <Position x="942" y="126" width="100" height="48" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1214,7 +1364,7 @@ ORDER BY
     </Node>
     <Node ToolID="33">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="918" y="174" />
+        <Position x="942" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1333,7 +1483,239 @@ ORDER BY
     </Node>
     <Node ToolID="34">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="990" y="174" />
+        <Position x="1014" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_4672_b3eb0e425c814e1db9d44b4237ceeb90_\Engine_13788_ccc8d9156b23436eab84bd6c15591e6c_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="35">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1086" y="66" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Slide 5: MOP CC by Time</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="36">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1086" y="126" width="100" height="48" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>PEAK/NON-PEAK</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="37">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1086" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS
+(SELECT DISTINCT
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR
+  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' 
+    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'
+    ELSE 'NA' END) AS TIME_OF_DAY
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT
+  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE
+  
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+/* Create universal transaction ID from survey table and use that to join to POS table
+/  Limit to U.S. and Canada and transactions after the survey began to improve performance */
+JOIN APPCA.F_POS_LINE_ITEM pi
+  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))
+      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID
+    AND pi.CNTRY_CD = 'US'
+    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'
+  
+JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
+  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
+
+WHERE tt.ORD_MTHD_CD IN ('MOP')
+  AND sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
+  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY
+  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY
+
+GROUP BY
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,TO_CHAR(sr.TRANS_DTM, 'HH24')
+ORDER BY
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM)
+  SELECT 
+  SQ.ORD_MTHD_CD
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.TIME_OF_DAY
+  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE
+  FROM SQ
+  GROUP BY 
+  SQ.ORD_MTHD_CD
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.TIME_OF_DAY</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=WITH SQ AS
+(SELECT DISTINCT
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR
+  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' 
+    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'
+    ELSE 'NA' END) AS TIME_OF_DAY
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT
+  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE
+  
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+/* Create universal transaction ID from survey table and use that to join to POS table
+/  Limit to U.S. and Canada and transactions after the survey began to improve performance */
+JOIN APPCA.F_POS_LINE_ITEM pi
+  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))
+      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID
+    AND pi.CNTRY_CD = 'US'
+    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'
+  
+JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt
+  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY
+
+WHERE tt.ORD_MTHD_CD IN ('MOP')
+  AND sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))
+  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY
+  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY
+
+GROUP BY
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM
+  ,TO_CHAR(sr.TRANS_DTM, 'HH24')
+ORDER BY
+  tt.ORD_MTHD_CD
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_QTR_IN_YR_NUM)
+  SELECT 
+  SQ.ORD_MTHD_CD
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.TIME_OF_DAY
+  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE
+  FROM SQ
+  GROUP BY 
+  SQ.ORD_MTHD_CD
+  ,SQ.FSCL_YR_NUM
+  ,SQ.FSCL_QTR_IN_YR_NUM
+  ,SQ.TIME_OF_DAY</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="ORD_MTHD_CD" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS&#xA;(SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR&#xA;  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' &#xA;    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'&#xA;    ELSE 'NA' END) AS TIME_OF_DAY&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT&#xA;  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24')&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM)&#xA;  SELECT &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY&#xA;  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE&#xA;  FROM SQ&#xA;  GROUP BY &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS&#xA;(SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR&#xA;  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' &#xA;    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'&#xA;    ELSE 'NA' END) AS TIME_OF_DAY&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT&#xA;  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24')&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM)&#xA;  SELECT &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY&#xA;  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE&#xA;  FROM SQ&#xA;  GROUP BY &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY" type="Double" />
+            <Field name="FSCL_QTR_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS&#xA;(SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR&#xA;  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' &#xA;    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'&#xA;    ELSE 'NA' END) AS TIME_OF_DAY&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT&#xA;  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24')&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM)&#xA;  SELECT &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY&#xA;  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE&#xA;  FROM SQ&#xA;  GROUP BY &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY" type="Double" />
+            <Field name="TIME_OF_DAY" size="9" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS&#xA;(SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR&#xA;  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' &#xA;    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'&#xA;    ELSE 'NA' END) AS TIME_OF_DAY&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT&#xA;  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24')&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM)&#xA;  SELECT &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY&#xA;  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE&#xA;  FROM SQ&#xA;  GROUP BY &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY" type="WString" />
+            <Field name="CC_TB_SCORE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SQ AS&#xA;(SELECT DISTINCT&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24') AS TRANS_HOUR&#xA;  ,(CASE WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) THEN 'PEAK' &#xA;    WHEN (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;= 10) THEN 'NON-PEAK'&#xA;    ELSE 'NA' END) AS TIME_OF_DAY&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TB_COUNT&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS RSPNS_COUNT&#xA;  --,ROUND((SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END)) / SUM(COALESCE(w.WEIGHT_RT,1)),4) AS PEAK_CC_TB_SCORE&#xA;  &#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;&#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;/* Create universal transaction ID from survey table and use that to join to POS table&#xA;/  Limit to U.S. and Canada and transactions after the survey began to improve performance */&#xA;JOIN APPCA.F_POS_LINE_ITEM pi&#xA;  ON TO_CHAR(sr.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(sr.STORE_NUM, '000000'))&#xA;      || TRIM(TO_CHAR(SUBSTR(sr.RGSTR_NUM, -1, 2),'00')) || sr.TRANS_ID = pi.TRANS_ID&#xA;    AND pi.CNTRY_CD = 'US'&#xA;    --AND pi.BUS_DT &gt;= '01-OCT-17' AND pi.BUS_DT &lt; '01-DEC-17'&#xA;  &#xA;JOIN APPCA.D_POS_LINE_ITEM_TRANS_TYPE tt&#xA;  ON pi.POS_LINE_ITEM_TRANS_TYPE_KEY = tt.POS_LINE_ITEM_TRANS_TYPE_KEY&#xA;&#xA;WHERE tt.ORD_MTHD_CD IN ('MOP')&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_QTR_IN_YR_NUM IN (1,2)) OR (ca.FSCL_YR_NUM = 2017))&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 10) -- PEAK ONLY&#xA;  --AND (TO_CHAR(sr.TRANS_DTM, 'HH24') &lt;7 OR TO_CHAR(sr.TRANS_DTM, 'HH24') &gt; 10) -- non-PEAK ONLY&#xA;&#xA;GROUP BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM&#xA;  ,TO_CHAR(sr.TRANS_DTM, 'HH24')&#xA;ORDER BY&#xA;  tt.ORD_MTHD_CD&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_QTR_IN_YR_NUM)&#xA;  SELECT &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY&#xA;  ,ROUND((SUM(SQ.TB_COUNT) / SUM(SQ.RSPNS_COUNT)),4) AS CC_TB_SCORE&#xA;  FROM SQ&#xA;  GROUP BY &#xA;  SQ.ORD_MTHD_CD&#xA;  ,SQ.FSCL_YR_NUM&#xA;  ,SQ.FSCL_QTR_IN_YR_NUM&#xA;  ,SQ.TIME_OF_DAY" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="38">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1158" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1384,6 +1766,10 @@ ORDER BY
     <Connection>
       <Origin ToolID="33" Connection="Output" />
       <Destination ToolID="34" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="37" Connection="Output" />
+      <Destination ToolID="38" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
