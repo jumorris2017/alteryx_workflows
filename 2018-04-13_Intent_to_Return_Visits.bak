@@ -1,0 +1,1117 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="342" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="GUID_USER_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="V_WString" />
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="WString" />
+            <Field name="CASE_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="V_WString" />
+            <Field name="SURVEY_TRANS_DATE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="DateTime" />
+            <Field name="RETURN" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="Double" />
+            <Field name="SPEND_POST60D" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="Double" />
+            <Field name="VISITS_POST60D" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD = 'CO'&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN&#xA;)&#xA;SELECT * FROM SR2&#xA;" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="426" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13936_637a6457acaa499c9643dd1fcc628876_\Engine_12736_9c411072747348b4908011a1bf2fcde1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="354" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls intent to return from CE survey and post-survey visits and spend.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="354" y="30" width="100" height="84" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>60 Days -
+Intent to 
+Return; Survey and Behavior</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="42" width="264" height="156" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulling CE data from fiscal Jan 2018 and tracking post-survey N day visitation
+
+Analyses to perform:
+
+--TB  &amp; average returns
+--Top 2 box &amp; average returns
+--Stated vs actual
+
+(use intent_to_return_visits_Ndays.csv)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="654" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST7D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST7D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'7'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST7D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST7D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'7'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="738" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13936_637a6457acaa499c9643dd1fcc628876_\Engine_12736_9c411072747348b4908011a1bf2fcde1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="666" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls intent to return from CE survey and post-survey visits and spend.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="666" y="30" width="100" height="84" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>7 Days - 
+Intent to 
+Return; Survey and Behavior</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="822" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST1D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST1D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'1'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST1D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST1D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'1'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="906" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13936_637a6457acaa499c9643dd1fcc628876_\Engine_12736_9c411072747348b4908011a1bf2fcde1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="834" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls intent to return from CE survey and post-survey visits and spend.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="834" y="30" width="100" height="84" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>1 Day - 
+Intent to 
+Return; Survey and Behavior</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="1002" y="114" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>#Testing intent to return CE ratings against actual return visitation behavior
+
+#load libraries
+library(data.table)
+library(ggplot2)
+library(ggthemes)
+
+#load data
+data_dir &lt;- "O:/CoOp/CoOp194_PROReportng&amp;OM/Julie"
+ir60 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_60days.csv"))
+ir30 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_30days.csv"))
+ir30 &lt;- ir30[, .(GUID_USER_ID,SPEND_POST30D,VISITS_POST30D)]
+ir7 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_7days.csv"))
+ir7 &lt;- ir7[, .(GUID_USER_ID,SPEND_POST7D,VISITS_POST7D)]
+ir1 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_1day.csv"))
+ir1 &lt;- ir1[, .(GUID_USER_ID,SPEND_POST1D,VISITS_POST1D)]
+#TB versus TB2
+irtb &lt;- fread(paste0(data_dir,"/intent_to_return_TBvTB2.csv"))
+
+#merge together
+ir &lt;- Reduce(function(x, y) {merge(x, y, by=c("GUID_USER_ID"), all = TRUE)}, list(ir60,ir30,ir7,ir1))
+
+#create top box var
+ir[RETURN==5, returnTB := 1]; ir[RETURN&lt;=4&amp;RETURN&gt;=1, returnTB := 0]
+
+#create top 2 box var
+ir[RETURN&gt;=4, returnTB2 := 1]; ir[RETURN&lt;=3&amp;RETURN&gt;=1, returnTB2 := 0]
+
+#create top 3 box var
+ir[RETURN&gt;=3, returnTB3 := 1]; ir[RETURN&lt;=2&amp;RETURN&gt;=1, returnTB3 := 0]
+
+#create indicator for actual returns in 30 days
+ir[VISITS_POST30D&gt;=1, returnin30days := 1]; ir[VISITS_POST30D==0, returnin30days := 0]
+#create indicator for actual returns in 7 days
+ir[VISITS_POST7D&gt;=1, returnin7days := 1]; ir[VISITS_POST7D==0, returnin7days := 0]
+#create indicator for actual returns in 1 day
+ir[VISITS_POST1D&gt;=1, returnin1day := 1]; ir[VISITS_POST1D==0, returnin1day := 0]
+
+#remove outliers... (71 people visited more than 200x in 60 days)
+ir &lt;- ir[VISITS_POST60D&lt;=200]
+
+#t.tests
+#60 days: number of visits
+t.test(ir[returnTB==0, VISITS_POST60D],ir[returnTB==1, VISITS_POST60D])
+t.test(ir[returnTB2==0, VISITS_POST60D],ir[returnTB2==1, VISITS_POST60D])
+t.test(ir[returnTB3==0, VISITS_POST60D],ir[returnTB3==1, VISITS_POST60D])
+#7 days: number of visits
+t.test(ir[returnTB==0, VISITS_POST7D],ir[returnTB==1, VISITS_POST7D])
+t.test(ir[returnTB2==0, VISITS_POST7D],ir[returnTB2==1, VISITS_POST7D])
+t.test(ir[returnTB3==0, VISITS_POST7D],ir[returnTB3==1, VISITS_POST7D])
+#30 days: binary visitation
+t.test(ir[returnTB3==0, returnin30days],ir[returnTB3==1, returnin30days])
+#7 days: binary visitation
+t.test(ir[returnTB2==0, returnin7days],ir[returnTB2==1, returnin7days])
+#1 day: binary visitation
+t.test(ir[returnTB==0, returnin1day],ir[returnTB==1, returnin1day])
+
+#melt data
+irtb &lt;- irtb[,.(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,TB_SCORE,TB2_SCORE)]
+irtb &lt;- melt(irtb, id=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
+
+#create an x-variable
+irtb[, fyfw := paste0(FSCL_YR_NUM,".",str_pad(irtb[,FSCL_WK_IN_YR_NUM],2,pad="0"))]
+
+#set up line chart
+pdata &lt;- irtb
+px &lt;- irtb[, fyfw]
+py &lt;- irtb[, value]
+groupvar &lt;- irtb[, variable]
+#set labels
+xlabel &lt;- "Time"
+ylabel &lt;- "Score (%)"
+tlabel &lt;- "Intent to Return"
+#manual legend labels
+lname &lt;- "Metric"
+llabels &lt;- c("Top Box (5 out of 5)","Top 2 Box (4+ out of 5)") 
+
+#line chart
+plot2 &lt;- ggplot() +
+  geom_line(data=pdata, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+  xlab(xlabel) + ylab(ylabel) + theme_economist() +
+  scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+  scale_x_discrete(breaks = px[seq(1, length(px), by = 4)]) +
+  guides(colour = guide_legend(override.aes = list(size = 7))) + 
+  theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 1)) +
+  ggtitle(tlabel)
+print(plot2)</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="498" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST30D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST30D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'30'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD = 'CO'
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST30D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST30D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'30'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN
+)
+SELECT * FROM SR2
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="582" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13936_637a6457acaa499c9643dd1fcc628876_\Engine_12736_9c411072747348b4908011a1bf2fcde1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="510" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls intent to return from CE survey and post-survey visits and spend.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="510" y="30" width="100" height="84" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>30 Days -
+Intent to 
+Return; Survey and Behavior</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="102" y="318" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>498212DC0C96BB024DC50B75B7220C9B5ED03B6C6DE73</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(CASE  WHEN sr.RSPNS_ID IN ('4','5') AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB2
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID IN ('4','5') AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB2_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q1')
+  AND sr.RSPNS_ID <> '9'
+  AND ca.FSCL_YR_NUM IN (2016,2017,2018)
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+ORDER BY 
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=SELECT DISTINCT
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(CASE  WHEN sr.RSPNS_ID IN ('4','5') AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB2
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB_SCORE
+  ,ROUND(SUM(CASE  WHEN sr.RSPNS_ID IN ('4','5') AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) / SUM(COALESCE(w.WEIGHT_RT,1)),3)*100 AS TB2_SCORE
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US' 
+
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q1')
+  AND sr.RSPNS_ID <> '9'
+  AND ca.FSCL_YR_NUM IN (2016,2017,2018)
+
+GROUP BY
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+ORDER BY 
+sr.QSTN_ID
+,ca.FSCL_YR_NUM
+,ca.FSCL_WK_IN_YR_NUM
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="186" y="318" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_13936_637a6457acaa499c9643dd1fcc628876_\Engine_12736_9c411072747348b4908011a1bf2fcde1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="114" y="258" width="100" height="60" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>TB vs TB2
+Weekly Trend</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="6" Connection="Output" />
+      <Destination ToolID="7" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="10" Connection="Output" />
+      <Destination ToolID="11" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="15" Connection="Output" />
+      <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="19" Connection="Output" />
+      <Destination ToolID="20" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-04-13_Intent_to_Return_Visits</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
