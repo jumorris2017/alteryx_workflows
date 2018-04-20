@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="342" y="174" />
+        <Position x="342" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -135,7 +135,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="426" y="174" />
+        <Position x="426" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -163,7 +163,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="354" y="126" width="100" height="40" />
+        <Position x="354" y="150" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -183,7 +183,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="354" y="30" width="100" height="84" />
+        <Position x="354" y="54" width="100" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -205,7 +205,7 @@ Return; Survey and Behavior</Text>
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="54" y="42" width="264" height="156" />
+        <Position x="54" y="66" width="264" height="156" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -233,7 +233,7 @@ Analyses to perform:
     </Node>
     <Node ToolID="6">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="654" y="174" />
+        <Position x="654" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -354,7 +354,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="7">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="738" y="174" />
+        <Position x="738" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -382,7 +382,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="8">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="666" y="126" width="100" height="40" />
+        <Position x="666" y="150" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -402,7 +402,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="9">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="666" y="30" width="100" height="84" />
+        <Position x="666" y="54" width="100" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -424,7 +424,7 @@ Return; Survey and Behavior</Text>
     </Node>
     <Node ToolID="10">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="822" y="174" />
+        <Position x="822" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -543,7 +543,7 @@ SELECT * FROM SR2</DefaultAnnotationText>
     </Node>
     <Node ToolID="11">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="906" y="174" />
+        <Position x="906" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -571,7 +571,7 @@ SELECT * FROM SR2</DefaultAnnotationText>
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="834" y="126" width="100" height="40" />
+        <Position x="834" y="150" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -591,7 +591,7 @@ SELECT * FROM SR2</DefaultAnnotationText>
     </Node>
     <Node ToolID="13">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="834" y="30" width="100" height="84" />
+        <Position x="834" y="54" width="100" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -613,7 +613,7 @@ Return; Survey and Behavior</Text>
     </Node>
     <Node ToolID="14">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="1002" y="114" />
+        <Position x="1002" y="138" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -623,6 +623,7 @@ Return; Survey and Behavior</Text>
 library(data.table)
 library(ggplot2)
 library(ggthemes)
+library(ppcor)
 
 #load data
 data_dir &lt;- "O:/CoOp/CoOp194_PROReportng&amp;OM/Julie"
@@ -635,6 +636,8 @@ ir1 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_1day.csv"))
 ir1 &lt;- ir1[, .(GUID_USER_ID,SPEND_POST1D,VISITS_POST1D)]
 #TB versus TB2
 irtb &lt;- fread(paste0(data_dir,"/intent_to_return_TBvTB2.csv"))
+#Sales and TSDs
+irs &lt;- fread(paste0(data_dir,"/intent_to_return_sales.csv"))
 
 #merge together
 ir &lt;- Reduce(function(x, y) {merge(x, y, by=c("GUID_USER_ID"), all = TRUE)}, list(ir60,ir30,ir7,ir1))
@@ -675,17 +678,17 @@ t.test(ir[returnTB2==0, returnin7days],ir[returnTB2==1, returnin7days])
 t.test(ir[returnTB==0, returnin1day],ir[returnTB==1, returnin1day])
 
 #melt data
-irtb &lt;- irtb[,.(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,TB_SCORE,TB2_SCORE)]
-irtb &lt;- melt(irtb, id=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
+irtbm &lt;- irtb[,.(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,TB_SCORE,TB2_SCORE)]
+irtbm &lt;- melt(irtbm, id=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
 
 #create an x-variable
-irtb[, fyfw := paste0(FSCL_YR_NUM,".",str_pad(irtb[,FSCL_WK_IN_YR_NUM],2,pad="0"))]
+irtbm[, fyfw := paste0(FSCL_YR_NUM,".",str_pad(irtbm[,FSCL_WK_IN_YR_NUM],2,pad="0"))]
 
 #set up line chart
-pdata &lt;- irtb
-px &lt;- irtb[, fyfw]
-py &lt;- irtb[, value]
-groupvar &lt;- irtb[, variable]
+pdata &lt;- irtbm
+px &lt;- irtbm[, fyfw]
+py &lt;- irtbm[, value]
+groupvar &lt;- irtbm[, variable]
 #set labels
 xlabel &lt;- "Time"
 ylabel &lt;- "Score (%)"
@@ -697,13 +700,23 @@ llabels &lt;- c("Top Box (5 out of 5)","Top 2 Box (4+ out of 5)")
 #line chart
 plot2 &lt;- ggplot() +
   geom_line(data=pdata, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
-  xlab(xlabel) + ylab(ylabel) + theme_economist() +
+  xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
   scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
   scale_x_discrete(breaks = px[seq(1, length(px), by = 4)]) +
   guides(colour = guide_legend(override.aes = list(size = 7))) + 
   theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 1)) +
   ggtitle(tlabel)
-print(plot2)</RScript>
+print(plot2)
+
+#sales data 
+irs[, tsd := round(CustTrans/day_count,2)]
+
+#merge together
+irtb &lt;- Reduce(function(x, y) {merge(x, y, by=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"), all = TRUE)}, list(irtb,irs))
+cor.test(irtb[,TB_SCORE],irtb[,tsd])
+cor.test(irtb[,TB2_SCORE],irtb[,tsd])
+cor.test(irtb[,TB_SCORE],irtb[,CustTrans])
+cor.test(irtb[,TB2_SCORE],irtb[,CustTrans])</RScript>
           <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
@@ -716,7 +729,7 @@ print(plot2)</RScript>
     </Node>
     <Node ToolID="15">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="498" y="174" />
+        <Position x="498" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -837,7 +850,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="16">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="582" y="174" />
+        <Position x="582" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -865,7 +878,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="17">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="510" y="126" width="100" height="40" />
+        <Position x="510" y="150" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -885,7 +898,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="18">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="510" y="30" width="100" height="84" />
+        <Position x="510" y="54" width="100" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -907,7 +920,7 @@ Return; Survey and Behavior</Text>
     </Node>
     <Node ToolID="19">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="102" y="318" />
+        <Position x="102" y="342" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1006,7 +1019,7 @@ sr.QSTN_ID
     </Node>
     <Node ToolID="20">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="186" y="318" />
+        <Position x="186" y="342" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1034,7 +1047,7 @@ sr.QSTN_ID
     </Node>
     <Node ToolID="22">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="114" y="258" width="100" height="60" />
+        <Position x="114" y="282" width="100" height="60" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1055,7 +1068,7 @@ Weekly Trend</Text>
     </Node>
     <Node ToolID="23">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="1110" y="174" />
+        <Position x="1110" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1128,7 +1141,7 @@ Table= SELECT ca.FSCL_YR_NUM
     </Node>
     <Node ToolID="24">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="1122" y="114" width="100" height="60" />
+        <Position x="1122" y="138" width="100" height="60" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -1149,10 +1162,18 @@ Weekly Trend</Text>
     </Node>
     <Node ToolID="25">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1182" y="174" />
+        <Position x="1182" y="198" />
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />
@@ -1206,7 +1227,7 @@ Weekly Trend</Text>
     <LayoutType>Horizontal</LayoutType>
     <MetaInfo>
       <NameIsFileName value="True" />
-      <Name>2018-04-13_Intent_to_Return_Visits</Name>
+      <Name>2018-04-20_CE_Return_Visits</Name>
       <Description />
       <RootToolName />
       <ToolVersion />

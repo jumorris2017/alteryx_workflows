@@ -623,6 +623,7 @@ Return; Survey and Behavior</Text>
 library(data.table)
 library(ggplot2)
 library(ggthemes)
+library(ppcor)
 
 #load data
 data_dir &lt;- "O:/CoOp/CoOp194_PROReportng&amp;OM/Julie"
@@ -635,6 +636,8 @@ ir1 &lt;- fread(paste0(data_dir,"/intent_to_return_visits_1day.csv"))
 ir1 &lt;- ir1[, .(GUID_USER_ID,SPEND_POST1D,VISITS_POST1D)]
 #TB versus TB2
 irtb &lt;- fread(paste0(data_dir,"/intent_to_return_TBvTB2.csv"))
+#Sales and TSDs
+irs &lt;- fread(paste0(data_dir,"/intent_to_return_sales.csv"))
 
 #merge together
 ir &lt;- Reduce(function(x, y) {merge(x, y, by=c("GUID_USER_ID"), all = TRUE)}, list(ir60,ir30,ir7,ir1))
@@ -675,17 +678,17 @@ t.test(ir[returnTB2==0, returnin7days],ir[returnTB2==1, returnin7days])
 t.test(ir[returnTB==0, returnin1day],ir[returnTB==1, returnin1day])
 
 #melt data
-irtb &lt;- irtb[,.(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,TB_SCORE,TB2_SCORE)]
-irtb &lt;- melt(irtb, id=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
+irtbm &lt;- irtb[,.(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,TB_SCORE,TB2_SCORE)]
+irtbm &lt;- melt(irtbm, id=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
 
 #create an x-variable
-irtb[, fyfw := paste0(FSCL_YR_NUM,".",str_pad(irtb[,FSCL_WK_IN_YR_NUM],2,pad="0"))]
+irtbm[, fyfw := paste0(FSCL_YR_NUM,".",str_pad(irtbm[,FSCL_WK_IN_YR_NUM],2,pad="0"))]
 
 #set up line chart
-pdata &lt;- irtb
-px &lt;- irtb[, fyfw]
-py &lt;- irtb[, value]
-groupvar &lt;- irtb[, variable]
+pdata &lt;- irtbm
+px &lt;- irtbm[, fyfw]
+py &lt;- irtbm[, value]
+groupvar &lt;- irtbm[, variable]
 #set labels
 xlabel &lt;- "Time"
 ylabel &lt;- "Score (%)"
@@ -697,13 +700,23 @@ llabels &lt;- c("Top Box (5 out of 5)","Top 2 Box (4+ out of 5)")
 #line chart
 plot2 &lt;- ggplot() +
   geom_line(data=pdata, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
-  xlab(xlabel) + ylab(ylabel) + theme_economist() +
+  xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
   scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
   scale_x_discrete(breaks = px[seq(1, length(px), by = 4)]) +
   guides(colour = guide_legend(override.aes = list(size = 7))) + 
   theme(axis.text.x = element_text(size = 7, angle = 90, hjust = 1)) +
   ggtitle(tlabel)
-print(plot2)</RScript>
+print(plot2)
+
+#sales data 
+irs[, tsd := round(CustTrans/day_count,2)]
+
+#merge together
+irtb &lt;- Reduce(function(x, y) {merge(x, y, by=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"), all = TRUE)}, list(irtb,irs))
+cor.test(irtb[,TB_SCORE],irtb[,tsd])
+cor.test(irtb[,TB2_SCORE],irtb[,tsd])
+cor.test(irtb[,TB_SCORE],irtb[,CustTrans])
+cor.test(irtb[,TB2_SCORE],irtb[,CustTrans])</RScript>
           <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
@@ -1152,7 +1165,15 @@ Weekly Trend</Text>
         <Position x="1182" y="174" />
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />

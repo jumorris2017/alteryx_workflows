@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="342" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          v1.OWNR_TYPE_CD, 
+          v1.DRIVE_THRU_IND,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          v1.OWNR_TYPE_CD, 
+          v1.DRIVE_THRU_IND,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.OWNR_TYPE_CD,
+      SR.DRIVE_THRU_IND,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SR.Q2_2,
+      SR.Q2_1,
+      SR.Q2_3,
+      SR.Q2_4,
+      SR.Q2_5,
+      SR.Q2_6,
+      SR.Q2_7,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.OWNR_TYPE_CD,
+      SR.DRIVE_THRU_IND,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SR.Q2_2,
+      SR.Q2_1,
+      SR.Q2_3,
+      SR.Q2_4,
+      SR.Q2_5,
+      SR.Q2_6,
+      SR.Q2_7
+)
+SELECT * FROM SR2
+
+]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=/* Pulls post- period spend and number of visits */
+
+    WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          S1.STORE_NUM AS STORE_NUM,
+          v1.OWNR_TYPE_CD, 
+          v1.DRIVE_THRU_IND,
+          S1.CASE_ID AS CASE_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,
+          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+          WHERE S1.TRANS_DTM >='01-JAN-2018' AND S1.TRANS_DTM <='28-JAN-2018'
+          
+          GROUP BY S1.GUID_USER_ID,
+          S1.STORE_NUM,
+          v1.OWNR_TYPE_CD, 
+          v1.DRIVE_THRU_IND,
+          S1.CASE_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.OWNR_TYPE_CD,
+      SR.DRIVE_THRU_IND,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SR.Q2_2,
+      SR.Q2_1,
+      SR.Q2_3,
+      SR.Q2_4,
+      SR.Q2_5,
+      SR.Q2_6,
+      SR.Q2_7,
+      SUM(CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT > TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+        AND POS1.BUS_DT <= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY 
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.STORE_NUM,
+      SR.OWNR_TYPE_CD,
+      SR.DRIVE_THRU_IND,
+      SR.CASE_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.RETURN,
+      SR.Q2_2,
+      SR.Q2_1,
+      SR.Q2_3,
+      SR.Q2_4,
+      SR.Q2_5,
+      SR.Q2_6,
+      SR.Q2_7
+)
+SELECT * FROM SR2
+
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="GUID_USER_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="V_WString" />
+            <Field name="STORE_NUM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="WString" />
+            <Field name="OWNR_TYPE_CD" size="3" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="WString" />
+            <Field name="DRIVE_THRU_IND" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="CASE_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="V_WString" />
+            <Field name="SURVEY_TRANS_DATE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="DateTime" />
+            <Field name="RETURN" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_2" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_1" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_3" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_4" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_5" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_6" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="Q2_7" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="SPEND_POST60D" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+            <Field name="VISITS_POST60D" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||/* Pulls post- period spend and number of visits */&#xA;&#xA;    WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          S1.STORE_NUM AS STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID AS CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q1' THEN S1.RSPNS_ID END) AS RETURN,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_2' THEN S1.RSPNS_ID END) AS Q2_2,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_1' THEN S1.RSPNS_ID END) AS Q2_1,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_3' THEN S1.RSPNS_ID END) AS Q2_3,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_4' THEN S1.RSPNS_ID END) AS Q2_4,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_5' THEN S1.RSPNS_ID END) AS Q2_5,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_6' THEN S1.RSPNS_ID END) AS Q2_6,&#xA;          AVG(CASE WHEN S1.QSTN_ID='Q2_7' THEN S1.RSPNS_ID END) AS Q2_7&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;          WHERE S1.TRANS_DTM &gt;='01-JAN-2018' AND S1.TRANS_DTM &lt;='28-JAN-2018'&#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          S1.STORE_NUM,&#xA;          v1.OWNR_TYPE_CD, &#xA;          v1.DRIVE_THRU_IND,&#xA;          S1.CASE_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID))&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7,&#xA;      SUM(CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.GROSS_REV_LCL_AMT ELSE NULL END) AS SPEND_POST60D,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT &gt; TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_POST60D&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;        AND POS1.BUS_DT &lt;= TRUNC(SR.SURVEY_TRANS_DATE)+ INTERVAL'60'DAY &#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.STORE_NUM,&#xA;      SR.OWNR_TYPE_CD,&#xA;      SR.DRIVE_THRU_IND,&#xA;      SR.CASE_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.RETURN,&#xA;      SR.Q2_2,&#xA;      SR.Q2_1,&#xA;      SR.Q2_3,&#xA;      SR.Q2_4,&#xA;      SR.Q2_5,&#xA;      SR.Q2_6,&#xA;      SR.Q2_7&#xA;)&#xA;SELECT * FROM SR2&#xA;&#xA;" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="426" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="354" y="150" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls intent to return from CE survey and post-survey visits and spend.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="354" y="54" width="100" height="84" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>60 Days -
+Intent to 
+Return; Survey and Behavior</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-04-20_CE_Return_Visits</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
