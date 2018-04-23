@@ -1,0 +1,832 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="90" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
+--guids by date snapshots
+  SELECT S1.GUID_USER_ID,
+  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+  ca.FSCL_YR_NUM,
+  ca.FSCL_PER_IN_YR_NUM
+
+  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+  INNER JOIN APPCA.D_STORE_VERS v1
+    ON v1.STORE_NUM = S1.STORE_NUM
+    AND v1.CURRENT_FLG = 'Y' 
+    AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+    --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+  JOIN APPCA.D_CAL ca
+    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+  
+  GROUP BY S1.GUID_USER_ID,
+  TRUNC(S1.TRANS_DTM),
+  TO_CHAR(S1.TRANS_DTM, 'HH24'),
+  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
+  ca.FSCL_YR_NUM,
+  ca.FSCL_PER_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--SBP416
+--guids by date snapshots
+  SELECT S1.GUID_USER_ID,
+  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+  ca.FSCL_YR_NUM,
+  ca.FSCL_PER_IN_YR_NUM
+
+  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+  INNER JOIN APPCA.D_STORE_VERS v1
+    ON v1.STORE_NUM = S1.STORE_NUM
+    AND v1.CURRENT_FLG = 'Y' 
+    AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+    --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+  JOIN APPCA.D_CAL ca
+    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+  
+  GROUP BY S1.GUID_USER_ID,
+  TRUNC(S1.TRANS_DTM),
+  TO_CHAR(S1.TRANS_DTM, 'HH24'),
+  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
+  ca.FSCL_YR_NUM,
+  ca.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="GUID_USER_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="V_WString" />
+            <Field name="SURVEY_TRANS_DATE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="DateTime" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="102" y="150" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="102" y="66" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>GUIDs by CE survey snapshot</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="870" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>#tracking SR CE response repeats by GUID
+#P12 FY16 &amp; P6 FY17 &amp; P12 FY18 &amp; P6 FY18
+
+#load libraries
+library(data.table)
+
+#load data
+data_dir &lt;- "O:/CoOp/CoOp194_PROReportng&amp;OM/Julie"
+sr &lt;- fread(paste0(data_dir,"/ce_survey_guids_p6fy16and17_p12fy17and18.csv"))
+
+#vectors of guids by period
+g_p12fy16 &lt;- sr[FSCL_YR_NUM==2016&amp;FSCL_PER_IN_YR_NUM==12,GUID_USER_ID]
+g_p6fy17 &lt;- sr[FSCL_YR_NUM==2017&amp;FSCL_PER_IN_YR_NUM==6,GUID_USER_ID]
+g_p12fy17 &lt;- sr[FSCL_YR_NUM==2017&amp;FSCL_PER_IN_YR_NUM==12,GUID_USER_ID]
+g_p6fy18 &lt;- sr[FSCL_YR_NUM==2018&amp;FSCL_PER_IN_YR_NUM==6,GUID_USER_ID]
+
+#percent repeat
+#first period to next 3 periods
+length(intersect(g_p12fy16,g_p6fy17))/length(g_p12fy16) #1 period later
+length(intersect(g_p12fy16,g_p12fy17))/length(g_p12fy16)
+length(intersect(g_p12fy16,g_p6fy18))/length(g_p12fy16)
+#second period to next 2 periods
+length(intersect(g_p6fy17,g_p12fy17))/length(g_p6fy17) #1 period later
+length(intersect(g_p6fy17,g_p6fy18))/length(g_p6fy17)
+#third period to next 1 period
+length(intersect(g_p12fy17,g_p6fy18))/length(g_p12fy17) #1 period later</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="270" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
+--guids by date snapshots
+WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.SURVEY_TRANS_DATE,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT BETWEEN (TRUNC(SR.SURVEY_TRANS_DATE)- INTERVAL'30'DAY) AND TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_PRE30D,
+      SR.FSCL_YR_NUM,
+      SR.FSCL_PER_IN_YR_NUM
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.FSCL_YR_NUM,
+      SR.FSCL_PER_IN_YR_NUM
+) 
+SELECT ROUND(AVG(SR2.VISITS_PRE30D),1) AS AVERAGE_VISITS_PRE30D,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--SBP416
+--guids by date snapshots
+WITH SR AS (
+          SELECT S1.GUID_USER_ID,
+          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+            --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          TRUNC(S1.TRANS_DTM),
+          TO_CHAR(S1.TRANS_DTM, 'HH24'),
+          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+    ),
+SR2 AS (
+    SELECT SR.GUID_USER_ID,
+      SR.SURVEY_TRANS_DATE,
+      COUNT(DISTINCT CASE WHEN POS1.BUS_DT BETWEEN (TRUNC(SR.SURVEY_TRANS_DATE)- INTERVAL'30'DAY) AND TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_PRE30D,
+      SR.FSCL_YR_NUM,
+      SR.FSCL_PER_IN_YR_NUM
+
+    FROM SR
+      LEFT OUTER JOIN APPCA.F_POS_HDR POS1
+      ON SR.GUID_USER_ID = POS1.GUID_ID
+      
+      GROUP BY SR.GUID_USER_ID,
+      SR.SURVEY_TRANS_DATE,
+      SR.FSCL_YR_NUM,
+      SR.FSCL_PER_IN_YR_NUM
+) 
+SELECT ROUND(AVG(SR2.VISITS_PRE30D),1) AS AVERAGE_VISITS_PRE30D,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="AVERAGE_VISITS_PRE30D" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT BETWEEN (TRUNC(SR.SURVEY_TRANS_DATE)- INTERVAL'30'DAY) AND TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_PRE30D,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;) &#xA;SELECT ROUND(AVG(SR2.VISITS_PRE30D),1) AS AVERAGE_VISITS_PRE30D,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT BETWEEN (TRUNC(SR.SURVEY_TRANS_DATE)- INTERVAL'30'DAY) AND TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_PRE30D,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;) &#xA;SELECT ROUND(AVG(SR2.VISITS_PRE30D),1) AS AVERAGE_VISITS_PRE30D,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;WITH SR AS (&#xA;          SELECT S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;            --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          TRUNC(S1.TRANS_DTM),&#xA;          TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;          TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;    ),&#xA;SR2 AS (&#xA;    SELECT SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      COUNT(DISTINCT CASE WHEN POS1.BUS_DT BETWEEN (TRUNC(SR.SURVEY_TRANS_DATE)- INTERVAL'30'DAY) AND TRUNC(SR.SURVEY_TRANS_DATE) THEN POS1.TRANS_ID ELSE NULL END) AS VISITS_PRE30D,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;&#xA;    FROM SR&#xA;      LEFT OUTER JOIN APPCA.F_POS_HDR POS1&#xA;      ON SR.GUID_USER_ID = POS1.GUID_ID&#xA;      &#xA;      GROUP BY SR.GUID_USER_ID,&#xA;      SR.SURVEY_TRANS_DATE,&#xA;      SR.FSCL_YR_NUM,&#xA;      SR.FSCL_PER_IN_YR_NUM&#xA;) &#xA;SELECT ROUND(AVG(SR2.VISITS_PRE30D),1) AS AVERAGE_VISITS_PRE30D,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="354" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="282" y="150" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="282" y="66" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Prior month frequency</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="462" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
+      SELECT t.GUID_USER_ID
+          ,t.GENDER
+          ,t.COMBINED_AGE
+          ,t.EDUCATION_MODEL
+          ,t.MARITAL_STATUS
+          ,t.OCCUPATION_GROUP_V2
+          ,t.EST_HOUSEHOLD_INCOME_V5
+          ,sq.FSCL_YR_NUM
+          ,sq.FSCL_PER_IN_YR_NUM
+
+          FROM DEPT_RET_AN.CUSTOMER_DEMOG t
+
+      INNER JOIN (SELECT S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+      ) sq
+
+  ON t.GUID_USER_ID = sq.GUID_USER_ID
+
+  WHERE t.SBUX_MATCH_LEVEL IN ('IND')</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--SBP416
+      SELECT t.GUID_USER_ID
+          ,t.GENDER
+          ,t.COMBINED_AGE
+          ,t.EDUCATION_MODEL
+          ,t.MARITAL_STATUS
+          ,t.OCCUPATION_GROUP_V2
+          ,t.EST_HOUSEHOLD_INCOME_V5
+          ,sq.FSCL_YR_NUM
+          ,sq.FSCL_PER_IN_YR_NUM
+
+          FROM DEPT_RET_AN.CUSTOMER_DEMOG t
+
+      INNER JOIN (SELECT S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+      ) sq
+
+  ON t.GUID_USER_ID = sq.GUID_USER_ID
+
+  WHERE t.SBUX_MATCH_LEVEL IN ('IND')</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="GUID_USER_ID" size="41" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="V_WString" />
+            <Field name="GENDER" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="WString" />
+            <Field name="COMBINED_AGE" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="WString" />
+            <Field name="EDUCATION_MODEL" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="Int64" />
+            <Field name="MARITAL_STATUS" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="WString" />
+            <Field name="OCCUPATION_GROUP_V2" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="WString" />
+            <Field name="EST_HOUSEHOLD_INCOME_V5" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="WString" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;      SELECT t.GUID_USER_ID&#xA;          ,t.GENDER&#xA;          ,t.COMBINED_AGE&#xA;          ,t.EDUCATION_MODEL&#xA;          ,t.MARITAL_STATUS&#xA;          ,t.OCCUPATION_GROUP_V2&#xA;          ,t.EST_HOUSEHOLD_INCOME_V5&#xA;          ,sq.FSCL_YR_NUM&#xA;          ,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM DEPT_RET_AN.CUSTOMER_DEMOG t&#xA;&#xA;      INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;&#xA;  ON t.GUID_USER_ID = sq.GUID_USER_ID&#xA;&#xA;  WHERE t.SBUX_MATCH_LEVEL IN ('IND')" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="546" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="474" y="150" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="474" y="66" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>GUID Experian Demos</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="654" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
+select v.GUID_USER_ID
+,TRUNC(v.MBR_CREATED_ON_DT) AS MBR_JOIN_DT
+,v.TIER_NM 
+
+from appca.D_MBR_CUST_VW v
+
+INNER JOIN (SELECT S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+      ) sq
+      
+ON v.GUID_USER_ID = sq.GUID_USER_ID
+      
+GROUP BY
+v.GUID_USER_ID
+,TRUNC(v.MBR_CREATED_ON_DT)
+,v.TIER_NM ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=--SBP416
+select v.GUID_USER_ID
+,TRUNC(v.MBR_CREATED_ON_DT) AS MBR_JOIN_DT
+,v.TIER_NM 
+
+from appca.D_MBR_CUST_VW v
+
+INNER JOIN (SELECT S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+
+          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+
+          INNER JOIN APPCA.D_STORE_VERS v1
+            ON v1.STORE_NUM = S1.STORE_NUM
+            AND v1.CURRENT_FLG = 'Y' 
+            AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
+
+           JOIN APPCA.D_CAL ca
+             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
+    
+           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+          
+          GROUP BY S1.GUID_USER_ID,
+          ca.FSCL_YR_NUM,
+          ca.FSCL_PER_IN_YR_NUM
+      ) sq
+      
+ON v.GUID_USER_ID = sq.GUID_USER_ID
+      
+GROUP BY
+v.GUID_USER_ID
+,TRUNC(v.MBR_CREATED_ON_DT)
+,v.TIER_NM ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="GUID_USER_ID" size="41" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT) AS MBR_JOIN_DT&#xA;,v.TIER_NM &#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_USER_ID&#xA;      &#xA;GROUP BY&#xA;v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT)&#xA;,v.TIER_NM " type="V_WString" />
+            <Field name="MBR_JOIN_DT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT) AS MBR_JOIN_DT&#xA;,v.TIER_NM &#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_USER_ID&#xA;      &#xA;GROUP BY&#xA;v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT)&#xA;,v.TIER_NM " type="DateTime" />
+            <Field name="TIER_NM" size="11" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT) AS MBR_JOIN_DT&#xA;,v.TIER_NM &#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (SELECT S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;          FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;          INNER JOIN APPCA.D_STORE_VERS v1&#xA;            ON v1.STORE_NUM = S1.STORE_NUM&#xA;            AND v1.CURRENT_FLG = 'Y' &#xA;            AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;&#xA;           JOIN APPCA.D_CAL ca&#xA;             ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;           WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;          &#xA;          GROUP BY S1.GUID_USER_ID,&#xA;          ca.FSCL_YR_NUM,&#xA;          ca.FSCL_PER_IN_YR_NUM&#xA;      ) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_USER_ID&#xA;      &#xA;GROUP BY&#xA;v.GUID_USER_ID&#xA;,TRUNC(v.MBR_CREATED_ON_DT)&#xA;,v.TIER_NM " type="WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="738" y="210" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="666" y="150" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="666" y="66" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>SR Tenure</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="6" Connection="Output" />
+      <Destination ToolID="7" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="10" Connection="Output" />
+      <Destination ToolID="11" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="14" Connection="Output" />
+      <Destination ToolID="15" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-04-23_SR_CE_survey_response_rate_guid_snapshot</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
