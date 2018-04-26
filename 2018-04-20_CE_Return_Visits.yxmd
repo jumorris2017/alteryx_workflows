@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="342" y="198" />
+        <Position x="54" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -204,7 +204,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="426" y="198" />
+        <Position x="138" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -232,7 +232,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="354" y="150" width="100" height="40" />
+        <Position x="66" y="150" width="100" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -252,7 +252,7 @@ SELECT * FROM SR2
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="354" y="54" width="100" height="84" />
+        <Position x="66" y="54" width="100" height="84" />
       </GuiSettings>
       <Properties>
         <Configuration>
