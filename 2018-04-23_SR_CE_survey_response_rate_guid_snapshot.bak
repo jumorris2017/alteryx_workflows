@@ -8,35 +8,77 @@
       <Properties>
         <Configuration>
           <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
-          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
---guids by date snapshots
-  SELECT S1.GUID_USER_ID,
-  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
-  ca.FSCL_YR_NUM,
-  ca.FSCL_PER_IN_YR_NUM
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS
+(select b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,count(*) AS TRANS
+  ,sq.TOTAL_RSPNS
 
-  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+from APPCA.F_SVC_FIN_TRANS a
 
-  INNER JOIN APPCA.D_STORE_VERS v1
-    ON v1.STORE_NUM = S1.STORE_NUM
-    AND v1.CURRENT_FLG = 'Y' 
-    AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
-    --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+inner join APPCA.D_CAL b 
+  on a.BUS_DT = b.CAL_DT
 
-  JOIN APPCA.D_CAL ca
-    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
-    
-  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
-  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
-  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
-  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
   
-  GROUP BY S1.GUID_USER_ID,
-  TRUNC(S1.TRANS_DTM),
-  TO_CHAR(S1.TRANS_DTM, 'HH24'),
-  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
-  ca.FSCL_YR_NUM,
-  ca.FSCL_PER_IN_YR_NUM</File>
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+
+inner join (SELECT
+  sr.GUID_USER_ID
+  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS
+  ,b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL b
+  ON b.CAL_DT = TRUNC(sr.TRANS_DTM)
+
+WHERE ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))
+  AND sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+
+GROUP BY 
+  sr.GUID_USER_ID
+  ,b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM)
+  ) sq
+  
+ON a.GUID_ID = sq.GUID_USER_ID
+  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM
+  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM
+
+where c.SVC_INTRNL_RQST_NM = 'Redemption' 
+  AND ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))
+group by b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,sq.TOTAL_RSPNS
+  ) 
+SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+      
+ORDER BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -50,43 +92,84 @@
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText>Database: @SBP416.world
-Table=--SBP416
---guids by date snapshots
-  SELECT S1.GUID_USER_ID,
-  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,
-  ca.FSCL_YR_NUM,
-  ca.FSCL_PER_IN_YR_NUM
+Table=WITH SR2 AS
+(select b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,count(*) AS TRANS
+  ,sq.TOTAL_RSPNS
 
-  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1
+from APPCA.F_SVC_FIN_TRANS a
 
-  INNER JOIN APPCA.D_STORE_VERS v1
-    ON v1.STORE_NUM = S1.STORE_NUM
-    AND v1.CURRENT_FLG = 'Y' 
-    AND v1.CNTRY_CD_2_DGT_ISO = 'US' 
-    --AND v1.OWNR_TYPE_CD IN ('LS','CO')
+inner join APPCA.D_CAL b 
+  on a.BUS_DT = b.CAL_DT
 
-  JOIN APPCA.D_CAL ca
-    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)
-    
-  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
-  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
-  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
-  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) 
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
   
-  GROUP BY S1.GUID_USER_ID,
-  TRUNC(S1.TRANS_DTM),
-  TO_CHAR(S1.TRANS_DTM, 'HH24'),
-  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),
-  ca.FSCL_YR_NUM,
-  ca.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+
+inner join (SELECT
+  sr.GUID_USER_ID
+  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS
+  ,b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL b
+  ON b.CAL_DT = TRUNC(sr.TRANS_DTM)
+
+WHERE ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))
+  AND sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+
+GROUP BY 
+  sr.GUID_USER_ID
+  ,b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,TRUNC(sr.TRANS_DTM)
+  ) sq
+  
+ON a.GUID_ID = sq.GUID_USER_ID
+  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM
+  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM
+
+where c.SVC_INTRNL_RQST_NM = 'Redemption' 
+  AND ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR
+           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR
+           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))
+group by b.FSCL_YR_NUM
+  ,b.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,sq.TOTAL_RSPNS
+  ) 
+SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+      
+ORDER BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="GUID_USER_ID" size="51" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="V_WString" />
-            <Field name="SURVEY_TRANS_DATE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="DateTime" />
-            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="Double" />
-            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;--guids by date snapshots&#xA;  SELECT S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM) AS SURVEY_TRANS_DATE,&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;  FROM APPOTHER.AFT_CV_SRVY_RSPNS S1&#xA;&#xA;  INNER JOIN APPCA.D_STORE_VERS v1&#xA;    ON v1.STORE_NUM = S1.STORE_NUM&#xA;    AND v1.CURRENT_FLG = 'Y' &#xA;    AND v1.CNTRY_CD_2_DGT_ISO = 'US' &#xA;    --AND v1.OWNR_TYPE_CD IN ('LS','CO')&#xA;&#xA;  JOIN APPCA.D_CAL ca&#xA;    ON ca.CAL_DT = TRUNC(S1.TRANS_DTM)&#xA;    &#xA;  WHERE (ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;  (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;  (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12) &#xA;  &#xA;  GROUP BY S1.GUID_USER_ID,&#xA;  TRUNC(S1.TRANS_DTM),&#xA;  TO_CHAR(S1.TRANS_DTM, 'HH24'),&#xA;  TO_CHAR(S1.TRANS_DTM, 'YYYYMMDD') || TRIM(TO_CHAR(S1.STORE_NUM, '000000'))|| ltrim(TO_CHAR(S1.RGSTR_NUM, '00')) || TRIM(to_char(S1.TRANS_ID)),&#xA;  ca.FSCL_YR_NUM,&#xA;  ca.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="AVERAGE_VISITS_TRANS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL b&#xA;  ON b.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;&#xA;WHERE ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM)&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  AND ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_RSPNS&#xA;  ) &#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL b&#xA;  ON b.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;&#xA;WHERE ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM)&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  AND ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_RSPNS&#xA;  ) &#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  ,sq.TOTAL_RSPNS&#xA;&#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL b &#xA;  on a.BUS_DT = b.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;&#xA;inner join (SELECT&#xA;  sr.GUID_USER_ID&#xA;  ,SUM(CASE WHEN sr.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS TOTAL_RSPNS&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM) AS SVY_RSPN_DATE&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL b&#xA;  ON b.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;&#xA;WHERE ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;  AND sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;&#xA;GROUP BY &#xA;  sr.GUID_USER_ID&#xA;  ,b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,TRUNC(sr.TRANS_DTM)&#xA;  ) sq&#xA;  &#xA;ON a.GUID_ID = sq.GUID_USER_ID&#xA;  AND b.FSCL_YR_NUM = sq.FSCL_YR_NUM&#xA;  AND b.FSCL_PER_IN_YR_NUM = sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;where c.SVC_INTRNL_RQST_NM = 'Redemption' &#xA;  AND ((b.FSCL_YR_NUM = 2018 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (b.FSCL_YR_NUM = 2017 AND b.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (b.FSCL_YR_NUM = 2016 AND b.FSCL_PER_IN_YR_NUM = 12))&#xA;group by b.FSCL_YR_NUM&#xA;  ,b.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,sq.TOTAL_RSPNS&#xA;  ) &#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -162,7 +245,7 @@ Table=--SBP416
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="834" y="126" />
+        <Position x="810" y="138" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -490,7 +573,7 @@ GROUP BY SR2.FSCL_YR_NUM,
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>Prior month frequency</Text>
+          <Text>CE - Prior month frequency</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -676,7 +759,7 @@ Table=--SBP416
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>GUID Experian Demos</Text>
+          <Text>CE - GUID Experian Demos</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -850,7 +933,596 @@ v.GUID_USER_ID
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Text>SR Tenure</Text>
+          <Text>CE - SR Tenure</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1086" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS
+(select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,count(*) AS TRANS
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+)
+SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+      
+ORDER BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=WITH SR2 AS
+(select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,count(*) AS TRANS
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+)
+SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,
+      SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+
+FROM SR2
+
+GROUP BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM
+      
+ORDER BY SR2.FSCL_YR_NUM,
+      SR2.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="AVERAGE_VISITS_TRANS" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;)&#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;)&#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||WITH SR2 AS&#xA;(select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,count(*) AS TRANS&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;)&#xA;SELECT ROUND(AVG(SR2.TRANS),1) AS AVERAGE_VISITS_TRANS,&#xA;      SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM SR2&#xA;&#xA;GROUP BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM&#xA;      &#xA;ORDER BY SR2.FSCL_YR_NUM,&#xA;      SR2.FSCL_PER_IN_YR_NUM" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1170" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1098" y="138" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="21">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1098" y="54" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>All SR - Prior month frequency</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="1254" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416
+select ROUND(AVG(SYSDATE - v.MBR_CREATED_ON_DT)/365.25,1) AS YEARS_SINCE_JOIN_DATE
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+
+from appca.D_MBR_CUST_VW v
+
+INNER JOIN (select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+) sq
+      
+ON v.GUID_USER_ID = sq.GUID_ID
+      
+GROUP BY
+sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+ORDER BY
+sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM    ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP416.world
+Table=--SBP416
+select ROUND(AVG(SYSDATE - v.MBR_CREATED_ON_DT)/365.25,1) AS YEARS_SINCE_JOIN_DATE
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+
+from appca.D_MBR_CUST_VW v
+
+INNER JOIN (select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+) sq
+      
+ON v.GUID_USER_ID = sq.GUID_ID
+      
+GROUP BY
+sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+ORDER BY
+sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM    ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="YEARS_SINCE_JOIN_DATE" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select ROUND(AVG(SYSDATE - v.MBR_CREATED_ON_DT)/365.25,1) AS YEARS_SINCE_JOIN_DATE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_ID&#xA;      &#xA;GROUP BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;ORDER BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM    " type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select ROUND(AVG(SYSDATE - v.MBR_CREATED_ON_DT)/365.25,1) AS YEARS_SINCE_JOIN_DATE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_ID&#xA;      &#xA;GROUP BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;ORDER BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM    " type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||--SBP416&#xA;select ROUND(AVG(SYSDATE - v.MBR_CREATED_ON_DT)/365.25,1) AS YEARS_SINCE_JOIN_DATE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;from appca.D_MBR_CUST_VW v&#xA;&#xA;INNER JOIN (select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;) sq&#xA;      &#xA;ON v.GUID_USER_ID = sq.GUID_ID&#xA;      &#xA;GROUP BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;ORDER BY&#xA;sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM    " type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1338" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1266" y="138" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="1266" y="54" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>All SR - SR Tenure</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="918" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||   
+      
+      
+WITH SQ AS (
+select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+), SQ2 AS (SELECT SQ.GUID_ID
+,SUM(PERIOD1) AS PERIOD1
+,SUM(PERIOD2) AS PERIOD2
+,SUM(PERIOD3) AS PERIOD3
+,SUM(PERIOD4) AS PERIOD4
+FROM SQ
+GROUP BY SQ.GUID_ID
+), SQ3 AS (select 
+SQ2.GUID_ID
+,SQ2.PERIOD1
+,SQ2.PERIOD2
+,SQ2.PERIOD3
+,SQ2.PERIOD4
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4
+,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3
+,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4
+,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4
+from SQ2
+)
+SELECT 
+ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT
+,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT
+,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT
+,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT
+,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT
+,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT
+FROM SQ3</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=   
+      
+      
+WITH SQ AS (
+select ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3
+  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4
+  
+from APPCA.F_SVC_FIN_TRANS a
+
+inner join APPCA.D_CAL ca
+  on a.BUS_DT = ca.CAL_DT
+
+inner join APPCA.D_SVC_TRANS_TYPE c 
+  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY
+  
+JOIN APPCA.D_STORE_VERS st
+  ON a.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR
+           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR
+           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))
+GROUP BY ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+  ,a.GUID_ID
+), SQ2 AS (SELECT SQ.GUID_ID
+,SUM(PERIOD1) AS PERIOD1
+,SUM(PERIOD2) AS PERIOD2
+,SUM(PERIOD3) AS PERIOD3
+,SUM(PERIOD4) AS PERIOD4
+FROM SQ
+GROUP BY SQ.GUID_ID
+), SQ3 AS (select 
+SQ2.GUID_ID
+,SQ2.PERIOD1
+,SQ2.PERIOD2
+,SQ2.PERIOD3
+,SQ2.PERIOD4
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3
+,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4
+,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3
+,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4
+,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4
+from SQ2
+)
+SELECT 
+ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT
+,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT
+,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT
+,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT
+,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT
+,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT
+FROM SQ3</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="PERIOD1TO2_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+            <Field name="PERIOD1TO3_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+            <Field name="PERIOD1TO24_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+            <Field name="PERIOD2TO3_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+            <Field name="PERIOD2TO4_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+            <Field name="PERIOD3TO4_PCT" source="File: oci:JUMORRIS/__EncPwd1__@SBP416.world|||   &#xA;      &#xA;      &#xA;WITH SQ AS (&#xA;select ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD1&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD2&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12 THEN 1 ELSE 0 END) AS PERIOD3&#xA;  ,(CASE WHEN ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6 THEN 1 ELSE 0 END) AS PERIOD4&#xA;  &#xA;from APPCA.F_SVC_FIN_TRANS a&#xA;&#xA;inner join APPCA.D_CAL ca&#xA;  on a.BUS_DT = ca.CAL_DT&#xA;&#xA;inner join APPCA.D_SVC_TRANS_TYPE c &#xA;  on a.SVC_TRANS_TYPE_KEY = c.SVC_TRANS_TYPE_KEY&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON a.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;WHERE ((ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 12) OR&#xA;           (ca.FSCL_YR_NUM = 2017 AND ca.FSCL_PER_IN_YR_NUM = 6) OR&#xA;           (ca.FSCL_YR_NUM = 2016 AND ca.FSCL_PER_IN_YR_NUM = 12))&#xA;GROUP BY ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;  ,a.GUID_ID&#xA;), SQ2 AS (SELECT SQ.GUID_ID&#xA;,SUM(PERIOD1) AS PERIOD1&#xA;,SUM(PERIOD2) AS PERIOD2&#xA;,SUM(PERIOD3) AS PERIOD3&#xA;,SUM(PERIOD4) AS PERIOD4&#xA;FROM SQ&#xA;GROUP BY SQ.GUID_ID&#xA;), SQ3 AS (select &#xA;SQ2.GUID_ID&#xA;,SQ2.PERIOD1&#xA;,SQ2.PERIOD2&#xA;,SQ2.PERIOD3&#xA;,SQ2.PERIOD4&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD2 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO2&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO3&#xA;,(CASE WHEN SQ2.PERIOD1 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD1TO4&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD3 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO3&#xA;,(CASE WHEN SQ2.PERIOD2 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD2TO4&#xA;,(CASE WHEN SQ2.PERIOD3 = 1 AND SQ2.PERIOD4 = 1 THEN 1 ELSE 0 END) AS PERIOD3TO4&#xA;from SQ2&#xA;)&#xA;SELECT &#xA;ROUND(SUM(SQ3.PERIOD1TO2)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO2_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO3)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD1TO4)/SUM(SQ3.PERIOD1),3) AS PERIOD1TO24_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO3)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO3_PCT&#xA;,ROUND(SUM(SQ3.PERIOD2TO4)/SUM(SQ3.PERIOD2),3) AS PERIOD2TO4_PCT&#xA;,ROUND(SUM(SQ3.PERIOD3TO4)/SUM(SQ3.PERIOD3),3) AS PERIOD3TO4_PCT&#xA;FROM SQ3" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1002" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_2052_f0ad4e707a1d4084a894c7a2d17d7d4f_\Engine_8160_152b9ec3e50d49ff9c04580eb403066d_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="28">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="930" y="138" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>P12 (FY16 &amp; FY17) and P6 (FY17 &amp; FY18)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="29">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="930" y="54" width="100" height="72" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>GUIDs by Active SR snapshot</Text>
           <Font name="Segoe UI" size="8.25" style="1" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -881,6 +1553,18 @@ v.GUID_USER_ID
     <Connection>
       <Origin ToolID="14" Connection="Output" />
       <Destination ToolID="15" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="18" Connection="Output" />
+      <Destination ToolID="19" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Output" />
+      <Destination ToolID="23" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="26" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
