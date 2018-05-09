@@ -1,0 +1,805 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP416.world|||--/* CAW */
+--/* % home store customers */
+
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM
+  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 
+       ELSE NULL 
+   END) AS HS_CUST_COUNT
+  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+    
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP416.world
+Table=--/* CAW */
+--/* % home store customers */
+
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM
+  ,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 
+       ELSE NULL 
+   END) AS HS_CUST_COUNT
+  ,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+    
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,ca.FSCL_PER_IN_YR_NUM
+      ,ca.FSCL_PER_CNT_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_PER_CNT_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM = 2018 
+       AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,ca.FSCL_PER_IN_YR_NUM
+        ,ca.FSCL_PER_CNT_NUM
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,T1.FSCL_PER_IN_YR_NUM
+      ,T1.FSCL_PER_CNT_NUM
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_PER_CNT_NUM = T3.FSCL_PER_CNT_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  ,T3.FSCL_PER_IN_YR_NUM
+  ,T3.FSCL_PER_CNT_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="174" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11300_ef716c3182fb46c9a6899bd754ac6a76_\Engine_1072_b3cbea6613dc4bf79133db34bc8644f1_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[Home Store
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pull percent home store customers at the store level for FEB FY18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="258" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_DESCR "RGN_ORG_LVL_DESCR"
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+  INNER JOIN APPDWH.ADT_STORE org
+      ON f.STORE_NUMBER = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO','LS')
+         AND org.CNTRY_CD IN ('US')
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_DESCR ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[Database: @SBP411.world
+Table=--SBP411
+
+ SELECT ca.FSCL_YR_NUM
+        , SUM(f.CUST_TRANS_CNT) "CustTrans"
+        , SUM(f.ACTIVE_STORE_DAY_CNT) "day_count"
+        , ca.FSCL_PER_IN_YR_NUM
+        , org.STORE_NUM
+        , org.RGN_DESCR "RGN_ORG_LVL_DESCR"
+    FROM APPBUS.DFT_INTL_STORE_DAY_VW f      
+  INNER JOIN APPDWH.ADT_STORE org
+      ON f.STORE_NUMBER = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO','LS')
+         AND org.CNTRY_CD IN ('US')
+        INNER JOIN APPDWH.ADT_CAL ca
+            ON f.BUSINESS_DATE = ca.CAL_DT
+            AND ca.FSCL_YR_NUM = 2018 AND ca.FSCL_PER_IN_YR_NUM IN (5,6)
+        INNER JOIN APPBUS.AFT_STORE_COMP_PER_VW comp
+            ON f.STORE_NUMBER = comp.STORE_NUMBER
+            AND ca.FSCL_PER_BEG_DT = comp.FISCAL_PERIOD_BEGIN_DATE
+            AND COMP_CODE = 'Y'
+    GROUP BY ca.FSCL_YR_NUM
+    , ca.FSCL_PER_IN_YR_NUM
+    , org.STORE_NUM
+    , org.RGN_DESCR ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="378" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11300_ef716c3182fb46c9a6899bd754ac6a76_\Engine_1072_47a4217ed51e4728b8a19d0e270cc4b7_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>TSDs and Region</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="258" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls TSDs and Region at the store level for FEB FY18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="462" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">oci:JUMORRIS/__EncPwd1__@SBP411.world|||--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt
+  
+  -- Compute top box scores for each question
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS CC_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.0000') END AS SP_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (5,6)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+ORDER BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Database: @SBP411.world
+Table=--SBP411
+
+SELECT
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+  -- Total valid response counts by question
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) AS CC_Response_Total
+  ,COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) AS SP_Response_Total
+
+  -- Total top box responses
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END) AS CC_TB_Cnt
+  ,SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END) AS SP_TB_Cnt
+  
+  -- Compute top box scores for each question
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.0000') END AS CC_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.0000') END AS SP_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+      --AND TRUNC(ce.TRANS_DTM) BETWEEN '01-SEP-17' AND '31-OCT-17'
+      
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+      AND c.FSCL_YR_NUM = 2018 AND FSCL_PER_IN_YR_NUM IN (5,6)
+
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM
+
+ORDER BY
+      ce.STORE_NUM
+      ,c.FSCL_YR_NUM
+      ,c.FSCL_PER_IN_YR_NUM</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="582" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_11300_ef716c3182fb46c9a6899bd754ac6a76_\Engine_1072_c64498456e68475887e68d9ab8d24530_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="462" y="54" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC and Speed Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="462" y="102" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Pulls CC and Speed scores at the store level, for FEB FY 18.</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="726" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>#expected CC and speed values for Neha deployment
+#feb 2018 scores
+#using TSDs, region, and home store % as indicators
+
+#load libaries
+library(data.table)
+library(nlme)
+
+#set path (new Q)
+data_dir &lt;- "Q:/Departments/WMO/Marketing Research/New Q drive/Foundational/Customer Voice/2.0/Foundational/2018_03_12_Deployment_Expected_CC_and_Speed"
+
+#load data
+ce &lt;- fread(paste0(data_dir,"/FebFY18_CC-Speed_StoreLevel.csv"))
+hs &lt;- fread(paste0(data_dir,"/FP5FY18_homestore.csv"))
+tsd &lt;- fread(paste0(data_dir,"/FP5FY18_TSD.csv"))
+
+#merge
+cedt &lt;- Reduce(function(x, y) {merge(x, y, 
+                                     by=c("STORE_NUM","FSCL_YR_NUM","FSCL_PER_IN_YR_NUM"), 
+                                     all = TRUE)}, list(ce,hs,tsd))
+#na omit region
+cedt &lt;- na.omit(cedt,cols=c("CC_TB_SCORE","SP_TB_SCORE","hspct","tsd","RGN_ORG_LVL_DESCR"))
+
+#calculate home store percent
+cedt[, hspct := round(HS_CUST_COUNT/ALL_CUST_COUNT,4)]
+
+#calculate TSDs
+cedt[, tsd := round(CustTrans/day_count,1)]
+
+#run models split by region - CC
+newData &lt;- cedt[, .(STORE_NUM,RGN_ORG_LVL_DESCR,hspct,tsd)]
+ll = lmList(CC_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predCCscore")
+
+#run models split by region - Speed
+ll = lmList(SP_TB_SCORE ~ hspct + tsd | RGN_ORG_LVL_DESCR, data=cedt)
+predict(ll, newData)
+newData[["value"]] &lt;- predict(ll, newData)
+setnames(newData,"value","predSPscore")
+
+#write.csv
+newData &lt;- newData[, .(STORE_NUM,predCCscore,predSPscore)]
+write.csv(newData,file=paste0(data_dir,"/FebFY18_EXP_CC-Speed_StoreLevel.csv"))</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="702" y="54" width="100" height="48" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC and Speed Expected Scores</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="702" y="114" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text><![CDATA[Expected CC and Speed scores using TSDs, region, and home store % as indicators.
+]]></Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="Output" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-05-09_CommStores_CC_ObsVsExpected</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
