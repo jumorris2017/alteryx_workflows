@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.7">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="126" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411
+
+WITH SQ AS
+(SELECT
+    c.FSCL_PER_IN_YR_NUM
+    ,c.FSCL_YR_NUM
+    ,ce.STORE_NUM
+  -- Compute top box scores for each question
+    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END
+   AS Q2_2_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_1_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_3_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_4_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_5_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_6_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_7_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+  
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+    AND c.FSCL_PER_IN_YR_NUM = 7
+    AND c.FSCL_YR_NUM = 2018 
+    
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+    
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+    c.FSCL_PER_IN_YR_NUM
+    ,c.FSCL_YR_NUM
+    ,ce.STORE_NUM
+Order BY
+    c.FSCL_YR_NUM
+    ,c.FSCL_PER_IN_YR_NUM
+)
+SELECT     
+    SQ.FSCL_PER_IN_YR_NUM
+    ,SQ.FSCL_YR_NUM
+    ,SQ.STORE_NUM
+    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE
+FROM SQ
+GROUP BY
+    SQ.FSCL_YR_NUM
+    ,SQ.FSCL_PER_IN_YR_NUM
+    ,SQ.STORE_NUM
+    ,SQ.Q2_2_TB_Score
+Order BY
+    SQ.FSCL_YR_NUM DESC
+    ,SQ.FSCL_PER_IN_YR_NUM DESC</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP411.WORLD
+Table=--411
+
+WITH SQ AS
+(SELECT
+    c.FSCL_PER_IN_YR_NUM
+    ,c.FSCL_YR_NUM
+    ,ce.STORE_NUM
+  -- Compute top box scores for each question
+    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END
+   AS Q2_2_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_1_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_3_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_4_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_5_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_6_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_7_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+  
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+    AND c.FSCL_PER_IN_YR_NUM = 7
+    AND c.FSCL_YR_NUM = 2018 
+    
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+    
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+    c.FSCL_PER_IN_YR_NUM
+    ,c.FSCL_YR_NUM
+    ,ce.STORE_NUM
+Order BY
+    c.FSCL_YR_NUM
+    ,c.FSCL_PER_IN_YR_NUM
+)
+SELECT     
+    SQ.FSCL_PER_IN_YR_NUM
+    ,SQ.FSCL_YR_NUM
+    ,SQ.STORE_NUM
+    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE
+FROM SQ
+GROUP BY
+    SQ.FSCL_YR_NUM
+    ,SQ.FSCL_PER_IN_YR_NUM
+    ,SQ.STORE_NUM
+    ,SQ.Q2_2_TB_Score
+Order BY
+    SQ.FSCL_YR_NUM DESC
+    ,SQ.FSCL_PER_IN_YR_NUM DESC</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM = 2018 &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Int64" />
+            <Field name="FSCL_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM = 2018 &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Int64" />
+            <Field name="STORE_NUM" size="11" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM = 2018 &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="WString" />
+            <Field name="CC_SCORE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM = 2018 &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Double" />
+            <Field name="SO_SCORE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM = 2018 &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="234" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="162" y="138" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC/SO
+Store-Level
+FP7 FY18 (Apr)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="330" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411
+
+select a.store_num
+      --,a.bus_dt
+      --,a.half_hr_sid
+      ,sum(b.units) as tot_units
+      ,sum(a.total_hr_cnt) as tot_hours
+      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS
+  
+from 
+   --a) This select statements gets you total hours worked by half hour id
+   (select l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+        ,sum(actual_hr_cnt) as total_hr_cnt
+        
+        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart
+          --join to adt_time to get to half hour granularity
+          inner join (select half_hr_sid, qtr_hr_sid
+                        from appdwh.adt_time
+                        group by half_hr_sid, qtr_hr_sid) t
+            on t.qtr_hr_sid = l.qtr_hr_tm
+          
+        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder
+          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked 
+          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK
+        group by l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+    ) a
+    
+left join 
+    --b) this select statement gets you the number of units sold by half hour
+      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units
+                    from appdwh.aft_pos_intl_hdr
+                    where pos_void_cd not in ('L','V') --exclude voided transactions
+                      and cust_trans_cnt = 1 --only include 'accounting' transactions
+                    group by store_num, bus_dt, half_hr_sid) b
+      on a.store_num = b.store_num
+        and a.bus_dt = b.bus_dt
+        and a.half_hr_sid = b.half_hr_sid
+        
+--c) this brings in the retail org hierarchy to filter off    
+inner join appdwh.adt_store o on o.store_num = a.store_num
+      
+where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE
+     --and a.store_num in (101) --for test
+     and o.CNTRY_CD = 'US' 
+     and o.ownr_type_CD = 'CO'
+     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK
+     
+  group by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid
+  
+  order by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP411.WORLD
+Table=--411
+
+select a.store_num
+      --,a.bus_dt
+      --,a.half_hr_sid
+      ,sum(b.units) as tot_units
+      ,sum(a.total_hr_cnt) as tot_hours
+      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS
+  
+from 
+   --a) This select statements gets you total hours worked by half hour id
+   (select l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+        ,sum(actual_hr_cnt) as total_hr_cnt
+        
+        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart
+          --join to adt_time to get to half hour granularity
+          inner join (select half_hr_sid, qtr_hr_sid
+                        from appdwh.adt_time
+                        group by half_hr_sid, qtr_hr_sid) t
+            on t.qtr_hr_sid = l.qtr_hr_tm
+          
+        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder
+          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked 
+          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK
+        group by l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+    ) a
+    
+left join 
+    --b) this select statement gets you the number of units sold by half hour
+      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units
+                    from appdwh.aft_pos_intl_hdr
+                    where pos_void_cd not in ('L','V') --exclude voided transactions
+                      and cust_trans_cnt = 1 --only include 'accounting' transactions
+                    group by store_num, bus_dt, half_hr_sid) b
+      on a.store_num = b.store_num
+        and a.bus_dt = b.bus_dt
+        and a.half_hr_sid = b.half_hr_sid
+        
+--c) this brings in the retail org hierarchy to filter off    
+inner join appdwh.adt_store o on o.store_num = a.store_num
+      
+where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE
+     --and a.store_num in (101) --for test
+     and o.CNTRY_CD = 'US' 
+     and o.ownr_type_CD = 'CO'
+     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK
+     
+  group by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid
+  
+  order by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      ,sum(b.units) as tot_units&#xA;      ,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+            <Field name="TOT_UNITS" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      ,sum(b.units) as tot_units&#xA;      ,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+            <Field name="TOT_HOURS" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      ,sum(b.units) as tot_units&#xA;      ,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+            <Field name="UPLH" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      ,sum(b.units) as tot_units&#xA;      ,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="438" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="366" y="138" width="100" height="52" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>UPLH
+Store-Level
+FP7 FY18 (Apr)</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="5" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-05-21_Store-Level_Indicators_for_R-Tableau_Testing</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

@@ -1,0 +1,1211 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.7">
+  <Nodes>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="30" y="330" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415
+--SM Stability
+
+SELECT
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE,
+s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr
+
+FROM LRIVERS.STOREMANAGERSTABILITY s
+
+/* get most recent rolling 12 report (table updates once per month) */
+WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)
+
+GROUP BY
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP415.WORLD
+Table=--415
+--SM Stability
+
+SELECT
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE,
+s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr
+
+FROM LRIVERS.STOREMANAGERSTABILITY s
+
+/* get most recent rolling 12 report (table updates once per month) */
+WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)
+
+GROUP BY
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE,&#xA;s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+            <Field name="SM1YRSTABLE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE,&#xA;s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+            <Field name="SM2YRSTABLE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE,&#xA;s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+            <Field name="SM_1YR_DELTA_FROM_2YR" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE,&#xA;s.SM1YRSTABLE-s.SM2YRSTABLE AS SM_1yr_delta_from_2yr&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="162" y="450" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411
+--customer experience
+--yoy delta
+
+WITH SQ AS
+(SELECT
+    ce.STORE_NUM
+    ,c.FSCL_YR_NUM
+  -- Compute top box scores for each question
+    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END
+   AS Q2_2_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_1_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_3_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_4_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_5_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_6_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_7_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+  
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+    AND c.FSCL_YR_NUM IN (2017,2018)
+    
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+    
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+    ce.STORE_NUM,
+    c.FSCL_YR_NUM
+), SQ2 AS(
+SELECT     
+    SQ.STORE_NUM
+    ,SQ.FSCL_YR_NUM
+    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn
+    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed
+    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey
+    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy
+    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste
+    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste
+    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps
+FROM SQ
+GROUP BY
+    SQ.STORE_NUM
+    ,SQ.FSCL_YR_NUM
+    ,SQ.Q2_2_TB_Score
+    ,SQ.Q2_1_TB_Score
+    ,SQ.Q2_3_TB_Score
+    ,SQ.Q2_4_TB_Score
+    ,SQ.Q2_5_TB_Score
+    ,SQ.Q2_6_TB_Score
+    ,SQ.Q2_7_TB_Score
+Order BY
+    SQ.FSCL_YR_NUM ASC
+    ,SQ.STORE_NUM DESC), SQ3 AS(
+SELECT
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.CE_TB_CustConn
+    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA
+    ,SQ2.CE_TB_Speed
+    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA
+    ,SQ2.CE_TB_AbovBey
+    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA
+    ,SQ2.CE_TB_Accuracy
+    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA
+    ,SQ2.CE_TB_BevTaste
+    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA
+    ,SQ2.CE_TB_FoodTaste
+    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA
+    ,SQ2.CE_TB_Clean
+    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA
+    ,SQ2.CE_TB_StoreOps
+    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA
+FROM SQ2
+GROUP BY 
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.CE_TB_CustConn
+    ,SQ2.CE_TB_Speed
+    ,SQ2.CE_TB_AbovBey
+    ,SQ2.CE_TB_Accuracy
+    ,SQ2.CE_TB_BevTaste
+    ,SQ2.CE_TB_FoodTaste
+    ,SQ2.CE_TB_Clean
+    ,SQ2.CE_TB_StoreOps
+ORDER BY
+    SQ2.FSCL_YR_NUM DESC
+    ,SQ2.STORE_NUM DESC)
+SELECT
+    SQ3.STORE_NUM
+    ,SQ3.CE_TB_CustConn
+    ,SQ3.CE_TB_Speed
+    ,SQ3.CE_TB_AbovBey
+    ,SQ3.CE_TB_Accuracy
+    ,SQ3.CE_TB_BevTaste
+    ,SQ3.CE_TB_FoodTaste
+    ,SQ3.CE_TB_Clean
+    ,SQ3.CE_TB_StoreOps
+    ,SQ3.CE_TB_CustConn_YOY_DELTA
+    ,SQ3.CE_TB_Speed_YOY_DELTA
+    ,SQ3.CE_TB_AbovBey_YOY_DELTA
+    ,SQ3.CE_TB_Accuracy_YOY_DELTA
+    ,SQ3.CE_TB_BevTaste_YOY_DELTA
+    ,SQ3.CE_TB_FoodTaste_YOY_DELTA
+    ,SQ3.CE_TB_Clean_YOY_DELTA
+    ,SQ3.CE_TB_StoreOps_YOY_DELTA
+FROM SQ3
+    WHERE SQ3.FSCL_YR_NUM = 2018</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP411.WORLD
+Table=--411
+--customer experience
+--yoy delta
+
+WITH SQ AS
+(SELECT
+    ce.STORE_NUM
+    ,c.FSCL_YR_NUM
+  -- Compute top box scores for each question
+    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END
+   AS Q2_2_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_1_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_3_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_4_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_5_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_6_TB_Score
+  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL
+   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)
+    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END
+   AS Q2_7_TB_Score
+
+FROM APPDWH.AFT_CV_SRVY_RSPNS ce
+  
+  INNER JOIN APPDWH.ADT_CAL c
+    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
+    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+    AND c.FSCL_YR_NUM IN (2017,2018)
+    
+  INNER JOIN APPDWH.ADT_STORE org
+      ON ce.STORE_NUM = org.STORE_NUM
+         AND org.OWNR_TYPE_CD IN ('CO')
+         AND org.CNTRY_CD IN ('US')
+    
+WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
+  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
+
+GROUP BY
+    ce.STORE_NUM,
+    c.FSCL_YR_NUM
+), SQ2 AS(
+SELECT     
+    SQ.STORE_NUM
+    ,SQ.FSCL_YR_NUM
+    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn
+    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed
+    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey
+    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy
+    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste
+    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste
+    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps
+FROM SQ
+GROUP BY
+    SQ.STORE_NUM
+    ,SQ.FSCL_YR_NUM
+    ,SQ.Q2_2_TB_Score
+    ,SQ.Q2_1_TB_Score
+    ,SQ.Q2_3_TB_Score
+    ,SQ.Q2_4_TB_Score
+    ,SQ.Q2_5_TB_Score
+    ,SQ.Q2_6_TB_Score
+    ,SQ.Q2_7_TB_Score
+Order BY
+    SQ.FSCL_YR_NUM ASC
+    ,SQ.STORE_NUM DESC), SQ3 AS(
+SELECT
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.CE_TB_CustConn
+    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA
+    ,SQ2.CE_TB_Speed
+    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA
+    ,SQ2.CE_TB_AbovBey
+    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA
+    ,SQ2.CE_TB_Accuracy
+    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA
+    ,SQ2.CE_TB_BevTaste
+    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA
+    ,SQ2.CE_TB_FoodTaste
+    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA
+    ,SQ2.CE_TB_Clean
+    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA
+    ,SQ2.CE_TB_StoreOps
+    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA
+FROM SQ2
+GROUP BY 
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.CE_TB_CustConn
+    ,SQ2.CE_TB_Speed
+    ,SQ2.CE_TB_AbovBey
+    ,SQ2.CE_TB_Accuracy
+    ,SQ2.CE_TB_BevTaste
+    ,SQ2.CE_TB_FoodTaste
+    ,SQ2.CE_TB_Clean
+    ,SQ2.CE_TB_StoreOps
+ORDER BY
+    SQ2.FSCL_YR_NUM DESC
+    ,SQ2.STORE_NUM DESC)
+SELECT
+    SQ3.STORE_NUM
+    ,SQ3.CE_TB_CustConn
+    ,SQ3.CE_TB_Speed
+    ,SQ3.CE_TB_AbovBey
+    ,SQ3.CE_TB_Accuracy
+    ,SQ3.CE_TB_BevTaste
+    ,SQ3.CE_TB_FoodTaste
+    ,SQ3.CE_TB_Clean
+    ,SQ3.CE_TB_StoreOps
+    ,SQ3.CE_TB_CustConn_YOY_DELTA
+    ,SQ3.CE_TB_Speed_YOY_DELTA
+    ,SQ3.CE_TB_AbovBey_YOY_DELTA
+    ,SQ3.CE_TB_Accuracy_YOY_DELTA
+    ,SQ3.CE_TB_BevTaste_YOY_DELTA
+    ,SQ3.CE_TB_FoodTaste_YOY_DELTA
+    ,SQ3.CE_TB_Clean_YOY_DELTA
+    ,SQ3.CE_TB_StoreOps_YOY_DELTA
+FROM SQ3
+    WHERE SQ3.FSCL_YR_NUM = 2018</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" size="11" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="WString" />
+            <Field name="CE_TB_CUSTCONN" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_SPEED" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_ABOVBEY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_ACCURACY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_BEVTASTE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_FOODTASTE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_CLEAN" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_STOREOPS" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_CUSTCONN_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_SPEED_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_ABOVBEY_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_ACCURACY_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_BEVTASTE_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_FOODTASTE_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_CLEAN_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="CE_TB_STOREOPS_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--customer experience&#xA;--yoy delta&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    ce.STORE_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018)&#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    ce.STORE_NUM,&#xA;    c.FSCL_YR_NUM&#xA;), SQ2 AS(&#xA;SELECT     &#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4) AS CE_TB_CustConn&#xA;    ,ROUND(SQ.Q2_1_TB_Score,4) AS CE_TB_Speed&#xA;    ,ROUND(SQ.Q2_3_TB_Score,4) AS CE_TB_AbovBey&#xA;    ,ROUND(SQ.Q2_4_TB_Score,4) AS CE_TB_Accuracy&#xA;    ,ROUND(SQ.Q2_5_TB_Score,4) AS CE_TB_BevTaste&#xA;    ,ROUND(SQ.Q2_6_TB_Score,4) AS CE_TB_FoodTaste&#xA;    ,ROUND(SQ.Q2_7_TB_Score,4) AS CE_TB_Clean&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4) AS CE_TB_StoreOps&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.STORE_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;    ,SQ.Q2_1_TB_Score&#xA;    ,SQ.Q2_3_TB_Score&#xA;    ,SQ.Q2_4_TB_Score&#xA;    ,SQ.Q2_5_TB_Score&#xA;    ,SQ.Q2_6_TB_Score&#xA;    ,SQ.Q2_7_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM ASC&#xA;    ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_CustConn - lag(SQ2.CE_TB_CustConn) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_Speed - lag(SQ2.CE_TB_Speed) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Speed_YOY_DELTA&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_AbovBey - lag(SQ2.CE_TB_AbovBey) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_Accuracy - lag(SQ2.CE_TB_Accuracy) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_BevTaste - lag(SQ2.CE_TB_BevTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_FoodTaste - lag(SQ2.CE_TB_FoodTaste) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_Clean - lag(SQ2.CE_TB_Clean) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_Clean_YOY_DELTA&#xA;    ,SQ2.CE_TB_StoreOps&#xA;    ,SQ2.CE_TB_StoreOps - lag(SQ2.CE_TB_StoreOps) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ2&#xA;GROUP BY &#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.CE_TB_CustConn&#xA;    ,SQ2.CE_TB_Speed&#xA;    ,SQ2.CE_TB_AbovBey&#xA;    ,SQ2.CE_TB_Accuracy&#xA;    ,SQ2.CE_TB_BevTaste&#xA;    ,SQ2.CE_TB_FoodTaste&#xA;    ,SQ2.CE_TB_Clean&#xA;    ,SQ2.CE_TB_StoreOps&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC)&#xA;SELECT&#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.CE_TB_CustConn&#xA;    ,SQ3.CE_TB_Speed&#xA;    ,SQ3.CE_TB_AbovBey&#xA;    ,SQ3.CE_TB_Accuracy&#xA;    ,SQ3.CE_TB_BevTaste&#xA;    ,SQ3.CE_TB_FoodTaste&#xA;    ,SQ3.CE_TB_Clean&#xA;    ,SQ3.CE_TB_StoreOps&#xA;    ,SQ3.CE_TB_CustConn_YOY_DELTA&#xA;    ,SQ3.CE_TB_Speed_YOY_DELTA&#xA;    ,SQ3.CE_TB_AbovBey_YOY_DELTA&#xA;    ,SQ3.CE_TB_Accuracy_YOY_DELTA&#xA;    ,SQ3.CE_TB_BevTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_FoodTaste_YOY_DELTA&#xA;    ,SQ3.CE_TB_Clean_YOY_DELTA&#xA;    ,SQ3.CE_TB_StoreOps_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="426" y="498" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--416
+/* SR Transaction Percent by Store */
+
+WITH SQ AS
+(SELECT
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,tr.TRANS_ID
+  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER
+
+FROM APPCA.F_POS_HDR tr
+
+INNER JOIN D_POS_HDR_TRANS_TYPE ty
+  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY
+  
+INNER JOIN APPCA.D_STORE_VERS ss
+  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY
+  
+INNER JOIN APPCA.D_CAL ca
+  ON tr.BUS_DT = ca.CAL_DT
+
+WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'
+  AND ss.OWNR_TYPE_CD = 'CO'
+  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15
+  AND ca.FSCL_YR_NUM IN (2017,2018) 
+  AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+
+GROUP BY
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,tr.TRANS_ID
+  ,tr.GUID_ID), SQ2 AS(
+SELECT 
+   SQ.STORE_NUM
+  ,SQ.FSCL_YR_NUM
+  --,COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) AS SR_TRANS_CNT
+  --,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT
+  ,ROUND(COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) / COUNT(DISTINCT SQ.TRANS_ID),4) AS SR_PCT
+  
+FROM SQ
+
+GROUP BY
+   SQ.STORE_NUM
+  ,SQ.FSCL_YR_NUM
+
+ORDER BY
+   SQ.FSCL_YR_NUM ASC
+   ,SQ.STORE_NUM DESC), SQ3 AS(
+SELECT
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.SR_PCT
+    ,SQ2.SR_PCT - lag(SQ2.SR_PCT) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS SR_PCT_YOY_DELTA
+FROM SQ2
+ORDER BY
+    SQ2.FSCL_YR_NUM DESC
+    ,SQ2.STORE_NUM DESC) 
+SELECT 
+    SQ3.STORE_NUM
+    ,SQ3.SR_PCT
+    ,SQ3.SR_PCT_YOY_DELTA
+FROM SQ3
+    WHERE SQ3.FSCL_YR_NUM = 2018</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP416.WORLD
+Table=--416
+/* SR Transaction Percent by Store */
+
+WITH SQ AS
+(SELECT
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,tr.TRANS_ID
+  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER
+
+FROM APPCA.F_POS_HDR tr
+
+INNER JOIN D_POS_HDR_TRANS_TYPE ty
+  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY
+  
+INNER JOIN APPCA.D_STORE_VERS ss
+  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY
+  
+INNER JOIN APPCA.D_CAL ca
+  ON tr.BUS_DT = ca.CAL_DT
+
+WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'
+  AND ss.OWNR_TYPE_CD = 'CO'
+  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15
+  AND ca.FSCL_YR_NUM IN (2017,2018) 
+  AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+
+GROUP BY
+   ss.STORE_NUM
+  ,ca.FSCL_YR_NUM
+  ,tr.TRANS_ID
+  ,tr.GUID_ID), SQ2 AS(
+SELECT 
+   SQ.STORE_NUM
+  ,SQ.FSCL_YR_NUM
+  --,COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) AS SR_TRANS_CNT
+  --,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT
+  ,ROUND(COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) / COUNT(DISTINCT SQ.TRANS_ID),4) AS SR_PCT
+  
+FROM SQ
+
+GROUP BY
+   SQ.STORE_NUM
+  ,SQ.FSCL_YR_NUM
+
+ORDER BY
+   SQ.FSCL_YR_NUM ASC
+   ,SQ.STORE_NUM DESC), SQ3 AS(
+SELECT
+    SQ2.FSCL_YR_NUM
+    ,SQ2.STORE_NUM
+    ,SQ2.SR_PCT
+    ,SQ2.SR_PCT - lag(SQ2.SR_PCT) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS SR_PCT_YOY_DELTA
+FROM SQ2
+ORDER BY
+    SQ2.FSCL_YR_NUM DESC
+    ,SQ2.STORE_NUM DESC) 
+SELECT 
+    SQ3.STORE_NUM
+    ,SQ3.SR_PCT
+    ,SQ3.SR_PCT_YOY_DELTA
+FROM SQ3
+    WHERE SQ3.FSCL_YR_NUM = 2018</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--416&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM IN (2017,2018) &#xA;  AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID), SQ2 AS(&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;  --,COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) AS SR_TRANS_CNT&#xA;  --,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  ,ROUND(COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) / COUNT(DISTINCT SQ.TRANS_ID),4) AS SR_PCT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;&#xA;ORDER BY&#xA;   SQ.FSCL_YR_NUM ASC&#xA;   ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.SR_PCT&#xA;    ,SQ2.SR_PCT - lag(SQ2.SR_PCT) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS SR_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.SR_PCT&#xA;    ,SQ3.SR_PCT_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="SR_PCT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--416&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM IN (2017,2018) &#xA;  AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID), SQ2 AS(&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;  --,COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) AS SR_TRANS_CNT&#xA;  --,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  ,ROUND(COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) / COUNT(DISTINCT SQ.TRANS_ID),4) AS SR_PCT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;&#xA;ORDER BY&#xA;   SQ.FSCL_YR_NUM ASC&#xA;   ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.SR_PCT&#xA;    ,SQ2.SR_PCT - lag(SQ2.SR_PCT) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS SR_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.SR_PCT&#xA;    ,SQ3.SR_PCT_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="SR_PCT_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--416&#xA;/* SR Transaction Percent by Store */&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,(CASE WHEN tr.GUID_ID = '0' THEN 0 ELSE 1 END) AS SR_MEMBER&#xA;&#xA;FROM APPCA.F_POS_HDR tr&#xA;&#xA;INNER JOIN D_POS_HDR_TRANS_TYPE ty&#xA;  ON tr.POS_HDR_TRANS_TYPE_KEY = ty.POS_HDR_TRANS_TYPE_KEY&#xA;  &#xA;INNER JOIN APPCA.D_STORE_VERS ss&#xA;  ON ss.STORE_VERS_KEY = tr.STORE_VERS_KEY&#xA;  &#xA;INNER JOIN APPCA.D_CAL ca&#xA;  ON tr.BUS_DT = ca.CAL_DT&#xA;&#xA;WHERE ss.CNTRY_CD_2_DGT_ISO = 'US'&#xA;  AND ss.OWNR_TYPE_CD = 'CO'&#xA;  AND ss.STORE_OPEN_DT &lt; '29-JUN-15'  -- beginning of Q4FY15&#xA;  AND ca.FSCL_YR_NUM IN (2017,2018) &#xA;  AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;GROUP BY&#xA;   ss.STORE_NUM&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,tr.TRANS_ID&#xA;  ,tr.GUID_ID), SQ2 AS(&#xA;SELECT &#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;  --,COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) AS SR_TRANS_CNT&#xA;  --,COUNT(DISTINCT SQ.TRANS_ID) AS TTL_TRANS_CNT&#xA;  ,ROUND(COUNT(DISTINCT CASE WHEN SQ.SR_MEMBER = 1 THEN SQ.TRANS_ID ELSE 0 END) / COUNT(DISTINCT SQ.TRANS_ID),4) AS SR_PCT&#xA;  &#xA;FROM SQ&#xA;&#xA;GROUP BY&#xA;   SQ.STORE_NUM&#xA;  ,SQ.FSCL_YR_NUM&#xA;&#xA;ORDER BY&#xA;   SQ.FSCL_YR_NUM ASC&#xA;   ,SQ.STORE_NUM DESC), SQ3 AS(&#xA;SELECT&#xA;    SQ2.FSCL_YR_NUM&#xA;    ,SQ2.STORE_NUM&#xA;    ,SQ2.SR_PCT&#xA;    ,SQ2.SR_PCT - lag(SQ2.SR_PCT) over(order by SQ2.STORE_NUM, SQ2.FSCL_YR_NUM) AS SR_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;ORDER BY&#xA;    SQ2.FSCL_YR_NUM DESC&#xA;    ,SQ2.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ3.STORE_NUM&#xA;    ,SQ3.SR_PCT&#xA;    ,SQ3.SR_PCT_YOY_DELTA&#xA;FROM SQ3&#xA;    WHERE SQ3.FSCL_YR_NUM = 2018" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="570" y="582" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--/* CAW */
+--/* % home store customers */
+
+WITH SQ AS(
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  --,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) AS HS_CUST_COUNT
+  --,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+  ,ROUND(SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) / COUNT(DISTINCT T2.GUID_ID),4) AS HS_CUST_PCT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM IN (2017,2018)
+       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_YR_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM IN (2017,2018)
+       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_YR_NUM = T3.FSCL_YR_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  
+  ORDER BY
+   T3.FSCL_YR_NUM ASC
+   ,T3.STORE_NUM DESC), SQ2 AS(
+SELECT
+    SQ.FSCL_YR_NUM
+    ,SQ.STORE_NUM
+    ,SQ.HS_CUST_PCT
+    ,SQ.HS_CUST_PCT - lag(SQ.HS_CUST_PCT) over(order by SQ.STORE_NUM, SQ.FSCL_YR_NUM) AS HS_CUST_PCT_YOY_DELTA
+FROM SQ
+ORDER BY
+    SQ.FSCL_YR_NUM DESC
+    ,SQ.STORE_NUM DESC) 
+SELECT 
+    SQ2.STORE_NUM
+    ,SQ2.HS_CUST_PCT
+    ,SQ2.HS_CUST_PCT_YOY_DELTA
+FROM SQ2
+    WHERE SQ2.FSCL_YR_NUM = 2018</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP416.WORLD
+Table=--/* CAW */
+--/* % home store customers */
+
+WITH SQ AS(
+SELECT
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  --,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) AS HS_CUST_COUNT
+  --,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT
+  ,ROUND(SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) / COUNT(DISTINCT T2.GUID_ID),4) AS HS_CUST_PCT
+FROM(
+    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD
+    SELECT
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,POSH2.GUID_ID
+    FROM APPCA.F_POS_HDR POSH2
+    LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY
+    INNER JOIN APPCA.D_CAL ca
+      ON POSH2.BUS_DT = ca.CAL_DT
+    WHERE STR.OWNR_TYPE_CD = 'CO'
+      AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+      AND POSH2.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM IN (2017,2018)
+       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+
+    GROUP BY
+       STR.STORE_NUM
+      ,ca.FSCL_YR_NUM
+      ,POSH2.GUID_ID
+    ) T3
+  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES
+  INNER JOIN (
+    SELECT
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.STORE_NUM 
+         ELSE NULL 
+       END) AS HOME_STORE
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.N_TRANS 
+         ELSE NULL 
+       END) AS HOME_STORE_VISITS
+      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 
+         THEN T1.TOT_SPEND 
+         ELSE NULL 
+       END) AS HOME_STORE_SPEND
+      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS
+      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND
+    FROM(
+      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES
+      SELECT
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS
+        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND
+        --this ranks each store that the guid has visited by the number of transactions and spend
+        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_YR_NUM 
+                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), 
+                           -SUM(POSH.GROSS_REV_LCL_AMT)
+                  ) 
+         AS RNK_HS
+      FROM APPCA.F_POS_HDR POSH
+      LEFT OUTER JOIN APPCA.D_STORE_VERS STR
+        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY
+      INNER JOIN APPCA.D_CAL ca
+        ON POSH.BUS_DT = ca.CAL_DT
+      WHERE STR.OWNR_TYPE_CD = 'CO'
+        AND STR.CNTRY_CD_2_DGT_ISO = 'US'
+        AND POSH.GROSS_REV_LCL_AMT &gt; 0
+       AND ca.FSCL_YR_NUM IN (2017,2018)
+       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)
+        
+      GROUP BY
+         POSH.GUID_ID
+        ,STR.STORE_NUM
+        ,ca.FSCL_YR_NUM
+
+    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC
+    GROUP BY
+       T1.GUID_ID
+      ,T1.FSCL_YR_NUM
+
+  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS
+ON T2.GUID_ID = T3.GUID_ID
+  AND T2.FSCL_YR_NUM = T3.FSCL_YR_NUM
+
+WHERE T2.GUID_ID IS NOT NULL 
+  AND T3.GUID_ID IS NOT NULL 
+  AND T2.GUID_ID !='0' 
+  AND T3.GUID_ID !='0' 
+
+GROUP BY
+   T3.STORE_NUM
+  ,T3.FSCL_YR_NUM
+  
+  ORDER BY
+   T3.FSCL_YR_NUM ASC
+   ,T3.STORE_NUM DESC), SQ2 AS(
+SELECT
+    SQ.FSCL_YR_NUM
+    ,SQ.STORE_NUM
+    ,SQ.HS_CUST_PCT
+    ,SQ.HS_CUST_PCT - lag(SQ.HS_CUST_PCT) over(order by SQ.STORE_NUM, SQ.FSCL_YR_NUM) AS HS_CUST_PCT_YOY_DELTA
+FROM SQ
+ORDER BY
+    SQ.FSCL_YR_NUM DESC
+    ,SQ.STORE_NUM DESC) 
+SELECT 
+    SQ2.STORE_NUM
+    ,SQ2.HS_CUST_PCT
+    ,SQ2.HS_CUST_PCT_YOY_DELTA
+FROM SQ2
+    WHERE SQ2.FSCL_YR_NUM = 2018</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;WITH SQ AS(&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  --,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) AS HS_CUST_COUNT&#xA;  --,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;  ,ROUND(SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) / COUNT(DISTINCT T2.GUID_ID),4) AS HS_CUST_PCT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_YR_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_YR_NUM = T3.FSCL_YR_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  &#xA;  ORDER BY&#xA;   T3.FSCL_YR_NUM ASC&#xA;   ,T3.STORE_NUM DESC), SQ2 AS(&#xA;SELECT&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.HS_CUST_PCT&#xA;    ,SQ.HS_CUST_PCT - lag(SQ.HS_CUST_PCT) over(order by SQ.STORE_NUM, SQ.FSCL_YR_NUM) AS HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ&#xA;ORDER BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ2.STORE_NUM&#xA;    ,SQ2.HS_CUST_PCT&#xA;    ,SQ2.HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;    WHERE SQ2.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="HS_CUST_PCT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;WITH SQ AS(&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  --,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) AS HS_CUST_COUNT&#xA;  --,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;  ,ROUND(SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) / COUNT(DISTINCT T2.GUID_ID),4) AS HS_CUST_PCT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_YR_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_YR_NUM = T3.FSCL_YR_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  &#xA;  ORDER BY&#xA;   T3.FSCL_YR_NUM ASC&#xA;   ,T3.STORE_NUM DESC), SQ2 AS(&#xA;SELECT&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.HS_CUST_PCT&#xA;    ,SQ.HS_CUST_PCT - lag(SQ.HS_CUST_PCT) over(order by SQ.STORE_NUM, SQ.FSCL_YR_NUM) AS HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ&#xA;ORDER BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ2.STORE_NUM&#xA;    ,SQ2.HS_CUST_PCT&#xA;    ,SQ2.HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;    WHERE SQ2.FSCL_YR_NUM = 2018" type="Double" />
+            <Field name="HS_CUST_PCT_YOY_DELTA" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||--/* CAW */&#xA;--/* % home store customers */&#xA;&#xA;WITH SQ AS(&#xA;SELECT&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  --,SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) AS HS_CUST_COUNT&#xA;  --,COUNT(DISTINCT T2.GUID_ID) AS ALL_CUST_COUNT&#xA;  ,ROUND(SUM(CASE WHEN T2.HOME_STORE = T3.STORE_NUM THEN 1 ELSE NULL END) / COUNT(DISTINCT T2.GUID_ID),4) AS HS_CUST_PCT&#xA;FROM(&#xA;    --LIST OF ALL ACTIVE STORES AND GUIDS WHO VISITED THOSE STORES DURING THE GIVEN TIME PERIOD&#xA;    SELECT&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    FROM APPCA.F_POS_HDR POSH2&#xA;    LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;      ON POSH2.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;    INNER JOIN APPCA.D_CAL ca&#xA;      ON POSH2.BUS_DT = ca.CAL_DT&#xA;    WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;      AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;      AND POSH2.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;&#xA;    GROUP BY&#xA;       STR.STORE_NUM&#xA;      ,ca.FSCL_YR_NUM&#xA;      ,POSH2.GUID_ID&#xA;    ) T3&#xA;  --JOINING LIST OF GUIDS WHO WERE ACTIVE, THEIR HOMESTORE, TOTAL TRANSACTIONS AND SPEND AT ALL STORES&#xA;  INNER JOIN (&#xA;    SELECT&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.STORE_NUM &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.N_TRANS &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_VISITS&#xA;      ,SUM(CASE WHEN T1.RNK_HS = 1 AND T1.N_TRANS&gt;=3 &#xA;         THEN T1.TOT_SPEND &#xA;         ELSE NULL &#xA;       END) AS HOME_STORE_SPEND&#xA;      ,SUM(T1.N_TRANS) AS ALL_STORES_VISITS&#xA;      ,SUM(T1.TOT_SPEND) AS ALL_STORES_SPEND&#xA;    FROM(&#xA;      --INNER QUERY - ALL GUIDS, STORES THEY VISITED, # TRANSACTIONS AT THOSE STORES AND TOTAL SPEND AT THOSE STORES&#xA;      SELECT&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;        ,COUNT(DISTINCT POSH.TRANS_ID) AS N_TRANS&#xA;        ,SUM(POSH.GROSS_REV_LCL_AMT) AS TOT_SPEND&#xA;        --this ranks each store that the guid has visited by the number of transactions and spend&#xA;        ,RANK() OVER(PARTITION BY POSH.GUID_ID, ca.FSCL_YR_NUM &#xA;                  ORDER BY -COUNT(DISTINCT POSH.TRANS_ID), &#xA;                           -SUM(POSH.GROSS_REV_LCL_AMT)&#xA;                  ) &#xA;         AS RNK_HS&#xA;      FROM APPCA.F_POS_HDR POSH&#xA;      LEFT OUTER JOIN APPCA.D_STORE_VERS STR&#xA;        ON POSH.STORE_VERS_KEY = STR.STORE_VERS_KEY&#xA;      INNER JOIN APPCA.D_CAL ca&#xA;        ON POSH.BUS_DT = ca.CAL_DT&#xA;      WHERE STR.OWNR_TYPE_CD = 'CO'&#xA;        AND STR.CNTRY_CD_2_DGT_ISO = 'US'&#xA;        AND POSH.GROSS_REV_LCL_AMT &gt; 0&#xA;       AND ca.FSCL_YR_NUM IN (2017,2018)&#xA;       AND ca.FSCL_WK_IN_YR_NUM IN (30,31,32,33)&#xA;        &#xA;      GROUP BY&#xA;         POSH.GUID_ID&#xA;        ,STR.STORE_NUM&#xA;        ,ca.FSCL_YR_NUM&#xA;&#xA;    ) T1 --THIS IS THE LIST OF GUIDS AND THEIR HOMESTORE,SPEND ETC&#xA;    GROUP BY&#xA;       T1.GUID_ID&#xA;      ,T1.FSCL_YR_NUM&#xA;&#xA;  ) T2 --THIS IS THE LIST OF ALL STORES AND THEIR CUSTOMERS&#xA;ON T2.GUID_ID = T3.GUID_ID&#xA;  AND T2.FSCL_YR_NUM = T3.FSCL_YR_NUM&#xA;&#xA;WHERE T2.GUID_ID IS NOT NULL &#xA;  AND T3.GUID_ID IS NOT NULL &#xA;  AND T2.GUID_ID !='0' &#xA;  AND T3.GUID_ID !='0' &#xA;&#xA;GROUP BY&#xA;   T3.STORE_NUM&#xA;  ,T3.FSCL_YR_NUM&#xA;  &#xA;  ORDER BY&#xA;   T3.FSCL_YR_NUM ASC&#xA;   ,T3.STORE_NUM DESC), SQ2 AS(&#xA;SELECT&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.HS_CUST_PCT&#xA;    ,SQ.HS_CUST_PCT - lag(SQ.HS_CUST_PCT) over(order by SQ.STORE_NUM, SQ.FSCL_YR_NUM) AS HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ&#xA;ORDER BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.STORE_NUM DESC) &#xA;SELECT &#xA;    SQ2.STORE_NUM&#xA;    ,SQ2.HS_CUST_PCT&#xA;    ,SQ2.HS_CUST_PCT_YOY_DELTA&#xA;FROM SQ2&#xA;    WHERE SQ2.FSCL_YR_NUM = 2018" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="738" y="606" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411
+--can adjust by day part
+--UPLH
+
+select a.store_num
+      --,a.bus_dt
+      --,a.half_hr_sid
+      --,sum(b.units) as tot_units
+      --,sum(a.total_hr_cnt) as tot_hours
+      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS
+  
+from 
+   --a) This select statements gets you total hours worked by half hour id
+   (select l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+        ,sum(actual_hr_cnt) as total_hr_cnt
+        
+        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart
+          --join to adt_time to get to half hour granularity
+          inner join (select half_hr_sid, qtr_hr_sid
+                        from appdwh.adt_time
+                        group by half_hr_sid, qtr_hr_sid) t
+            on t.qtr_hr_sid = l.qtr_hr_tm
+          
+        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder
+          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked 
+          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK
+        group by l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+    ) a
+    
+left join 
+    --b) this select statement gets you the number of units sold by half hour
+      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units
+                    from appdwh.aft_pos_intl_hdr
+                    where pos_void_cd not in ('L','V') --exclude voided transactions
+                      and cust_trans_cnt = 1 --only include 'accounting' transactions
+                    group by store_num, bus_dt, half_hr_sid) b
+      on a.store_num = b.store_num
+        and a.bus_dt = b.bus_dt
+        and a.half_hr_sid = b.half_hr_sid
+        
+--c) this brings in the retail org hierarchy to filter off    
+inner join appdwh.adt_store o on o.store_num = a.store_num
+      
+where a.bus_dt between  '23-APR-18' and '20-MAY-18' -- PLEASE ADJUST DATE RANGE HERE
+     --and a.store_num in (101) --for test
+     and o.CNTRY_CD = 'US' 
+     and o.ownr_type_CD = 'CO'
+     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK
+     
+  group by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid
+  
+  order by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP411.WORLD
+Table=--411
+--can adjust by day part
+--UPLH
+
+select a.store_num
+      --,a.bus_dt
+      --,a.half_hr_sid
+      --,sum(b.units) as tot_units
+      --,sum(a.total_hr_cnt) as tot_hours
+      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS
+  
+from 
+   --a) This select statements gets you total hours worked by half hour id
+   (select l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+        ,sum(actual_hr_cnt) as total_hr_cnt
+        
+        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart
+          --join to adt_time to get to half hour granularity
+          inner join (select half_hr_sid, qtr_hr_sid
+                        from appdwh.adt_time
+                        group by half_hr_sid, qtr_hr_sid) t
+            on t.qtr_hr_sid = l.qtr_hr_tm
+          
+        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder
+          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked 
+          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK
+        group by l.store_num
+        ,l.bus_dt
+        ,t.half_hr_sid
+    ) a
+    
+left join 
+    --b) this select statement gets you the number of units sold by half hour
+      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units
+                    from appdwh.aft_pos_intl_hdr
+                    where pos_void_cd not in ('L','V') --exclude voided transactions
+                      and cust_trans_cnt = 1 --only include 'accounting' transactions
+                    group by store_num, bus_dt, half_hr_sid) b
+      on a.store_num = b.store_num
+        and a.bus_dt = b.bus_dt
+        and a.half_hr_sid = b.half_hr_sid
+        
+--c) this brings in the retail org hierarchy to filter off    
+inner join appdwh.adt_store o on o.store_num = a.store_num
+      
+where a.bus_dt between  '23-APR-18' and '20-MAY-18' -- PLEASE ADJUST DATE RANGE HERE
+     --and a.store_num in (101) --for test
+     and o.CNTRY_CD = 'US' 
+     and o.ownr_type_CD = 'CO'
+     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK
+     
+  group by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid
+  
+  order by a.store_num
+  --,a.bus_dt
+  --,a.half_hr_sid</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--can adjust by day part&#xA;--UPLH&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      --,sum(b.units) as tot_units&#xA;      --,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '23-APR-18' and '20-MAY-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+            <Field name="UPLH" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;--can adjust by day part&#xA;--UPLH&#xA;&#xA;select a.store_num&#xA;      --,a.bus_dt&#xA;      --,a.half_hr_sid&#xA;      --,sum(b.units) as tot_units&#xA;      --,sum(a.total_hr_cnt) as tot_hours&#xA;      ,cast(sum(b.units)/sum(a.total_hr_cnt) as decimal(15,2)) as UPLH -- NOTE THIS IS TPLH BASED ON ONLY CUSTOMER UNITS&#xA;  &#xA;from &#xA;   --a) This select statements gets you total hours worked by half hour id&#xA;   (select l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;        ,sum(actual_hr_cnt) as total_hr_cnt&#xA;        &#xA;        from appdwh.AFT_GLS_STORE_DAYPART_JOB l --labor hours by daypart&#xA;          --join to adt_time to get to half hour granularity&#xA;          inner join (select half_hr_sid, qtr_hr_sid&#xA;                        from appdwh.adt_time&#xA;                        group by half_hr_sid, qtr_hr_sid) t&#xA;            on t.qtr_hr_sid = l.qtr_hr_tm&#xA;          &#xA;        where l.shift_role_id in (101,1,18) -- ops2, ops, keyholder&#xA;          and l.actual_hr_cnt &gt; 0 --only times when someone actually worked &#xA;          --and t.half_hr_sid &gt;= 80000 and t.half_hr_sid &lt;= 100000 - PEAK&#xA;        group by l.store_num&#xA;        ,l.bus_dt&#xA;        ,t.half_hr_sid&#xA;    ) a&#xA;    &#xA;left join &#xA;    --b) this select statement gets you the number of units sold by half hour&#xA;      (select store_num, bus_dt, half_hr_sid, SUM(nds_sales_qty) as units&#xA;                    from appdwh.aft_pos_intl_hdr&#xA;                    where pos_void_cd not in ('L','V') --exclude voided transactions&#xA;                      and cust_trans_cnt = 1 --only include 'accounting' transactions&#xA;                    group by store_num, bus_dt, half_hr_sid) b&#xA;      on a.store_num = b.store_num&#xA;        and a.bus_dt = b.bus_dt&#xA;        and a.half_hr_sid = b.half_hr_sid&#xA;        &#xA;--c) this brings in the retail org hierarchy to filter off    &#xA;inner join appdwh.adt_store o on o.store_num = a.store_num&#xA;      &#xA;where a.bus_dt between  '23-APR-18' and '20-MAY-18' -- PLEASE ADJUST DATE RANGE HERE&#xA;     --and a.store_num in (101) --for test&#xA;     and o.CNTRY_CD = 'US' &#xA;     and o.ownr_type_CD = 'CO'&#xA;     --and a.half_hr_sid &gt;= 80000 and a.half_hr_sid &lt;= 100000 -PEAK&#xA;     &#xA;  group by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid&#xA;  &#xA;  order by a.store_num&#xA;  --,a.bus_dt&#xA;  --,a.half_hr_sid" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="246" y="426" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="STORE_NUM" selected="True" type="Double" size="8" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.JoinMultiple.JoinMultiple">
+        <Position x="834" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <JoinByRecPos value="False" />
+          <JoinFields>
+            <JoinInfo connection="#1">
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+            </JoinInfo>
+            <JoinInfo connection="#2">
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+            </JoinInfo>
+            <JoinInfo connection="#3">
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+            </JoinInfo>
+            <JoinInfo connection="#4">
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+            </JoinInfo>
+            <JoinInfo connection="#5">
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+              <Field field="STORE_NUM" />
+            </JoinInfo>
+          </JoinFields>
+          <CartesianMode>Error</CartesianMode>
+          <OutputJoinOnly value="False" />
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Input_#2_STORE_NUM" selected="False" rename="Input_#2_STORE_NUM" />
+                <SelectField field="Input_#3_STORE_NUM" selected="False" rename="Input_#3_STORE_NUM" />
+                <SelectField field="Input_#4_STORE_NUM" selected="False" rename="Input_#4_STORE_NUM" />
+                <SelectField field="Input_#5_STORE_NUM" selected="False" rename="Input_#5_STORE_NUM" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoinMultiple" />
+    </Node>
+    <Node ToolID="28">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1182" y="330" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_19736_2d4ec26be67e47a7b5a191386e32995d_\Engine_17328_be9799419b6244acace8d4a7d2114a67_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="29">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="834" y="246" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" RecordLimit="" SearchSubDirs="False" FileFormat="0">O:\CoOp\CoOp194_PROReportng&amp;OM\Julie\FW33_ERRORS.csv</File>
+          <FormatSpecificOptions>
+            <CodePage>28591</CodePage>
+            <Delimeter>,</Delimeter>
+            <IgnoreErrors>False</IgnoreErrors>
+            <FieldLen>254</FieldLen>
+            <AllowShareWrite>False</AllowShareWrite>
+            <HeaderRow>True</HeaderRow>
+            <IgnoreQuotes>DoubleQuotes</IgnoreQuotes>
+            <ImportLine>1</ImportLine>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>FW33_ERRORS.csv</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="30">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="1050" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left" />
+          <JoinInfo connection="Right" />
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection name="#1">
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="18" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection name="#4">
+      <Origin ToolID="22" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection name="#5">
+      <Origin ToolID="24" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="25" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="25" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="27" Connection="Output" />
+      <Destination ToolID="30" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="29" Connection="Output" />
+      <Destination ToolID="30" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="30" Connection="Left" />
+      <Destination ToolID="28" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-05-23_Backcast_Partner_CBSA_Check</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
