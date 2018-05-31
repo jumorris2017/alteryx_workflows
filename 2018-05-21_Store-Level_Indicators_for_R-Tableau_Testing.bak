@@ -12,8 +12,7 @@
 
 WITH SQ AS
 (SELECT
-    c.FSCL_PER_IN_YR_NUM
-    ,c.FSCL_YR_NUM
+    c.FSCL_YR_NUM
     ,ce.STORE_NUM
   -- Compute top box scores for each question
     ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
@@ -49,7 +48,7 @@ FROM APPDWH.AFT_CV_SRVY_RSPNS ce
   
   INNER JOIN APPDWH.ADT_CAL c
     ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
-    AND c.FSCL_PER_IN_YR_NUM = 7
+    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)
     AND c.FSCL_YR_NUM IN (2017,2018) 
     
   INNER JOIN APPDWH.ADT_STORE org
@@ -61,28 +60,23 @@ WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
   AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
 
 GROUP BY
-    c.FSCL_PER_IN_YR_NUM
-    ,c.FSCL_YR_NUM
+    c.FSCL_YR_NUM
     ,ce.STORE_NUM
 Order BY
     c.FSCL_YR_NUM
-    ,c.FSCL_PER_IN_YR_NUM
 )
 SELECT     
-    SQ.FSCL_PER_IN_YR_NUM
-    ,SQ.FSCL_YR_NUM
+    SQ.FSCL_YR_NUM
     ,SQ.STORE_NUM
-    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE
-    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE
+    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M
 FROM SQ
 GROUP BY
     SQ.FSCL_YR_NUM
-    ,SQ.FSCL_PER_IN_YR_NUM
     ,SQ.STORE_NUM
     ,SQ.Q2_2_TB_Score
 Order BY
-    SQ.FSCL_YR_NUM DESC
-    ,SQ.FSCL_PER_IN_YR_NUM DESC</File>
+    SQ.FSCL_YR_NUM DESC</File>
           <FormatSpecificOptions>
             <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
             <ReadCentroids>False</ReadCentroids>
@@ -100,8 +94,7 @@ Table=--411
 
 WITH SQ AS
 (SELECT
-    c.FSCL_PER_IN_YR_NUM
-    ,c.FSCL_YR_NUM
+    c.FSCL_YR_NUM
     ,ce.STORE_NUM
   -- Compute top box scores for each question
     ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL
@@ -137,7 +130,7 @@ FROM APPDWH.AFT_CV_SRVY_RSPNS ce
   
   INNER JOIN APPDWH.ADT_CAL c
     ON TRUNC(ce.TRANS_DTM) = c.CAL_DT
-    AND c.FSCL_PER_IN_YR_NUM = 7
+    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)
     AND c.FSCL_YR_NUM IN (2017,2018) 
     
   INNER JOIN APPDWH.ADT_STORE org
@@ -149,37 +142,31 @@ WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions
   AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores
 
 GROUP BY
-    c.FSCL_PER_IN_YR_NUM
-    ,c.FSCL_YR_NUM
+    c.FSCL_YR_NUM
     ,ce.STORE_NUM
 Order BY
     c.FSCL_YR_NUM
-    ,c.FSCL_PER_IN_YR_NUM
 )
 SELECT     
-    SQ.FSCL_PER_IN_YR_NUM
-    ,SQ.FSCL_YR_NUM
+    SQ.FSCL_YR_NUM
     ,SQ.STORE_NUM
-    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE
-    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE
+    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M
+    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M
 FROM SQ
 GROUP BY
     SQ.FSCL_YR_NUM
-    ,SQ.FSCL_PER_IN_YR_NUM
     ,SQ.STORE_NUM
     ,SQ.Q2_2_TB_Score
 Order BY
-    SQ.FSCL_YR_NUM DESC
-    ,SQ.FSCL_PER_IN_YR_NUM DESC</DefaultAnnotationText>
+    SQ.FSCL_YR_NUM DESC</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="FSCL_PER_IN_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Int64" />
-            <Field name="FSCL_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Int64" />
-            <Field name="STORE_NUM" size="11" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="WString" />
-            <Field name="CC_SCORE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Double" />
-            <Field name="SO_SCORE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM = 7&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_PER_IN_YR_NUM&#xA;    ,c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;    ,c.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_SCORE&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_SCORE&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.FSCL_PER_IN_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC&#xA;    ,SQ.FSCL_PER_IN_YR_NUM DESC" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC" type="Int64" />
+            <Field name="STORE_NUM" size="11" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC" type="WString" />
+            <Field name="CC_R3M" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC" type="Double" />
+            <Field name="SO_R3M" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP411.WORLD|||--411&#xA;&#xA;WITH SQ AS&#xA;(SELECT&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;  -- Compute top box scores for each question&#xA;    ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_2' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_2' THEN ce.QSTN_ID END),'0.00000') END&#xA;   AS Q2_2_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_1' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_1' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_1_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_3' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_3' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_3_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_4' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_4' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_4_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_5' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_5' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_5_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_6' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_6' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_6_TB_Score&#xA;  ,CASE WHEN COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END) = 0 THEN NULL&#xA;   ELSE TO_CHAR(SUM(CASE WHEN ce.RSPNS_ID = '7' AND ce.QSTN_ID = 'Q2_7' THEN 1 ELSE 0 END)&#xA;    / COUNT(CASE WHEN ce.QSTN_ID = 'Q2_7' THEN ce.QSTN_ID END),'0.000') END&#xA;   AS Q2_7_TB_Score&#xA;&#xA;FROM APPDWH.AFT_CV_SRVY_RSPNS ce&#xA;  &#xA;  INNER JOIN APPDWH.ADT_CAL c&#xA;    ON TRUNC(ce.TRANS_DTM) = c.CAL_DT&#xA;    AND c.FSCL_PER_IN_YR_NUM IN (5,6,7)&#xA;    AND c.FSCL_YR_NUM IN (2017,2018) &#xA;    &#xA;  INNER JOIN APPDWH.ADT_STORE org&#xA;      ON ce.STORE_NUM = org.STORE_NUM&#xA;         AND org.OWNR_TYPE_CD IN ('CO')&#xA;         AND org.CNTRY_CD IN ('US')&#xA;    &#xA;WHERE ce.RSPNS_ID &lt;&gt; '9'  -- rspns_id = 9 for unanswered questions&#xA;  AND ce.QSTN_ID NOT IN ('Q1','Q11') -- these questions are not in Customer Connection or Store Operations scores&#xA;&#xA;GROUP BY&#xA;    c.FSCL_YR_NUM&#xA;    ,ce.STORE_NUM&#xA;Order BY&#xA;    c.FSCL_YR_NUM&#xA;)&#xA;SELECT     &#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,ROUND(SQ.Q2_2_TB_Score,4)*100 AS CC_R3M&#xA;    ,ROUND((AVG(SQ.Q2_1_TB_Score)+AVG(SQ.Q2_3_TB_Score)+AVG(SQ.Q2_4_TB_Score)+AVG(SQ.Q2_5_TB_Score)+AVG(SQ.Q2_6_TB_Score)+AVG(SQ.Q2_7_TB_Score))/6,4)*100 AS SO_R3M&#xA;FROM SQ&#xA;GROUP BY&#xA;    SQ.FSCL_YR_NUM&#xA;    ,SQ.STORE_NUM&#xA;    ,SQ.Q2_2_TB_Score&#xA;Order BY&#xA;    SQ.FSCL_YR_NUM DESC" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -191,12 +178,18 @@ Order BY
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17372_6203305db32044008c6737abe2598735_\Engine_9336_238d9d504cb4469090a0958192b7b8f5_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -215,7 +208,7 @@ Order BY
         <Configuration>
           <Text>CC/SO
 Store-Level
-FP7 FY18 (Apr)</Text>
+FP7 R3M FY18</Text>
           <Font name="Segoe UI" size="8.25" style="0" />
           <TextColor name="Black" />
           <FillColor name="White" />
@@ -384,12 +377,18 @@ where a.bus_dt between  '02-APR-18' and '29-APR-18' -- PLEASE ADJUST DATE RANGE 
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17372_6203305db32044008c6737abe2598735_\Engine_9336_d5e945f736af463f9aca74addd80a432_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -528,12 +527,18 @@ SELECT ca.FSCL_YR_NUM
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17372_6203305db32044008c6737abe2598735_\Engine_9336_bfc3fdf74d4a4e98afd9f166fd0d73e1_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -664,12 +669,18 @@ GROUP BY
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17372_6203305db32044008c6737abe2598735_\Engine_9336_d3b25960462748de94ee80ae237be5c9_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -866,12 +877,18 @@ FROM SQ3
       </GuiSettings>
       <Properties>
         <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_17372_6203305db32044008c6737abe2598735_\Engine_9336_8ceecaec697641089575db950eed9dcc_.yxdb</TempFile>
+          <TempFileDataProfiling />
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Profile</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
