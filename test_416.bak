@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.7">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="54" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st
+where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP416.WORLD
+Table=select * from APPCA.D_STORE_VERS st
+where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_VERS_KEY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="STORE_NM" size="31" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="STORE_BRAND_CD" size="5" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="STORE_OPEN_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="STORE_TERM_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="OWNR_TYPE_CD" size="3" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="LEGAL_ENTITY_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Int16" />
+            <Field name="CNTRY_CD_2_DGT_ISO" size="4" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="CNTRY_CD_3_DGT_ISO" size="4" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="CNTRY_SUB_DIV_CD" size="7" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="CITY_NM" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="CNTY_NM" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="POSTAL_CD" size="16" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="LAT_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="LONG_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="DIST_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Int16" />
+            <Field name="DIST_DESCR" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="AREA_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="AREA_DESCR" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="RGN_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="RGN_DESCR" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="DIV_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="DIV_DESCR" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="DIV_MGR_NM" size="51" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="CBSA_CD" size="6" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="CBSA_NM" size="81" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="V_WString" />
+            <Field name="DRIVE_THRU_TYPE_CD" size="2" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="DRIVE_THRU_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="BEV_ZONE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="FOOD_ZONE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="MERCH_ZONE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="STORE_CUP_SIZE_NM" size="7" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="TOTAL_AREA_MEAS" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="STORE_AGE_CLS_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_MON_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_TUES_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_WED_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_THURS_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_FRI_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_SAT_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_SUN_OPEN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PERM_SCHED_STD_OP_DAYS" size="19" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="WALKUP_WIN_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="CLOVER_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="EVENING_STORE_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="OVEN_WARM_FOOD_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="LUNCH_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="WIRELESS_HOT_SPOT_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="FIZZIO_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="DIGITAL_REWARDS_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="LA_BOULANGE_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="GOOGLE_WIFI_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="PLAYBOOK_STORE_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="OVERHEAD_MUSIC_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="MOBILE_ORDER_PAY_IND" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="Double" />
+            <Field name="EFF_FROM_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="EFF_TO_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="CURRENT_FLG" size="2" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="WString" />
+            <Field name="ETL_PROCESS_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="ETL_INSERT_DTM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+            <Field name="ETL_UPDT_DTM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||select * from APPCA.D_STORE_VERS st&#xA;where RGN_DESCR NOT IN ('PACIFIC NORTHWEST')" type="DateTime" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="150" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_9696_480dc80a6b384b54b57ee8ffd80a05ad_\Engine_7884_5126ee8cab1a41d7a199216c00b7cdcd_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>test_416</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
