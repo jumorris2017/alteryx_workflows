@@ -79,7 +79,7 @@ pv <- fread(paste0(data_dir,"/happyhour_pv.csv"))
 
 #add flag for hh days
 pv[, hhflag := 0]
-pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39)&DAY_ABBR_NM=='TH', hhflag := 1]
+pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42)&DAY_ABBR_NM=='TH', hhflag := 1]
 pv[SHIFT_FSCL_WK_IN_YR_NUM==37&DAY_ABBR_NM=='FR', hhflag := 1]
 
 #code into hourly vs sm job roles
@@ -98,15 +98,15 @@ pv <- pv[, list(TOTAL_RESP = sum(TOTAL_RESP,na.rm=T),
 pv <- setorder(pv,job_role,DAY_PART,-hhflag)
 
 #swing wide by day part and year
-pv <- dcast.data.table(pv, hhflag ~ job_role + DAY_PART + SHIFT_FSCL_YR_NUM, value.var=c("AVG_RESP"))
+pv <- dcast.data.table(pv, hhflag ~ job_role + DAY_PART + SHIFT_FSCL_YR_NUM, value.var=c("AVG_RESP","TOTAL_RESP"))
 pv <- setorder(pv,-hhflag)
 
 #calculate deltas
-pv[, hourly_am_delta := hourly_am_2018-hourly_am_2017]
-pv[, hourly_pm_delta := hourly_pm_2018-hourly_pm_2017]
+pv[, hourly_am_delta := AVG_RESP_hourly_am_2018-AVG_RESP_hourly_am_2017]
+pv[, hourly_pm_delta := AVG_RESP_hourly_pm_2018-AVG_RESP_hourly_pm_2017]
 
-pv[, sm_am_delta := sm_am_2018-sm_am_2017]
-pv[, sm_pm_delta := sm_pm_2018-sm_pm_2017]
+pv[, sm_am_delta := AVG_RESP_sm_am_2018-AVG_RESP_sm_am_2017]
+pv[, sm_pm_delta := AVG_RESP_sm_pm_2018-AVG_RESP_sm_pm_2017]
 
 hhfunc <- function(a,b,c,d) {
   (a-b) - (c-d)
@@ -146,3 +146,74 @@ hhdtsp <- hhdt[QSTN_ID=="Q2_1", list(
 hhdtso <- hhdt[so_flag==1, list(
   so_score = round(sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T),3)),
   by=c("DAY_PART","FSCL_YR_NUM","HH_ITEM")]
+
+#happy hour part 3
+hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
+
+
+
+#set up line chart
+pdata <- hhd
+px <- hhd[, DAY_IN_CAL_WK_NUM]
+py <- hhd[, CC_SCORE]
+groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+#labels
+xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+#set labels
+xlabel <- ""
+ylabel <- "CC Score"
+tlabel <- "Customer Connection Score by Week and Day"
+sublabel <- "Lasting Impact of Happy Hour"
+caption <- "U.S. Company-Operated Stores"
+#manual legend labels
+lname <- "Fiscal Week"
+llabels <- c("34","36","37","38","39") 
+
+#line chart
+plot2 <- ggplot() +
+  geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+  xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
+  scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+  scale_x_discrete(labels = xlabels) +
+  geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=32, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
+  geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=32, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+  guides(colour = guide_legend(override.aes = list(size = 7))) + 
+  #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
+  ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
+print(plot2)
+
+
+
+
+
+#set up line chart
+pdata <- hhd
+px <- hhd[, DAY_IN_CAL_WK_NUM]
+py <- hhd[, SO_SCORE]
+groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+#labels
+xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+#set labels
+xlabel <- ""
+ylabel <- "SO Score"
+tlabel <- "Store Operations Score by Week and Day"
+sublabel <- "Lasting Impact of Happy Hour"
+caption <- "U.S. Company-Operated Stores"
+#manual legend labels
+lname <- "Fiscal Week"
+llabels <- c("34","36","37","38","39") 
+
+#line chart
+plot2 <- ggplot() +
+  geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+  xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
+  scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+  scale_x_discrete(labels = xlabels) +
+  geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=62, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
+  geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=62, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+  guides(colour = guide_legend(override.aes = list(size = 7))) + 
+  #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
+  ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
+print(plot2)
+
+

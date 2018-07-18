@@ -131,7 +131,7 @@ LEFT JOIN (  --begin tp
 
     WHERE CNTRY_CD = 'US'
       AND BUS_DT >= '10-APR-17'  --one week prior to launch of Pulse
-      AND (BUS_DT BETWEEN '21-MAY-18' AND '01-JUL-18') or (BUS_DT BETWEEN '22-MAY-17' AND '02-JUL-17')
+      AND (BUS_DT BETWEEN '21-MAY-18' AND '20-JUL-18') or (BUS_DT BETWEEN '22-MAY-17' AND '20-JUL-17')
     ) gls
     
   INNER JOIN APPDWH.ADT_STORE@SBP411 s
