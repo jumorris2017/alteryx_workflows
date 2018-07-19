@@ -123,97 +123,174 @@ write.csv(pv,file=paste0(data_dir,"/happyhour_pv_results.csv"))
 
 
 #happy hour part 2
-hh34 <- fread(paste0(data_dir,"/hh_fw_34.csv"))
-hh36 <- fread(paste0(data_dir,"/hh_fw_36.csv"))
-hh37 <- fread(paste0(data_dir,"/hh_fw_37.csv"))
-hh38 <- fread(paste0(data_dir,"/hh_fw_38.csv"))
-hh39 <- fread(paste0(data_dir,"/hh_fw_39.csv"))
-#rbindlist
-l = list(hh34,hh36,hh37,hh38,hh39)
-hhdt <- rbindlist(l, use.names=TRUE, fill=TRUE)
+# hh34 <- fread(paste0(data_dir,"/hh_fw_34.csv"))
+# hh36 <- fread(paste0(data_dir,"/hh_fw_36.csv"))
+# hh37 <- fread(paste0(data_dir,"/hh_fw_37.csv"))
+# hh38 <- fread(paste0(data_dir,"/hh_fw_38.csv"))
+# hh39 <- fread(paste0(data_dir,"/hh_fw_39.csv"))
+# #rbindlist
+# l = list(hh34,hh36,hh37,hh38,hh39)
+# hhdt <- rbindlist(l, use.names=TRUE, fill=TRUE)
 
-
-#create SO agg
-hhdt[QSTN_ID %in% c("Q2_1","Q2_3","Q2_4","Q2_5","Q2_6","Q2_7"), so_flag := 1]
-
-#aggregate
-hhdtcc <- hhdt[QSTN_ID=="Q2_2", list(TOTAL_RSPNS = sum(TOTAL_RSPNS,na.rm=T),
-           cc_score = round(sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T),3)),
-           by=c("DAY_PART","FSCL_YR_NUM","HH_ITEM")]
-hhdtsp <- hhdt[QSTN_ID=="Q2_1", list(
-  sp_score = round(sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T),3)),
-  by=c("DAY_PART","FSCL_YR_NUM","HH_ITEM")]
-hhdtso <- hhdt[so_flag==1, list(
-  so_score = round(sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T),3)),
-  by=c("DAY_PART","FSCL_YR_NUM","HH_ITEM")]
 
 #happy hour part 3
 hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
 
+#create SO agg
+hhd[QSTN_ID %in% c("Q2_2"), so_flag := 0]
+hhd[QSTN_ID %in% c("Q2_1","Q2_3","Q2_4","Q2_5","Q2_6","Q2_7"), so_flag := 1]
 
+#add flag for hh days 
+hhd[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41), hh_week_flag := 1] #thurs hh
+hhd[FSCL_WK_IN_YR_NUM==37, hh_week_flag := 2] # fri hh
+hhd[FSCL_WK_IN_YR_NUM==35, hh_week_flag := 3] #no hh
+
+#aggregate
+hhd <- hhd[, list(
+  tb_score = round(sum(TOTAL_TB,na.rm=T)/sum(TOTAL_RSPNS,na.rm=T),3)),
+  by=c("DAY_IN_CAL_WK_NUM","FSCL_YR_NUM","hh_week_flag","so_flag")]
+
+#swing wide by so flag
+hhd <- dcast.data.table(hhd, DAY_IN_CAL_WK_NUM + FSCL_YR_NUM + hh_week_flag ~ so_flag,
+                        value.var="tb_score")
+setnames(hhd,c("0","1"),c("cc","so"))
+
+#reverse order of year variable for plot
+hhd[FSCL_YR_NUM==2018, prior_year := 0]
+hhd[FSCL_YR_NUM==2017, prior_year := 1]
 
 #set up line chart
 pdata <- hhd
 px <- hhd[, DAY_IN_CAL_WK_NUM]
-py <- hhd[, CC_SCORE]
-groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+py <- hhd[, cc*100]
+groupvar <- hhd[, prior_year]
+colourvar <- hhd[, hh_week_flag]
 #labels
-xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+xlabels <- c("Monday","Tuesday","Wednesday","Thursday","Friday")
 #set labels
 xlabel <- ""
 ylabel <- "CC Score"
-tlabel <- "Customer Connection Score by Week and Day"
-sublabel <- "Lasting Impact of Happy Hour"
-caption <- "U.S. Company-Operated Stores"
+tlabel <- "Customer Connection Score by Day of Week "
+sublabel <- "No apparent lasting impact of happy hour"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37; No happy hour: FW 35"
 #manual legend labels
-lname <- "Fiscal Week"
-llabels <- c("34","36","37","38","39") 
-
+lname1 <- "Happy Hour Day"
+llabels1 <- c("Thursday HH","Friday HH","No HH") 
+lname2 <- "Year"
+llabels2 <- c("2018","2017")
 #line chart
 plot2 <- ggplot() +
-  geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+  geom_line(data=pdata, size=1.25, aes(x=factor(px), y=py, colour=factor(colourvar), linetype=factor(groupvar), group=interaction(groupvar, colourvar))) + 
   xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
-  scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+  scale_colour_discrete(name=lname1, labels=llabels1, guide=guide_legend(order=1)) +
+  scale_linetype_discrete(name=lname2, labels=llabels2, guide=guide_legend(order=1)) +
   scale_x_discrete(labels = xlabels) +
-  geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=32, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
-  geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=32, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+  scale_y_continuous(limits=c(29,35),breaks=c(29:35)) +
+  geom_vline(aes(xintercept = 4)) + geom_vline(aes(xintercept = 5)) +
+  #geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=.32, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
   guides(colour = guide_legend(override.aes = list(size = 7))) + 
-  #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
 print(plot2)
-
-
-
 
 
 #set up line chart
 pdata <- hhd
 px <- hhd[, DAY_IN_CAL_WK_NUM]
-py <- hhd[, SO_SCORE]
-groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+py <- hhd[, so*100]
+groupvar <- hhd[, prior_year]
+colourvar <- hhd[, hh_week_flag]
 #labels
-xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+xlabels <- c("Monday","Tuesday","Wednesday","Thursday","Friday")
 #set labels
 xlabel <- ""
 ylabel <- "SO Score"
-tlabel <- "Store Operations Score by Week and Day"
-sublabel <- "Lasting Impact of Happy Hour"
-caption <- "U.S. Company-Operated Stores"
+tlabel <- "Store Operations Score by Day of Week"
+sublabel <- "No apparent lasting impact of happy hour"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37; No happy hour: FW 35"
 #manual legend labels
-lname <- "Fiscal Week"
-llabels <- c("34","36","37","38","39") 
-
+lname1 <- "Happy Hour Day"
+llabels1 <- c("Thursday HH","Friday HH","No HH") 
+lname2 <- "Year"
+llabels2 <- c("2018","2017")
 #line chart
 plot2 <- ggplot() +
-  geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+  geom_line(data=pdata, size=1.25, aes(x=factor(px), y=py, colour=factor(colourvar), linetype=factor(groupvar), group=interaction(groupvar, colourvar))) + 
   xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
-  scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+  scale_colour_discrete(name=lname1, labels=llabels1, guide=guide_legend(order=1)) +
+  scale_linetype_discrete(name=lname2, labels=llabels2, guide=guide_legend(order=1)) +
   scale_x_discrete(labels = xlabels) +
-  geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=62, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
-  geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=62, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+  scale_y_continuous(limits=c(59,65)) +
+  geom_vline(aes(xintercept = 4)) + geom_vline(aes(xintercept = 5)) +
+  #geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=.32, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
   guides(colour = guide_legend(override.aes = list(size = 7))) + 
-  #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
 print(plot2)
 
 
+
+
+
+
+
+
+##old version
+# #set up line chart
+# pdata <- hhd
+# px <- hhd[, DAY_IN_CAL_WK_NUM]
+# py <- hhd[, CC_SCORE]
+# groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+# #labels
+# xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+# #set labels
+# xlabel <- ""
+# ylabel <- "CC Score"
+# tlabel <- "Customer Connection Score by Week and Day"
+# sublabel <- "Lasting Impact of Happy Hour"
+# caption <- "U.S. Company-Operated Stores"
+# #manual legend labels
+# lname <- "Fiscal Week"
+# llabels <- c("34","36","37","38","39") 
+# 
+# #line chart
+# plot2 <- ggplot() +
+#   geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+#   xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
+#   scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+#   scale_x_discrete(labels = xlabels) +
+#   geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=32, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
+#   geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=32, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+#   guides(colour = guide_legend(override.aes = list(size = 7))) + 
+#   #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
+#   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
+# print(plot2)
+# 
+# 
+# #set up line chart
+# pdata <- hhd
+# px <- hhd[, DAY_IN_CAL_WK_NUM]
+# py <- hhd[, SO_SCORE]
+# groupvar <- hhd[, FSCL_WK_IN_YR_NUM]
+# #labels
+# xlabels <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+# #set labels
+# xlabel <- ""
+# ylabel <- "SO Score"
+# tlabel <- "Store Operations Score by Week and Day"
+# sublabel <- "Lasting Impact of Happy Hour"
+# caption <- "U.S. Company-Operated Stores"
+# #manual legend labels
+# lname <- "Fiscal Week"
+# llabels <- c("34","36","37","38","39") 
+# 
+# #line chart
+# plot2 <- ggplot() +
+#   geom_line(data=pdata, size=1, aes(x=factor(px), y=py, group=factor(groupvar), colour=factor(groupvar))) + 
+#   xlab(xlabel) + ylab(ylabel) + theme_economist_white(gray_bg = FALSE) +
+#   scale_colour_discrete(name=lname, labels=llabels, guide=guide_legend(order=1)) +
+#   scale_x_discrete(labels = xlabels) +
+#   geom_vline(aes(xintercept = 5)) + annotate(geom = "text", x=5, y=62, hjust=-0.5, vjust=0, label = "HH", angle=90, size=4) +
+#   geom_vline(aes(xintercept = 6)) + annotate(geom = "text", x=6, y=62, hjust=0, vjust=0, label = "HH:37", angle=90, size=4) +
+#   guides(colour = guide_legend(override.aes = list(size = 7))) + 
+#   #theme(axis.text.x = element_text(size=9, angle=90, hjust=1, vjust=.75)) +
+#   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
+# print(plot2)
