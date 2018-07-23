@@ -1,6 +1,7 @@
 
 #load libraries
 library(data.table)
+library(PerformanceAnalytics)
 
 #load data
 data_dir <- "O:/CoOp/CoOp194_PROReportng&OM/Julie"
@@ -372,13 +373,6 @@ plot2 <- ggplot() +
   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
 print(plot2)
 
-
-
-
-
-
-
-
 #happy hour part 5 - UPLH
 hhu <- fread(paste0(data_dir,"/happyhour_uplh.csv"))
 
@@ -455,3 +449,95 @@ plot2 <- ggplot() +
   guides(colour = guide_legend(override.aes = list(size = 7))) + 
   ggtitle(tlabel,subtitle=sublabel) + labs(caption=caption)
 print(plot2)
+
+
+
+#model it by day
+hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
+hhd <- hhd[QSTN_ID=="Q2_2"]
+pv <- fread(paste0(data_dir,"/happyhour_pv.csv"))
+hhu <- fread(paste0(data_dir,"/happyhour_uplh.csv"))
+hhu <- hhu[DAY_IN_CAL_WK_NUM %in% c(2:6)]
+
+#agg by hourly and sm, then swing wide
+
+#add flag for hh days
+pv[, hhflag := 0]
+pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42)&DAY_ABBR_NM=='TH', hhflag := 1]
+pv[SHIFT_FSCL_WK_IN_YR_NUM==37&DAY_ABBR_NM=='FR', hhflag := 1]
+
+#code into hourly vs sm job roles
+pv[JOB_ID==50000117, job_role := "sm"]
+pv[JOB_ID %in% c(50000362,50000358,50018175), job_role := "hourly"]
+pv <- na.omit(pv,cols="job_role")
+pv[, weighted_avg := TOTAL_RESP*AVG_RESP_ID]
+
+#aggregate / calculated weighted average
+pv <- pv[, list(TOTAL_RESP = sum(TOTAL_RESP,na.rm=T),
+                AVG_RESP = 
+                  round(sum(weighted_avg,na.rm=T)/sum(TOTAL_RESP,na.rm=T),2)),
+         by=c("job_role","DAY_PART","SHIFT_FSCL_YR_NUM","SHIFT_FSCL_WK_IN_YR_NUM","DAY_ABBR_NM","hhflag")]
+
+#set order
+pv <- setorder(pv,job_role,DAY_PART,-hhflag)
+
+#swing wide by day part and year
+pv <- dcast.data.table(pv, hhflag + DAY_PART + SHIFT_FSCL_YR_NUM + SHIFT_FSCL_WK_IN_YR_NUM + 
+                         DAY_ABBR_NM ~ job_role, 
+                       value.var=c("AVG_RESP"))
+setnames(pv,c("hourly","sm","SHIFT_FSCL_YR_NUM","SHIFT_FSCL_WK_IN_YR_NUM"),
+         c("pv_hourly","pv_sm","FSCL_YR_NUM","FSCL_WK_IN_YR_NUM"))
+pv[, DAY_PART := toupper(DAY_PART)]
+
+#reduce variables
+hhd[, DAY_PART := toupper(DAY_PART)]
+hhd <- hhd[, .(DAY_PART,TB_SCORE,FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,DAY_ABBR_NM)]
+hhu[, UPLH := round(TOT_UNITS/TOT_HOURS,2)]
+hhu <- hhu[, .(DAY_PART,UPLH,FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,DAY_ABBR_NM)]
+
+#merge
+newDT <- Reduce(function(x,y) {merge(x,y,by=c("FSCL_YR_NUM","FSCL_WK_IN_YR_NUM","DAY_ABBR_NM","DAY_PART"),
+                                     all=T)}, list(pv,hhu,hhd))
+newDT[DAY_PART=="AM", dp_pm := 0];newDT[DAY_PART=="PM", dp_pm := 1]
+
+#regression models
+summary(lm(data=newDT, TB_SCORE ~ hhflag))
+summary(lm(data=newDT, pv_hourly ~ hhflag))
+summary(lm(data=newDT, pv_sm ~ hhflag))
+
+summary(lm(data=newDT, TB_SCORE ~ hhflag + dp_pm + UPLH))
+summary(lm(data=newDT, pv_hourly ~ hhflag + UPLH))
+summary(lm(data=newDT, pv_sm ~ hhflag + UPLH))
+
+summary(lm(data=newDT, TB_SCORE ~ UPLH))
+summary(lm(data=newDT, pv_hourly ~ UPLH))
+summary(lm(data=newDT, pv_sm ~ UPLH))
+
+#correlation matrix
+corvars <- newDT[, .(FSCL_YR_NUM,FSCL_WK_IN_YR_NUM,hhflag,dp_pm,pv_hourly,pv_sm,UPLH,TB_SCORE)]
+
+## correlation matrix with p-values
+cor.prob <- function (X, dfr = nrow(X) - 2) {
+  R <- cor(X, use="pairwise.complete.obs")
+  above <- row(R) < col(R)
+  r2 <- R[above]^2
+  Fstat <- r2 * dfr/(1 - r2)
+  R[above] <- 1 - pf(Fstat, 1, dfr)
+  R[row(R) == col(R)] <- NA
+  R
+}
+## create function to dump the cor.prob output to a 4 column matrix
+## with row/column indices, correlation, and p-value.
+flattenSquareMatrix <- function(m) {
+  if( (class(m) != "matrix") | (nrow(m) != ncol(m))) stop("Must be a square matrix.") 
+  if(!identical(rownames(m), colnames(m))) stop("Row and column names must be equal.")
+  ut <- upper.tri(m)
+  data.frame(i = rownames(m)[row(m)[ut]],
+             j = rownames(m)[col(m)[ut]],
+             cor=t(m)[ut],
+             p=m[ut])
+}
+#flatten the table
+flattenSquareMatrix(cor.prob(corvars))
+#plot the data
+chart.Correlation(corvars)

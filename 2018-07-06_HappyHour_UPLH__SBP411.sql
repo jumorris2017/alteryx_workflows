@@ -44,8 +44,8 @@ left join
 --c) this brings in the retail org hierarchy to filter off    
 inner join appdwh.adt_store o on o.store_num = a.store_num
       
-where a.bus_dt between  '21-MAY-18' and '15-JUN-18' -- PLEASE ADJUST DATE RANGE HERE
-     or a.bus_dt between  '22-MAY-17' and '16-JUN-17' -- PLEASE ADJUST DATE RANGE HERE
+where a.bus_dt between  '21-MAY-18' and '15-JUL-18' -- PLEASE ADJUST DATE RANGE HERE
+     or a.bus_dt between  '22-MAY-17' and '16-JUL-17' -- PLEASE ADJUST DATE RANGE HERE
      --and a.store_num in (101) --for test
      and o.CNTRY_CD = 'US' 
      and o.ownr_type_CD = 'CO'
