@@ -1,0 +1,1048 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="11.7">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="6" y="126" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">C:\Users\jumorris\Documents\FORECAST_EXTRACT.YXDB</File>
+          <FormatSpecificOptions />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>FORECAST_EXTRACT.YXDB</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: (Multiple Sources)" type="Int64" />
+            <Field name="BUS_DATE" source="File: (Multiple Sources)" type="Date" />
+            <Field name="SALES" source="Formula: iif(isnull([_CurrentField_]),0,[_CurrentField_])" type="Float" />
+            <Field name="QTR_SALES" source="Formula: iif(isnull([_CurrentField_]),0,[_CurrentField_])" type="Double" />
+            <Field name="ACTUAL_SALES" source="Formula: iif(isnull([_CurrentField_]),0,[_CurrentField_])" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="294" y="246" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords />
+          <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">C:\Users\jumorris\Documents\ONESTORE.YXDB</File>
+          <FormatSpecificOptions />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>ONESTORE.YXDB</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUMBER" source="Formula: [_CurrentField_]" type="Int64" />
+            <Field name="STORE_NAME" size="35" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="LICE_NM" size="50" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="STORE_TYPE" size="15" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="OWNERSHIP_TYPE" size="2" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="FY_OPEN" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="STORE_OPEN_DATE" source="File: aka:APPBUS_OB|||select a.*,b.FISCAL_YEAR_NUMBER as STORE_TERM_YR_NUM from APPBUS.USR_ATTRIBUTES_STORE a &#xA;left outer join APPBUS.USR_ATTRIBUTES_CALENDAR b on a.STORE_CLOSE_DATE = b.CALENDAR_DATE&#xA;where a.COUNTRY_CODE in ('US','CA') and a.STORE_OPEN_DATE is not null and brand_code in ('SBUX','CHH')" type="Date" />
+            <Field name="STORE_CLOSE_DATE" source="File: aka:APPBUS_OB|||select a.*,b.FISCAL_YEAR_NUMBER as STORE_TERM_YR_NUM from APPBUS.USR_ATTRIBUTES_STORE a &#xA;left outer join APPBUS.USR_ATTRIBUTES_CALENDAR b on a.STORE_CLOSE_DATE = b.CALENDAR_DATE&#xA;where a.COUNTRY_CODE in ('US','CA') and a.STORE_OPEN_DATE is not null and brand_code in ('SBUX','CHH')" type="Date" />
+            <Field name="BOS_FILTER" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="FY_CLOSE" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="DRIVE_THRU_TYPE_CODE" size="1" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CBSA_CODE" size="5" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CBSA_NAME" size="82" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="COUNTRY_CODE" size="2" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="STATE_CODE" size="2" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="COUNTY_NAME" size="30" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="CITY_NAME" size="30" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="POSTAL_CODE" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="DIVISION_ID" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="DIVISION_NAME" size="32" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="DIVISION_ID_NAME" size="36" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="REGIONAL_VP" size="20" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="AREA_ID" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="AREA_NAME" size="33" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="AREA_ID_NAME" size="37" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="REGIONAL_DIRECTOR" size="20" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="DISTRICT_ID" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="DISTRICT_NAME" size="42" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="DISTRICT_ID_NAME" size="46" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="DISTRICT_MANAGER" size="35" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="REGION_ID" source="Formula: [_CurrentField_]" type="Double" />
+            <Field name="REGION_NM" size="23" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="MARKET_ID" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="MARKET_NAME" size="50" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="MINIMARKET_ID" size="12" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="MINIMARKET_NAME" size="50" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="LINE_1_ENG_ADDR" size="40" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="LINE_2_ENG_ADDR" size="40" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="LAT_NUM" source="Formula: [_CurrentField_]" type="Double" />
+            <Field name="LONG_NUM" source="Formula: [_CurrentField_]" type="Double" />
+            <Field name="BRAND_NM" size="11" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="DEAL_TYPE_NM" size="14" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="DEAL_MAKER_NM" size="22" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="STORE_MANAGER_FULL_NAME" size="20" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="BDM_NM" size="43" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="AREA_MANAGER_NAME" size="20" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="PRMRY_BUSGEN_DESCR" size="32" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="STORE_PROF_TYPE_NM" size="12" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="BEVERAGE_PRICE_ZONE_NUMBER" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FOOD_PRICE_ZONE_NUMBER" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="MERCH_PRICE_ZONE_NUMBER" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="LICENSEE_NAME" size="99" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="SUB_CHNL_NM" size="20" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="LS_REGION_ID" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="LS_REGION_NAME" size="21" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="RETAIL_SQUARE_FOOTAGE" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="PRIMARY_VENUE" size="17" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="SECONDARY_VENUE" size="17" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="Cluster" source="Formula: [_CurrentField_]" type="Byte" />
+            <Field name="PRMRY_DCSN_DESCR" size="13" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="String" />
+            <Field name="PRMRY_ACTN_FY" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="Int64" />
+            <Field name="PR_NOTES_TXT" size="1984" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="V_String" />
+            <Field name="PRMRY_SPEND_AMT" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="Double" />
+            <Field name="SCNDRY_DCSN_DESCR" size="13" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="V_String" />
+            <Field name="PR_NEXT_RENO_FY" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="Int64" />
+            <Field name="PR_NEXT_RENO_TYPE" size="9" source="File: aka:APPBUS_OB|||select b.STORE_NUM,a.UPDATE_DT,a.PRIMARY_DECISION as PRMRY_DCSN_DESCR,a.PRIMARY_ACTION_FY as PRMRY_ACTN_FY,a.PR_NOTES as PR_NOTES_TXT,a.RENO_SPEND as PRMRY_SPEND_AMT,a.SECONDARY_DECISION as SCNDRY_DCSN_DESCR,RENO_FY,RENO_TYPE from APPSTOREDEV_PVT.ADV_STORE_LOC_PORTFOLIO_REVIEW a &#xA;inner join APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION b on a.ATLAS_SITE_ID = b.ATLAS_SITE_ID" type="String" />
+            <Field name="LS_CO_OPS_AREA" size="37" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="R52_TRANS" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_CAFE" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_OTW" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_MOP" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_DELIVERY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_CAFE" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_OTW" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_MOP" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_DELIVERY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_CAFE_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_OTW_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_MOP_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_DELIERY_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_CAFE_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_OTW_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_MOP_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_DELIVERY_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="LAST_FISCAL_WEEK_BEGIN_DATE" source="Summarize: GroupBy - FISCAL_WEEK_BEGIN_DATE" type="Date" />
+            <Field name="R52_SALES_WEEKEND" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_CAFE_WEEKEND" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_OTW_WEEKEND" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_MOP_WEEKEND" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_DELIVERY_WEEKEND" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_SALES_MSR" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_TRANS_MSR" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="ADT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_AVG_WEEKLY_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_COMP_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="R52_COMP_SALES_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_CONTRIBUTION" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_UTILITIES_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_COGS_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_CASHFLOW_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_BLENDED_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_BREWED_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_ESPRESSO_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_FOOD_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_HOME_COFFEE_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_OTHER_BEVERAGE_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_OTHER_RETAIL_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_GROSS_MARGIN_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_WAGE_BENEFIT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_PROPERTY_RENT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_INSURANCE_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_ADVERTISING_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_SUPPLIES_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_EQUIPMENT_REPAIR_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_BUILDING_REPAIR_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_BUILDING_DEPRECIATION_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_BEVERAGE_ALCHOHOL_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_SALES_DISCOUNT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_LHI_DEPRECIATION_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_PERCENT_RENT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_NONCASH_RENT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_OCCUPANT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="LAST_FISCAL_PERIOD_BEGIN_DATE" source="File: aka:APPBUS_OB|||Select * From APPBUS.USR_PL_MONTHLYSTORE_RPT a Where country_code in ('US','CA') and A.FISCAL_YEAR_NUMBER &gt;= 2012" type="Date" />
+            <Field name="RTM_SALES_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="RTM_CONTRIBUTION_LY" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY5_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY4_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY3_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY2_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY1_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FYTD_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY2_CONTRIBUTION" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY1_CONTRIBUTION" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FYTD_CONTRIBUTION" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="FY5_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FY4_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FY3_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FY2_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FY1_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="FYTD_TRANS" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="TC_PERCENT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="Source_Financials" size="13" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="SQUARE_FEET" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="LEASE_START_DT" source="Formula: if isnull([LEASE_START_DT]) then [CURRENT_START_ALT] &#xA;elseif [LEASE_START_DT] &lt; [CURRENT_START_ALT] then [CURRENT_START_ALT]&#xA;else [LEASE_START_DT]&#xA;endif" type="Date" />
+            <Field name="LEASE_EXPIRATION_DT" source="File: aka:APPBUS_OB|||SELECT * FROM APPGIS.STORE_LEASE_NA_VW" type="Date" />
+            <Field name="LEASE_EXPIRATION_FY" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="LEASE_SQUARE_FEET" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="YEARLY_BASE_RENT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="NXT_OPT_TYP" size="10" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="NXT_OPT_SRT_DT" source="File: aka:APPBUS_OB|||select * from APPGIS.STORE_LEASE_NA_OPT_VW" type="Date" />
+            <Field name="NXT_OPT_END_DT" source="File: aka:APPBUS_OB|||select * from APPGIS.STORE_LEASE_NA_OPT_VW" type="Date" />
+            <Field name="NXT_OPT_RNT_AMT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="NXT_OPT_FND" source="Formula: [_CurrentField_]" type="Date" />
+            <Field name="NXT_OPT_REM" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="OPS_REGION_ID" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="OPS_REGION_NAME" size="21" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="New Store/Relo" size="5" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="PROFORMA_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="PROFORMA_EXPN" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="PROFORMA_NEWFU" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="PROFORMA_RELOC" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="Wall of Chill" size="1" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="Baby_Changing_Station_Facility" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Brilliant_Collection" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Clover_Brewed_Coffee" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Coffee_Scale" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Digital_Rewards" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Dot_Local_Collection" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Fizzio_Handcrafted_Beverage" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Google_Wi_Fi" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="La_Boulange" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Lunch" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Mobile_Order_and_Pay" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Music_Experience" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="My_Starbucks_Rewards" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Oven_Warmed_Food" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Overhead_Music" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Playbook_Store_System" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Square_Enabled" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Starbucks_Card" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Starbucks_Evenings_Menu" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Starbucks_Reserve_Christmas_Bl" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Verismo_System" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Walk_Thru" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Wireless_Charging" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Nitro_Brew" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="After_Hours_WiFi" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Bakery" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Blonde_Espresso" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Mercato" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Starbucks_Draft" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="Wireless_Hotspot" size="1" source="Formula: iif(isnull([_CurrentField_]),'N','Y')" type="String" />
+            <Field name="segment" size="19" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="urbanity" size="2" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="RELO_DATE" source="File: aka:APPBUS_OB|||select &#xA;ACTUAL_OPEN_DATE as STORE_OPEN_DT,&#xA;ADDRESS_ENGLISH as LINE_1_ENG_ADDR,&#xA;ADDRESS_LOCAL as LINE_1_LCL_ADDR,&#xA;ALARM as ALARM_PHONE_NUM,&#xA;ALARM2 as ALARM_2_PHONE_NUM,&#xA;APPROVED_DATE	,&#xA;ATLAS_SITE_ID,&#xA;ATM as ATM_PHONE_NUM,&#xA;BDM_ID,&#xA;BDM_NAME as BDM_NM,&#xA;BRAND as BRAND_NM,&#xA;BUILDING_TYPE_CODE	,&#xA;BUSINESS_UNIT_CODE	,&#xA;CBSA as CBSA_ID,&#xA;CITY_ENGLISH as CITY_ENG_NM,&#xA;CITY_LOCAL as CITY_LCL_NM,&#xA;CLOSE_DATE as STORE_CLOSE_DT,&#xA;CLOSE_PRIMARY_REASON_CODE	,&#xA;CLOSE_PRIMARY_REASON_NOTE	,&#xA;CLOSE_SECONDARY_REASON_CODE	,&#xA;CLOSE_SECONDARY_REASON_NOTE	,&#xA;CLOSED_NOTE	,&#xA;CO_LOW_TC as CO_LOW_TC_IND,&#xA;CO_PIPELINE_TRADE_AREA as CO_PIPELINE_TRADE_AREA_IND,&#xA;CO_STORES_OVERLAP_IND,&#xA;COMMENTS	,&#xA;CONSTRUCTION_OWNER	,&#xA;CONSTRUCTION_TYPE_CODE as CNSTR_TYPE_NM,&#xA;CONSUMER_SEGMENT as CNSMR_SEG_NM,&#xA;COUNTRY	CNTRY_CD,&#xA;COUNTY	,&#xA;CSE_DATE as CSE_DT,&#xA;CURRENCY	,&#xA;CUSTOMER_ACCESS	,&#xA;CUSTOMER_TYPE_CODE	,&#xA;DATA as DATA_PHONE_NUM,&#xA;DEAD_NOTES as DEAD_NOTES_TXT,&#xA;DEAD_REASON_CODE as DEAD_RSN_CD,&#xA;DEAL_MAKER as DEAL_MAKER_NM,&#xA;DEAL_NOTES as DEAL_NOTES_TXT,&#xA;DEAL_TYPE as DEAL_TYPE_NM,&#xA;DESIGN_TYPE_CODE,&#xA;DRIVE_THRU_STACK as DRIVE_THRU_STACK_CNT,&#xA;E_CAF_APPROVED_DATE as E_CAP_APRVD_DT,&#xA;E_CAF_SUBMITTED_DATE as E_CAF_SBMTD_DT,&#xA;ENGINE_TYPE	,&#xA;ENTRANCE_FLOOR as ENTER_ON_FLOOR_NUM,&#xA;EST_AVERAGE_TICKET	,&#xA;EST_AVG_DAILY_TRANS	,&#xA;EST_WEEKLY_SALES_AMT	,&#xA;EST_YEARLY_SALES_AMT	,&#xA;ESTIMATED_OPEN_DATE as EST_OPEN_DT,&#xA;EXCEPTION_PROCESS as EXCPT_PROC_IND,&#xA;EXISTING_DEAL_MAKER as EXIST_STORE_DEAL_MAKER_NM,&#xA;EXTERIOR_SEATING ,&#xA;EXTERNAL_PRESENCE as EXT_PRSNC_IND,&#xA;FAX as FAX_NUM,&#xA;FLOOR_COUNT as FLOOR_CNT,&#xA;FUNCTIONAL_UNIT_SEQ as FUNC_UNIT_SEQ_ID,&#xA;IMDS_APPROVAL_DATE as IMDS_APRVL_DT,&#xA;IMDS_NOTES as IMDS_NOTES_TXT,&#xA;IMDS_REVIEW as IMDS_REVIEW_NM,&#xA;INDEVELOPMENT_DATE	,&#xA;INITIATIVES_CAFE_OPPORTUNITY,&#xA;INITIATIVES_CHILLED_WALL,&#xA;INITIATIVES_CLOVER,&#xA;INITIATIVES_EVENINGS,&#xA;INITIATIVES_RESERVE,&#xA;INITIATIVES_WALK_UP_WINDOW,&#xA;INSERT_DATE as INSERT_DT,&#xA;INTERSECTION_ENGLISH as INTSEC_ENG_NM,&#xA;INTERSECTION_LOCAL as INTSEC_LCL_NM,&#xA;LATITUDE as LAT_NUM,&#xA;LEASE_APPROVED_DATE as LEASE_APRVD_DT,&#xA;LEGAL_ENTITY as LEGAL_ENTITY_NUM,&#xA;LICENSEE_CODE as LICE_CD,&#xA;LICENSEE_NAME as LICE_NM,&#xA;LIFECYCLE_STATUS as STORE_STAT_NM,&#xA;LOCAL_ID	,&#xA;LOCATION_TYPE_CODE	,&#xA;LOI_DATE as LOI_DT,&#xA;LONGITUDE as LONG_NUM,&#xA;MALL_PROGRAM	,&#xA;MARKET_ID as MKT_ID,&#xA;MARKET_NAME_ENGLISH as MKT_NM,&#xA;MINIMARKET_ID as MINI_MKT_ID,&#xA;MINIMARKET_NAME_ENGLISH as MINI_MKT_NM,&#xA;MLA_APPROVAL_DATE as MLA_APRVL_DT,&#xA;MLA_NOTES as MLA_NOTES_TXT,&#xA;MLA_REVIEW as MLA_REVIEW_IND,&#xA;MLA_STATUS as MLA_STAT_IND,&#xA;NAE_ID,&#xA;NAE_NAME as NAE_NM,&#xA;NAME_ENGLISH as STORE_ENG_NM,&#xA;NAME_LOCAL as STORE_LCL_LANG_NM,&#xA;NEIGHBORHOOD_CODE as NBRHD_CD,&#xA;OBJECTID as OBJ_ID,&#xA;OCC_STATUS as OCC_STAT_NM,&#xA;OCCUPANCY_EXPENSE	,&#xA;OPS_HANDOVER_DATE as OPS_HANDOVER_DT,&#xA;OWNERSHIP_TYPE as OWNR_TYPE_CD,&#xA;PALETTE_CODE	,&#xA;PARKING_STALLS	,&#xA;PLANNED_EXTERIOR_SEATS	,&#xA;PLANNED_INTERIOR_SEATS	,&#xA;PLANNED_OPEN_QUARTER as PLANNED_OPEN_QTR_NUM,&#xA;PLANNED_OPEN_YEAR as PLANNED_OPEN_YR_NUM,&#xA;PLANNED_SQ_FEET as PLANNED_SQ_FT_MEAS,&#xA;PLANNED_SQ_METERS as PLANNED_SQ_MTR_MEAS,&#xA;POSITION	,&#xA;POSSESSION_DATE as POSS_DT,&#xA;POSTAL_CODE as POSTAL_CD,&#xA;POTENTIAL_DATE as POTENTIAL_DT,&#xA;PRIMARY_BUSINESS_GEN as PRMRY_BUSGEN_DESCR,&#xA;PRIMARY_COTENANTS	,&#xA;PRIMARY_STORE_FLAG as PRMRY_STORE_FLG,&#xA;PRIMARY_VENUE	,&#xA;PROFILE_NOTES as PROF_NOTES_TXT,&#xA;PROFORMA_IRR,&#xA;PROFORMA_PRFT_CONTRIBTN,&#xA;PROFORMA_ROI_YR1,&#xA;PROJECT_NUM as PROJ_NUM,&#xA;PV_OPEN_DATE as PV_OPEN_DT,&#xA;RADIUS_RESTRICTION_CHECK,&#xA;RADIUS_RESTRICTION_REVIEW,&#xA;RADIUS_REVIEW_APPROVAL_DATE,&#xA;RADIUS_REVIEW_NOTES,&#xA;REAL_ESTATE_REP,&#xA;RECEIVED_DATE,&#xA;REGION_ID as RGN_ID,&#xA;REGION_NAME as RGN_NM,&#xA;RELO_IND,&#xA;RELO_STORE_NUM	,&#xA;RESITE_VISIT_DATE	,&#xA;RETIRE_DATE	,&#xA;RPM_ID	,&#xA;SECONDARY_BUSINESS_GEN as SCNDRY_BUS_GEN_NOT_TXT,&#xA;SECONDARY_COTENANTS	,&#xA;SECONDARY_VENUE	,&#xA;SEGMENT_CODE	,&#xA;SITE_COMMENTS as SITE_CMNTS_TXT,&#xA;SITE_ID,&#xA;SITE_SURVEY_REQUEST_DATE as SITE_SURV_REQ_DT,&#xA;SSP_APPROVED_DATE as SSP_APRVD_DT,&#xA;SSP_P_SUBMITTED_DATE as SSP_P_SBMTD_DT,&#xA;SSP_SUBMITTED_DATE	,&#xA;STATE_PROVINCE_ENGLISH,&#xA;STATE_PROVINCE_LOCAL as CNTRY_SUBDIV_CD,&#xA;STATE_WAIVER_RESTRICTION	,&#xA;STORE_ATLAS_SITE_ID_1	,&#xA;STORE_ATLAS_SITE_ID_2	,&#xA;STORE_ATLAS_SITE_ID_3	,&#xA;STORE_ATLAS_SITE_ID_4	,&#xA;STORE_ATLAS_SITE_ID_5	,&#xA;STORE_CANNIBALIZATION_NOTES_1	,&#xA;STORE_CANNIBALIZATION_NOTES_2	,&#xA;STORE_CANNIBALIZATION_NOTES_3	,&#xA;STORE_CANNIBALIZATION_NOTES_4	,&#xA;STORE_CANNIBALIZATION_NOTES_5	,&#xA;STORE_DISTANCE_1 as STORE_DIST_1_MI,&#xA;STORE_DISTANCE_2 as STORE_DIST_2_MI,&#xA;STORE_DISTANCE_3 as STORE_DIST_3_MI,&#xA;STORE_DISTANCE_4 as STORE_DIST_4_MI,&#xA;STORE_DISTANCE_5 as STORE_DIST_5_MI,&#xA;STORE_EST_CANNIBALIZATION_1	,&#xA;STORE_EST_CANNIBALIZATION_2	,&#xA;STORE_EST_CANNIBALIZATION_3	,&#xA;STORE_EST_CANNIBALIZATION_4	,&#xA;STORE_EST_CANNIBALIZATION_5	,&#xA;STORE_MODEL_CANNIBALIZATION_1	,&#xA;STORE_MODEL_CANNIBALIZATION_2	,&#xA;STORE_MODEL_CANNIBALIZATION_3	,&#xA;STORE_MODEL_CANNIBALIZATION_4	,&#xA;STORE_MODEL_CANNIBALIZATION_5	,&#xA;STORE_NUM,&#xA;STORE_PROFILE_TYPE as STORE_PROF_TYPE_NM,&#xA;STORE_SEGMENT as STORE_SEG_NM,&#xA;STORE_STR_CANNIBALIZATION_1	,&#xA;STORE_STR_CANNIBALIZATION_2	,&#xA;STORE_STR_CANNIBALIZATION_3	,&#xA;STORE_STR_CANNIBALIZATION_4	,&#xA;STORE_STR_CANNIBALIZATION_5	,&#xA;STORE_TYPE,&#xA;SUB_SEGMENT_CODE as SUB_CHNL_NM,&#xA;SUITE_ENGLISH as LINE_2_ENG_ADDR,&#xA;SUITE_LOCAL as LINE_2_LCL_ADDR,&#xA;TARGET_AREA_ID as TGT_AREA_ID,&#xA;TERTIARY_BUSINESS_GEN	,&#xA;TOTAL_WAGES_BENEFITS	,&#xA;TRADEAREA_NOTES	,&#xA;URBANITY_TYPE	,&#xA;VENUE_NAME	,&#xA;VENUE_NAME_LOCAL	,&#xA;VERSION	,&#xA;VOICE_1	as VOICE_1_PHONE_NUM,&#xA;VOICE_1_SOURCE	,&#xA;VOICE_2 as VOICE_2_PHONE_NUM,&#xA;VOICE_3 as VOICE_3_PHONE_NUM&#xA;from APPSTOREDEV_PVT.ADV_STORE_DEV_LOCATION a&#xA;where a.COUNTRY in ('US','CA')" type="Date" />
+            <Field name="NBV_LHI" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="NBV_STORE" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="NBV_OTHER" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="YEAR_ONE_SALES" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="YEAR_ONE_SALES_TYPE" size="21" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="LAST_FISCAL_WEEK_END" source="File: aka:APPBUS_OB|select a.CAL_DT,a.FSCL_WK_BEG_DT,a.FSCL_WK_END_DT,a.FSCL_WK_IN_YR_NUM,a.FSCL_PER_BEG_DT,a.FSCL_PER_END_DT,a.FSCL_PER_IN_YR_NUM from APPDWH.ADT_CAL a where a.FSCL_YR_NUM &gt; 2014" type="Date" />
+            <Field name="LAST_FISCAL_WEEK_NUMBER" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="LAST_FISCAL_PERIOD_END" source="File: aka:APPBUS_OB|select a.CAL_DT,a.FSCL_WK_BEG_DT,a.FSCL_WK_END_DT,a.FSCL_WK_IN_YR_NUM,a.FSCL_PER_BEG_DT,a.FSCL_PER_END_DT,a.FSCL_PER_IN_YR_NUM from APPDWH.ADT_CAL a where a.FSCL_YR_NUM &gt; 2014" type="Date" />
+            <Field name="LAST_FISCAL_PERIOD_NUM" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="COUNT_BREWER" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="COUNT_CLOVER" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="COUNT_ESPRESSO" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="COUNT_OVEN" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="COUNT_REGISTER" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="RENO_L_FY" source="Formula: [_CurrentField_]" type="Int32" />
+            <Field name="RENO_L_TYPE" size="10" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="RENO_L_CAPITAL" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="BORDER_FLAG" size="3" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CONSTRAINED_POS" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CONSTRAINED_LABOR" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CONSTRAINED_ENGINE" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CONSTRAINED_ESPRESSO" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="CONSTRAINED_BREWED" size="7" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="OUTLIER_FLAG" size="27" source="Formula: [_CurrentField_]" type="V_String" />
+            <Field name="COUNT_NITROGEN" source="Formula: [_CurrentField_]" type="Int16" />
+            <Field name="THIRD_PLACE_FLAG" size="3" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="LOYALTY_TOURIST_PERCENT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="LOYALTY_TOURIST_FLAG" size="3" source="Formula: [_CurrentField_]" type="String" />
+            <Field name="LOYALTY_UNIV_PERCENT" source="Formula: [_CurrentField_]" type="Float" />
+            <Field name="LOYALTY_UNIV_FLAG" size="3" source="Formula: [_CurrentField_]" type="String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="498" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="STORE_NUMBER" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="402" y="234" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="STORE_NUMBER" selected="True" />
+            <SelectField field="STORE_TYPE" selected="True" />
+            <SelectField field="FY_OPEN" selected="True" />
+            <SelectField field="FY_CLOSE" selected="True" />
+            <SelectField field="DRIVE_THRU_TYPE_CODE" selected="True" />
+            <SelectField field="CBSA_CODE" selected="True" />
+            <SelectField field="CBSA_NAME" selected="True" />
+            <SelectField field="STATE_CODE" selected="True" />
+            <SelectField field="COUNTY_NAME" selected="True" />
+            <SelectField field="CITY_NAME" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="78" y="330" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415
+--SM Stability
+
+SELECT
+s.FSCL_PER_BEG_DT,
+s.ORG_UNIT_NUM,
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE
+
+FROM LRIVERS.STOREMANAGERSTABILITY s
+
+/* get most recent rolling 12 report (table updates once per month) */
+WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)
+
+GROUP BY
+s.FSCL_PER_BEG_DT,
+s.ORG_UNIT_NUM,
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP415.WORLD
+Table=--415
+--SM Stability
+
+SELECT
+s.FSCL_PER_BEG_DT,
+s.ORG_UNIT_NUM,
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE
+
+FROM LRIVERS.STOREMANAGERSTABILITY s
+
+/* get most recent rolling 12 report (table updates once per month) */
+WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)
+
+GROUP BY
+s.FSCL_PER_BEG_DT,
+s.ORG_UNIT_NUM,
+s.STORE_NUM,
+s.SM1YRSTABLE,
+s.SM2YRSTABLE</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="FSCL_PER_BEG_DT" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="DateTime" />
+            <Field name="ORG_UNIT_NUM" size="13" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="WString" />
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+            <Field name="SM1YRSTABLE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+            <Field name="SM2YRSTABLE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--SM Stability&#xA;&#xA;SELECT&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE&#xA;&#xA;FROM LRIVERS.STOREMANAGERSTABILITY s&#xA;&#xA;/* get most recent rolling 12 report (table updates once per month) */&#xA;WHERE s.FSCL_PER_BEG_DT = (select max(FSCL_PER_BEG_DT) from LRIVERS.STOREMANAGERSTABILITY)&#xA;&#xA;GROUP BY&#xA;s.FSCL_PER_BEG_DT,&#xA;s.ORG_UNIT_NUM,&#xA;s.STORE_NUM,&#xA;s.SM1YRSTABLE,&#xA;s.SM2YRSTABLE" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="798" y="318" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Left_STORE_NUM" selected="True" />
+                <SelectField field="Left_Sum_SALES" selected="True" />
+                <SelectField field="Left_Sum_QTR_SALES" selected="True" />
+                <SelectField field="Left_Sum_ACTUAL_SALES" selected="True" />
+                <SelectField field="Left_CBSA_CODE" selected="True" />
+                <SelectField field="Left_CBSA_NAME" selected="True" />
+                <SelectField field="Left_CITY_NAME" selected="True" />
+                <SelectField field="Right_STORE_NUM" selected="False" rename="Right_STORE_NUM" type="Int64" size="8" />
+                <SelectField field="Right_SM1YRSTABLE" selected="True" />
+                <SelectField field="Right_SM2YRSTABLE" selected="True" />
+                <SelectField field="Right_TURNOVER_SM_12MO" selected="True" />
+                <SelectField field="Right_Q1_RESP" selected="True" />
+                <SelectField field="Right_Q1_TB" selected="True" />
+                <SelectField field="Right_Q1_AVG" selected="True" />
+                <SelectField field="Right_Q1_RESP_12MO" selected="True" />
+                <SelectField field="Right_Q1_TB_12MO" selected="True" />
+                <SelectField field="Right_Q1_AVG_12MO" selected="True" />
+                <SelectField field="*Unknown" selected="False" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="918" y="306" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_18028_f7032620ce204662bebd6939ba258bdc_\Engine_17328_83b414699d73426ca1d981a98ef6df14_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="210" y="450" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415
+--store level 12-month turnover
+--hourly partners
+
+SELECT a.STORE_NUM, a.CBSA_CD, ROUND(SUM(a.SEPCOUNT)/SUM(a.HEADCOUNT),3) AS TURNOVER_12MO
+
+FROM
+
+(SELECT
+turn.FSCL_PER_SID,
+turn.ORG_NM,
+st.STORE_NUM,
+st.CBSA_CD,
+turn.STORE_DIV,
+turn.ROLLUP_STORE_DAYS,
+SUM(turn.AVG_HEAD_CNT) AS HEADCOUNT, 
+(SUM(turn.SEP_CNT))/(turn.ROLLUP_STORE_DAYS/364) AS SEPCOUNT
+
+FROM LRIVERS.EXTAGGREGATETURNOVER turn
+
+-- join to ddv_org to get store number (org_abbrev_nm):
+inner join apppdw.ddv_org o
+ON turn.ORG_ID = o.ORG_ID
+ 
+-- if you need to join to adv_store:
+inner join apppdw.adv_store st
+ON CAST(regexp_replace(o.org_abbrev_nm, '[^0-9]+', '') AS number) = st.store_num
+AND o.snapshot_dt = st.snapshot_dt
+
+/* Gets The most recent rolling 12 report. Table updates once per month*/
+WHERE o.snapshot_dt = (select max(snapshot_dt) from apppdw.ddv_org)
+AND turn.JOB_ID IN (50000358,50000362,50018175,50000445) 
+AND turn.STORE_DIV IN ('West Division', 'East Division')
+
+GROUP BY
+turn.FSCL_PER_SID,
+turn.ORG_NM,
+st.STORE_NUM,
+st.CBSA_CD,
+turn.STORE_DIV,
+turn.ROLLUP_STORE_DAYS
+) a
+
+GROUP BY a.STORE_NUM, a.CBSA_CD</File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP415.WORLD
+Table=--415
+--store level 12-month turnover
+--hourly partners
+
+SELECT a.STORE_NUM, a.CBSA_CD, ROUND(SUM(a.SEPCOUNT)/SUM(a.HEADCOUNT),3) AS TURNOVER_12MO
+
+FROM
+
+(SELECT
+turn.FSCL_PER_SID,
+turn.ORG_NM,
+st.STORE_NUM,
+st.CBSA_CD,
+turn.STORE_DIV,
+turn.ROLLUP_STORE_DAYS,
+SUM(turn.AVG_HEAD_CNT) AS HEADCOUNT, 
+(SUM(turn.SEP_CNT))/(turn.ROLLUP_STORE_DAYS/364) AS SEPCOUNT
+
+FROM LRIVERS.EXTAGGREGATETURNOVER turn
+
+-- join to ddv_org to get store number (org_abbrev_nm):
+inner join apppdw.ddv_org o
+ON turn.ORG_ID = o.ORG_ID
+ 
+-- if you need to join to adv_store:
+inner join apppdw.adv_store st
+ON CAST(regexp_replace(o.org_abbrev_nm, '[^0-9]+', '') AS number) = st.store_num
+AND o.snapshot_dt = st.snapshot_dt
+
+/* Gets The most recent rolling 12 report. Table updates once per month*/
+WHERE o.snapshot_dt = (select max(snapshot_dt) from apppdw.ddv_org)
+AND turn.JOB_ID IN (50000358,50000362,50018175,50000445) 
+AND turn.STORE_DIV IN ('West Division', 'East Division')
+
+GROUP BY
+turn.FSCL_PER_SID,
+turn.ORG_NM,
+st.STORE_NUM,
+st.CBSA_CD,
+turn.STORE_DIV,
+turn.ROLLUP_STORE_DAYS
+) a
+
+GROUP BY a.STORE_NUM, a.CBSA_CD</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--store level 12-month turnover&#xA;--hourly partners&#xA;&#xA;SELECT a.STORE_NUM, a.CBSA_CD, ROUND(SUM(a.SEPCOUNT)/SUM(a.HEADCOUNT),3) AS TURNOVER_12MO&#xA;&#xA;FROM&#xA;&#xA;(SELECT&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS,&#xA;SUM(turn.AVG_HEAD_CNT) AS HEADCOUNT, &#xA;(SUM(turn.SEP_CNT))/(turn.ROLLUP_STORE_DAYS/364) AS SEPCOUNT&#xA;&#xA;FROM LRIVERS.EXTAGGREGATETURNOVER turn&#xA;&#xA;-- join to ddv_org to get store number (org_abbrev_nm):&#xA;inner join apppdw.ddv_org o&#xA;ON turn.ORG_ID = o.ORG_ID&#xA; &#xA;-- if you need to join to adv_store:&#xA;inner join apppdw.adv_store st&#xA;ON CAST(regexp_replace(o.org_abbrev_nm, '[^0-9]+', '') AS number) = st.store_num&#xA;AND o.snapshot_dt = st.snapshot_dt&#xA;&#xA;/* Gets The most recent rolling 12 report. Table updates once per month*/&#xA;WHERE o.snapshot_dt = (select max(snapshot_dt) from apppdw.ddv_org)&#xA;AND turn.JOB_ID IN (50000358,50000362,50018175,50000445) &#xA;AND turn.STORE_DIV IN ('West Division', 'East Division')&#xA;&#xA;GROUP BY&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS&#xA;) a&#xA;&#xA;GROUP BY a.STORE_NUM, a.CBSA_CD" type="Double" />
+            <Field name="CBSA_CD" size="6" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--store level 12-month turnover&#xA;--hourly partners&#xA;&#xA;SELECT a.STORE_NUM, a.CBSA_CD, ROUND(SUM(a.SEPCOUNT)/SUM(a.HEADCOUNT),3) AS TURNOVER_12MO&#xA;&#xA;FROM&#xA;&#xA;(SELECT&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS,&#xA;SUM(turn.AVG_HEAD_CNT) AS HEADCOUNT, &#xA;(SUM(turn.SEP_CNT))/(turn.ROLLUP_STORE_DAYS/364) AS SEPCOUNT&#xA;&#xA;FROM LRIVERS.EXTAGGREGATETURNOVER turn&#xA;&#xA;-- join to ddv_org to get store number (org_abbrev_nm):&#xA;inner join apppdw.ddv_org o&#xA;ON turn.ORG_ID = o.ORG_ID&#xA; &#xA;-- if you need to join to adv_store:&#xA;inner join apppdw.adv_store st&#xA;ON CAST(regexp_replace(o.org_abbrev_nm, '[^0-9]+', '') AS number) = st.store_num&#xA;AND o.snapshot_dt = st.snapshot_dt&#xA;&#xA;/* Gets The most recent rolling 12 report. Table updates once per month*/&#xA;WHERE o.snapshot_dt = (select max(snapshot_dt) from apppdw.ddv_org)&#xA;AND turn.JOB_ID IN (50000358,50000362,50018175,50000445) &#xA;AND turn.STORE_DIV IN ('West Division', 'East Division')&#xA;&#xA;GROUP BY&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS&#xA;) a&#xA;&#xA;GROUP BY a.STORE_NUM, a.CBSA_CD" type="WString" />
+            <Field name="TURNOVER_12MO" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--415&#xA;--store level 12-month turnover&#xA;--hourly partners&#xA;&#xA;SELECT a.STORE_NUM, a.CBSA_CD, ROUND(SUM(a.SEPCOUNT)/SUM(a.HEADCOUNT),3) AS TURNOVER_12MO&#xA;&#xA;FROM&#xA;&#xA;(SELECT&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS,&#xA;SUM(turn.AVG_HEAD_CNT) AS HEADCOUNT, &#xA;(SUM(turn.SEP_CNT))/(turn.ROLLUP_STORE_DAYS/364) AS SEPCOUNT&#xA;&#xA;FROM LRIVERS.EXTAGGREGATETURNOVER turn&#xA;&#xA;-- join to ddv_org to get store number (org_abbrev_nm):&#xA;inner join apppdw.ddv_org o&#xA;ON turn.ORG_ID = o.ORG_ID&#xA; &#xA;-- if you need to join to adv_store:&#xA;inner join apppdw.adv_store st&#xA;ON CAST(regexp_replace(o.org_abbrev_nm, '[^0-9]+', '') AS number) = st.store_num&#xA;AND o.snapshot_dt = st.snapshot_dt&#xA;&#xA;/* Gets The most recent rolling 12 report. Table updates once per month*/&#xA;WHERE o.snapshot_dt = (select max(snapshot_dt) from apppdw.ddv_org)&#xA;AND turn.JOB_ID IN (50000358,50000362,50018175,50000445) &#xA;AND turn.STORE_DIV IN ('West Division', 'East Division')&#xA;&#xA;GROUP BY&#xA;turn.FSCL_PER_SID,&#xA;turn.ORG_NM,&#xA;st.STORE_NUM,&#xA;st.CBSA_CD,&#xA;turn.STORE_DIV,&#xA;turn.ROLLUP_STORE_DAYS&#xA;) a&#xA;&#xA;GROUP BY a.STORE_NUM, a.CBSA_CD" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="17">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="342" y="390" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Left_FSCL_PER_BEG_DT" selected="True" />
+                <SelectField field="Left_ORG_UNIT_NUM" selected="True" />
+                <SelectField field="Left_STORE_NUM" selected="True" />
+                <SelectField field="Left_SM1YRSTABLE" selected="True" />
+                <SelectField field="Left_SM2YRSTABLE" selected="True" />
+                <SelectField field="Right_STORE_NUM" selected="False" rename="Right_STORE_NUM" />
+                <SelectField field="Right_CBSA_CD" selected="True" />
+                <SelectField field="Right_TURNOVER_SM_12MO" selected="True" />
+                <SelectField field="*Unknown" selected="False" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="426" y="498" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)
+
+SELECT 
+  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY
+, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY
+, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY
+, p.STORE_NUM 
+
+
+FROM APPSTG.SRV_RESPONSES_STG sr
+  
+LEFT JOIN (
+   SELECT * FROM (
+    SELECT PRTNR_ID, STORE_NUM,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec
+    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG
+    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')
+    ) WHERE mostrec = 1
+  ) p
+ON sr.PRTNR_ID = p.PRTNR_ID
+
+INNER JOIN APPPDW.ADV_CAL c
+  ON TRUNC(sr.SEND_DT) = c.CAL_DT
+
+WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM <= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM > 7))
+  AND sr.QUESTION_ID = 'Q1'
+
+GROUP BY
+ p.STORE_NUM  ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[__EncPwd1__@SBP415.WORLD
+Table=--SBP415 (PDW)
+
+SELECT 
+  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY
+, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY
+, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY
+, p.STORE_NUM 
+
+
+FROM APPSTG.SRV_RESPONSES_STG sr
+  
+LEFT JOIN (
+   SELECT * FROM (
+    SELECT PRTNR_ID, STORE_NUM,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec
+    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG
+    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')
+    ) WHERE mostrec = 1
+  ) p
+ON sr.PRTNR_ID = p.PRTNR_ID
+
+INNER JOIN APPPDW.ADV_CAL c
+  ON TRUNC(sr.SEND_DT) = c.CAL_DT
+
+WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM <= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM > 7))
+  AND sr.QUESTION_ID = 'Q1'
+
+GROUP BY
+ p.STORE_NUM  ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Q1_RESP_HRLY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="Q1_TB_HRLY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="Q1_AVG_HRLY" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_HRLY&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_HRLY&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_HRLY&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('barista','shift supv','attendant')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="19">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="510" y="438" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Left_FSCL_PER_BEG_DT" selected="True" />
+                <SelectField field="Left_ORG_UNIT_NUM" selected="True" />
+                <SelectField field="Left_STORE_NUM" selected="True" />
+                <SelectField field="Left_SM1YRSTABLE" selected="True" />
+                <SelectField field="Left_SM2YRSTABLE" selected="True" />
+                <SelectField field="Left_CBSA_CD" selected="True" />
+                <SelectField field="Left_TURNOVER_SM_12MO" selected="True" />
+                <SelectField field="Right_Q1_RESP" selected="True" />
+                <SelectField field="Right_Q1_TB" selected="True" />
+                <SelectField field="Right_Q1_AVG" selected="True" />
+                <SelectField field="Right_STORE_NUM" selected="False" rename="Right_STORE_NUM" />
+                <SelectField field="Right_FSCL_YR_NUM" selected="True" />
+                <SelectField field="Right_FSCL_PER_IN_YR_NUM" selected="True" />
+                <SelectField field="*Unknown" selected="False" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="20">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="210" y="126" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="STORE_NUM" action="GroupBy" rename="STORE_NUM" />
+            <SummarizeField field="SALES" action="Sum" rename="Sum_SALES" />
+            <SummarizeField field="QTR_SALES" action="Sum" rename="Sum_QTR_SALES" />
+            <SummarizeField field="ACTUAL_SALES" action="Sum" rename="Sum_ACTUAL_SALES" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="21">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
+        <Position x="102" y="126" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Expression>[BUS_DATE] &gt;= "2018-04-02" AND [BUS_DATE] &lt;= "2018-04-29"</Expression>
+          <Mode>Custom</Mode>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>[BUS_DATE] &gt;= "2018-04-02" AND [BUS_DATE] &lt;= "2018-04-29"</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="570" y="582" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17"><![CDATA[32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)
+
+SELECT 
+  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM
+, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM
+, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM
+, p.STORE_NUM 
+
+
+FROM APPSTG.SRV_RESPONSES_STG sr
+  
+LEFT JOIN (
+   SELECT * FROM (
+    SELECT PRTNR_ID, STORE_NUM,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec
+    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG
+    WHERE JOB_ABBREV_NM IN ('st manager')
+    ) WHERE mostrec = 1
+  ) p
+ON sr.PRTNR_ID = p.PRTNR_ID
+
+INNER JOIN APPPDW.ADV_CAL c
+  ON TRUNC(sr.SEND_DT) = c.CAL_DT
+
+WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM <= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM > 7))
+  AND sr.QUESTION_ID = 'Q1'
+
+GROUP BY
+ p.STORE_NUM  ]]></File>
+          <FormatSpecificOptions>
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText><![CDATA[__EncPwd1__@SBP415.WORLD
+Table=--SBP415 (PDW)
+
+SELECT 
+  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM
+, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM
+, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM
+, p.STORE_NUM 
+
+
+FROM APPSTG.SRV_RESPONSES_STG sr
+  
+LEFT JOIN (
+   SELECT * FROM (
+    SELECT PRTNR_ID, STORE_NUM,
+    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec
+    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG
+    WHERE JOB_ABBREV_NM IN ('st manager')
+    ) WHERE mostrec = 1
+  ) p
+ON sr.PRTNR_ID = p.PRTNR_ID
+
+INNER JOIN APPPDW.ADV_CAL c
+  ON TRUNC(sr.SEND_DT) = c.CAL_DT
+
+WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM <= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM > 7))
+  AND sr.QUESTION_ID = 'Q1'
+
+GROUP BY
+ p.STORE_NUM  ]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Q1_RESP_SM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('st manager')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="Q1_TB_SM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('st manager')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="Q1_AVG_SM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('st manager')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+            <Field name="STORE_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP415.WORLD|||--SBP415 (PDW)&#xA;&#xA;SELECT &#xA;  COUNT(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.QUESTION_ID END) AS Q1_RESP_SM&#xA;, SUM(CASE WHEN sr.RESP_ID = '7' AND sr.QUESTION_ID = 'Q1' THEN 1 ELSE 0 END) AS Q1_TB_SM&#xA;, ROUND(AVG(CASE WHEN sr.QUESTION_ID = 'Q1' THEN sr.RESP_ID END),2) AS Q1_AVG_SM&#xA;, p.STORE_NUM &#xA;&#xA;&#xA;FROM APPSTG.SRV_RESPONSES_STG sr&#xA;  &#xA;LEFT JOIN (&#xA;   SELECT * FROM (&#xA;    SELECT PRTNR_ID, STORE_NUM,&#xA;    ROW_NUMBER() OVER (PARTITION BY PRTNR_ID ORDER BY ETL_INSERT_DTM DESC) AS mostrec&#xA;    FROM APPSTG.SRV_ACTIVE_PARTNERS_STG&#xA;    WHERE JOB_ABBREV_NM IN ('st manager')&#xA;    ) WHERE mostrec = 1&#xA;  ) p&#xA;ON sr.PRTNR_ID = p.PRTNR_ID&#xA;&#xA;INNER JOIN APPPDW.ADV_CAL c&#xA;  ON TRUNC(sr.SEND_DT) = c.CAL_DT&#xA;&#xA;WHERE ((c.FSCL_YR_NUM = 2018 AND c.FSCL_PER_IN_YR_NUM &lt;= 7) or (c.FSCL_YR_NUM = 2017 AND c.FSCL_PER_IN_YR_NUM &gt; 7))&#xA;  AND sr.QUESTION_ID = 'Q1'&#xA;&#xA;GROUP BY&#xA; p.STORE_NUM  " type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="642" y="510" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="STORE_NUM" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Right_STORE_NUM" selected="False" rename="Right_STORE_NUM" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="21" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="5" Connection="Join" />
+      <Destination ToolID="14" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="23" Connection="Join" />
+      <Destination ToolID="14" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="8" Connection="Output" />
+      <Destination ToolID="5" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="20" Connection="Output" />
+      <Destination ToolID="5" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="17" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="17" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="14" Connection="Join" />
+      <Destination ToolID="15" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="17" Connection="Join" />
+      <Destination ToolID="19" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="18" Connection="Output" />
+      <Destination ToolID="19" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="19" Connection="Join" />
+      <Destination ToolID="23" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Output" />
+      <Destination ToolID="23" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="21" Connection="True" />
+      <Destination ToolID="20" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-05-22_Backcast_Partner_CBSA_Check</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2018.2">
+  <Nodes>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
+        <Position x="42" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Passwords>4A7F0A578C7ABA15A9AA4FA67845CB26B41FF6E8C</Passwords>
+          <File RecordLimit="" FileFormat="17">32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */
+/*CAW*/
+WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm
+        ELSE 'NA' 
+        END) AS DAY_PART
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE
+
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  --,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+)
+SELECT 
+sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+FROM sq
+
+WHERE sq.DAY_PART IN ('am','pm')
+
+GROUP BY 
+sq.QSTN_ID
+,sq.DAY_PART
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+
+ORDER BY sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+,sq.DAY_PART</File>
+          <FormatSpecificOptions>
+            <PreSQLOnConfig>True</PreSQLOnConfig>
+            <ReadCentroids>False</ReadCentroids>
+            <TableStyle>Quoted</TableStyle>
+            <NoProgress>False</NoProgress>
+            <CacheData>False</CacheData>
+            <PostSQL />
+            <PreSQL />
+            <ForceSqlWcharSupport>False</ForceSqlWcharSupport>
+          </FormatSpecificOptions>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>__EncPwd1__@SBP416.WORLD
+Table=/*query for CC score and survey counts by daypart by store */
+/*CAW*/
+WITH sq AS
+(SELECT DISTINCT
+  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR
+    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm
+        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm
+        ELSE 'NA' 
+        END) AS DAY_PART
+  ,sr.QSTN_ID
+  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */
+    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB
+  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+
+FROM APPOTHER.AFT_CV_SRVY_RSPNS sr
+
+JOIN APPCA.D_CAL ca
+  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)
+  
+JOIN APPCA.D_STORE_VERS st
+  ON sr.STORE_NUM = st.STORE_NUM
+    AND st.CURRENT_FLG = 'Y'
+    AND st.OWNR_TYPE_CD = 'CO'
+    AND st.CNTRY_CD_2_DGT_ISO = 'US'
+    
+LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w
+  ON sr.CASE_ID = w.CASE_ID
+
+  WHERE sr.QSTN_ID IN ('Q2_2')
+  AND sr.RSPNS_ID &lt;&gt; '9'
+  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE
+
+GROUP BY
+  TO_CHAR(sr.TRANS_DTM, 'HH24') 
+  --,sr.STORE_NUM
+  ,sr.QSTN_ID
+  ,ca.FSCL_YR_NUM
+  ,ca.FSCL_PER_IN_YR_NUM
+)
+SELECT 
+sq.QSTN_ID
+,sq.DAY_PART
+,SUM(sq.TOTAL_TB) AS TOTAL_TB
+,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS
+,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+FROM sq
+
+WHERE sq.DAY_PART IN ('am','pm')
+
+GROUP BY 
+sq.QSTN_ID
+,sq.DAY_PART
+,sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+
+ORDER BY sq.FSCL_YR_NUM
+,sq.FSCL_PER_IN_YR_NUM
+,sq.DAY_PART</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="QSTN_ID" size="50" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="V_WString" />
+            <Field name="DAY_PART" size="8" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="WString" />
+            <Field name="TOTAL_TB" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="Double" />
+            <Field name="TOTAL_RSPNS" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="Double" />
+            <Field name="TB_SCORE" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="Double" />
+            <Field name="FSCL_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="Double" />
+            <Field name="FSCL_PER_IN_YR_NUM" source="File: 32bit:oci:JUMORRIS/__EncPwd1__@SBP416.WORLD|||/*query for CC score and survey counts by daypart by store */&#xA;/*CAW*/&#xA;WITH sq AS&#xA;(SELECT DISTINCT&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') AS HOUR&#xA;    ,(CASE WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 7 THEN 'early_am' -- early am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=7 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 11 THEN 'am' -- am&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=11 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 14 THEN 'midday' -- midday&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=14 AND TO_CHAR(sr.TRANS_DTM, 'HH24') &lt; 17 THEN 'pm' -- pm&#xA;        WHEN TO_CHAR(sr.TRANS_DTM, 'HH24') &gt;=17 THEN 'late_pm' -- late pm&#xA;        ELSE 'NA' &#xA;        END) AS DAY_PART&#xA;  ,sr.QSTN_ID&#xA;  ,SUM(CASE  WHEN sr.RSPNS_ID = '5' AND sr.QSTN_ID = 'Q1' THEN COALESCE(w.WEIGHT_RT,1) /* coalesce returns non-null weight value, OR if null, returns 1 */&#xA;    WHEN sr.RSPNS_ID = '7' THEN COALESCE(w.WEIGHT_RT,1) ELSE 0 END) AS TOTAL_TB&#xA;  ,SUM(COALESCE(w.WEIGHT_RT,1)) AS TOTAL_RSPNS&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;&#xA;FROM APPOTHER.AFT_CV_SRVY_RSPNS sr&#xA;&#xA;JOIN APPCA.D_CAL ca&#xA;  ON ca.CAL_DT = TRUNC(sr.TRANS_DTM)&#xA;  &#xA;JOIN APPCA.D_STORE_VERS st&#xA;  ON sr.STORE_NUM = st.STORE_NUM&#xA;    AND st.CURRENT_FLG = 'Y'&#xA;    AND st.OWNR_TYPE_CD = 'CO'&#xA;    AND st.CNTRY_CD_2_DGT_ISO = 'US'&#xA;    &#xA;LEFT JOIN APPOTHER.CUST_INS_WEIGHTS w&#xA;  ON sr.CASE_ID = w.CASE_ID&#xA;&#xA;  WHERE sr.QSTN_ID IN ('Q2_2')&#xA;  AND sr.RSPNS_ID &lt;&gt; '9'&#xA;  AND ca.FSCL_YR_NUM IN (2018) AND ca.FSCL_PER_IN_YR_NUM IN (9) --UPDATE HERE&#xA;&#xA;GROUP BY&#xA;  TO_CHAR(sr.TRANS_DTM, 'HH24') &#xA;  --,sr.STORE_NUM&#xA;  ,sr.QSTN_ID&#xA;  ,ca.FSCL_YR_NUM&#xA;  ,ca.FSCL_PER_IN_YR_NUM&#xA;)&#xA;SELECT &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,SUM(sq.TOTAL_TB) AS TOTAL_TB&#xA;,SUM(sq.TOTAL_RSPNS) AS TOTAL_RSPNS&#xA;,ROUND(SUM(sq.TOTAL_TB)/SUM(sq.TOTAL_RSPNS),3) AS TB_SCORE&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;FROM sq&#xA;&#xA;WHERE sq.DAY_PART IN ('am','pm')&#xA;&#xA;GROUP BY &#xA;sq.QSTN_ID&#xA;,sq.DAY_PART&#xA;,sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;&#xA;ORDER BY sq.FSCL_YR_NUM&#xA;,sq.FSCL_PER_IN_YR_NUM&#xA;,sq.DAY_PART" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileInput" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="162" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\jumorris\AppData\Local\Temp\Engine_1196_eb81d8fcb1194552b88f9077bd6e6ed3_\Engine_13544_32ea8311441148ce9a630ddcb0342c78_.yxdb</TempFile>
+          <TempFileDataProfiling />
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Profile</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="114" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>By Week/Day</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="66" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>CC for AM/PM</Text>
+          <Font name="Segoe UI" size="8.25" style="1" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="2" />
+          <Justification Justification="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="10" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>2018-07-06_happyhour</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
