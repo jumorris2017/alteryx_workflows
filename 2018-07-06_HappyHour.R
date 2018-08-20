@@ -14,7 +14,7 @@ hh <- fread(paste0(data_dir,"/happyhour_ce.csv"))
 
 #add flag for hh days
 hh[, hhflag := 0]
-hh[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39)&DAY_ABBR_NM=='TH', hhflag := 1]
+hh[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44)&DAY_ABBR_NM=='TH', hhflag := 1]
 hh[FSCL_WK_IN_YR_NUM==37&DAY_ABBR_NM=='FR', hhflag := 1]
 
 #create SO agg
@@ -80,7 +80,7 @@ pv <- fread(paste0(data_dir,"/happyhour_pv.csv"))
 
 #add flag for hh days
 pv[, hhflag := 0]
-pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42)&DAY_ABBR_NM=='TH', hhflag := 1]
+pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44)&DAY_ABBR_NM=='TH', hhflag := 1]
 pv[SHIFT_FSCL_WK_IN_YR_NUM==37&DAY_ABBR_NM=='FR', hhflag := 1]
 
 #code into hourly vs sm job roles
@@ -135,14 +135,15 @@ write.csv(pv,file=paste0(data_dir,"/happyhour_pv_results.csv"))
 
 
 #happy hour part 3
-hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
+# hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
+hhd <- fread(paste0(data_dir,"/happyhour_ce.csv"))
 
 #create SO agg
 hhd[QSTN_ID %in% c("Q2_2"), so_flag := 0]
 hhd[QSTN_ID %in% c("Q2_1","Q2_3","Q2_4","Q2_5","Q2_6","Q2_7"), so_flag := 1]
 
 #add flag for hh days 
-hhd[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41), hh_week_flag := 1] #thurs hh
+hhd[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44), hh_week_flag := 1] #thurs hh
 hhd[FSCL_WK_IN_YR_NUM==37, hh_week_flag := 2] # fri hh
 hhd[FSCL_WK_IN_YR_NUM==35, hh_week_flag := 3] #no hh
 
@@ -173,7 +174,7 @@ xlabel <- ""
 ylabel <- "CC Score"
 tlabel <- "Customer Connection Score by Day of Week "
 sublabel <- "No apparent lasting impact of happy hour"
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37; No happy hour: FW 35"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37; No happy hour: FW 35"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH","No HH") 
@@ -207,7 +208,7 @@ xlabel <- ""
 ylabel <- "SO Score"
 tlabel <- "Store Operations Score by Day of Week"
 sublabel <- "No apparent lasting impact of happy hour"
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37; No happy hour: FW 35"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37; No happy hour: FW 35"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH","No HH") 
@@ -229,14 +230,14 @@ print(plot2)
 
 
 #happy hour part 4 - PM only
-hhd <- fread(paste0(data_dir,"/hh_results_byday.csv"))
+hhd <- fread(paste0(data_dir,"/happyhour_ce.csv"))
 
 #create SO agg
 hhd[QSTN_ID %in% c("Q2_2"), so_flag := 0]
 hhd[QSTN_ID %in% c("Q2_1","Q2_3","Q2_4","Q2_5","Q2_6","Q2_7"), so_flag := 1]
 
 #add flag for hh days 
-hhd[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41), hh_week_flag := 1] #thurs hh
+hhd[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44), hh_week_flag := 1] #thurs hh
 hhd[FSCL_WK_IN_YR_NUM==37, hh_week_flag := 2] # fri hh
 hhd[FSCL_WK_IN_YR_NUM==35, hh_week_flag := 3] #no hh
 
@@ -267,7 +268,7 @@ xlabel <- ""
 ylabel <- "CC Score"
 tlabel <- "PM (3pm-close) Customer Connection Score by Day of Week "
 sublabel <- "No apparent lasting impact of happy hour"
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH") 
@@ -301,7 +302,7 @@ xlabel <- ""
 ylabel <- "SO Score"
 tlabel <- "PM (3pm-close) Store Operations Score by Day of Week"
 sublabel <- "No apparent lasting impact of happy hour"
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH") 
@@ -327,7 +328,7 @@ print(plot2)
 hhu <- fread(paste0(data_dir,"/happyhour_uplh.csv"))
 
 #add flag for hh days 
-hhu[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41), hh_week_flag := 1] #thurs hh
+hhu[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44), hh_week_flag := 1] #thurs hh
 hhu[FSCL_WK_IN_YR_NUM==37, hh_week_flag := 2] # fri hh
 hhu[FSCL_WK_IN_YR_NUM==35, hh_week_flag := 3] #no hh
 
@@ -353,7 +354,7 @@ xlabel <- ""
 ylabel <- "UPLH"
 tlabel <- "UPLH by Day of Week"
 sublabel <- ""
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37; No happy hour: FW 35"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37; No happy hour: FW 35"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH","No HH") 
@@ -377,7 +378,7 @@ print(plot2)
 hhu <- fread(paste0(data_dir,"/happyhour_uplh.csv"))
 
 #add flag for hh days 
-hhu[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41), hh_week_flag := 1] #thurs hh
+hhu[FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44), hh_week_flag := 1] #thurs hh
 hhu[FSCL_WK_IN_YR_NUM==37, hh_week_flag := 2] # fri hh
 hhu[FSCL_WK_IN_YR_NUM==35, hh_week_flag := 3] #no hh
 
@@ -399,7 +400,7 @@ xlabel <- ""
 ylabel <- "UPLH"
 tlabel <- "PM (3pm-close) UPLH by Day of Week"
 sublabel <- ""
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH") 
@@ -433,7 +434,7 @@ xlabel <- ""
 ylabel <- "UPLH"
 tlabel <- "AM (Open-3pm) UPLH by Day of Week"
 sublabel <- ""
-caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41; Friday happy hour: FW 37"
+caption <- "U.S. Company-Operated Stores\nThursday happy hours: FW 34, 36, 38, 39, 40, 41, 42, 43, 44; Friday happy hour: FW 37"
 #manual legend labels
 lname1 <- "Happy Hour Day"
 llabels1 <- c("Thursday HH","Friday HH") 
@@ -463,7 +464,7 @@ hhu <- hhu[DAY_IN_CAL_WK_NUM %in% c(2:6)]
 
 #add flag for hh days
 pv[, hhflag := 0]
-pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42)&DAY_ABBR_NM=='TH', hhflag := 1]
+pv[SHIFT_FSCL_WK_IN_YR_NUM %in% c(34,36,38,39,40,41,42,43,44)&DAY_ABBR_NM=='TH', hhflag := 1]
 pv[SHIFT_FSCL_WK_IN_YR_NUM==37&DAY_ABBR_NM=='FR', hhflag := 1]
 
 #code into hourly vs sm job roles
